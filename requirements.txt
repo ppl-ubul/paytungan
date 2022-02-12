@@ -3,5 +3,6 @@ djangorestframework==3.13.1
 drf_yasg==1.20.0
 dj-database-url==0.5.0
 psycopg2-binary==2.8.6
+whitenoise==5.3.0
 gunicorn==19.8.1
 injector==0.18.4
