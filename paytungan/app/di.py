@@ -1,6 +1,4 @@
 from injector import Injector
 
 
-injector = Injector([
-    
-])
+injector = Injector([])
