@@ -51,7 +51,7 @@ schema_view = get_schema_view(
 
 # urlpatterns required for settings values
 required_urlpatterns = [
-    path('accounts/', admin.site.urls),
+    path('admin/', admin.site.urls),
     # path('o/', include('oauth2_provider.urls', namespace='oauth2_provider')),
 ]
 
