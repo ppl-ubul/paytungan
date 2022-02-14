@@ -141,5 +141,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # Swagger session URL
 from django.urls import reverse_lazy
 
-LOGIN_URL = reverse_lazy('admin:login')
-LOGOUT_URL = reverse_lazy('admin:logout')
+SWAGGER_SETTINGS = {
+    'LOGIN_URL': reverse_lazy('admin:login'),
+    'LOGOUT_URL': '/admin/logout',
+    'PERSIST_AUTH': True,
+}
