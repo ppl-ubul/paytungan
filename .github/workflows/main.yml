@@ -6,8 +6,7 @@ on:
       - main
 
 jobs:
-  linter_name:
-    name: runner / black formatter
+  linter:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -16,11 +15,12 @@ jobs:
           black_args: ". --check"
 
   deploy:
+    needs: linter
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - uses: akhileshns/heroku-deploy@v3.12.12 # This is the action
+      - uses: akhileshns/heroku-deploy@v3.12.12
         with:
           heroku_api_key: ${{secrets.HEROKU_API_KEY}}
-          heroku_app_name: "paytungan" #Must be unique in Heroku
-          heroku_email: "widyanto.hadi@ui.ac.id"
+          heroku_app_name: "paytungan"
+          heroku_email: ${{secrets.HEROKU_EMAIL}}
