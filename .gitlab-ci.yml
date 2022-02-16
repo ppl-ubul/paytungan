@@ -27,7 +27,7 @@ test:
 
 deploy-dev:
   image: ruby:2.4
-  stage: deploy
+  stage: deploy-dev
   before_script:
     - gem install dpl
     - wget -qO- https://cli-assets.heroku.com/install-ubuntu.sh | sh
