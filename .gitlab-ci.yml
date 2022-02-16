@@ -1,0 +1,41 @@
+stages:
+  - linter
+  - test
+  - deploy-dev
+  # - deploy-prod
+
+linter:
+  image: python:3.8
+  stage: linter
+  before_script:
+    - pip install -r requirements.txt
+    - pip install -r requirements-dev.txt
+  when: on_success
+  script:
+    - black . --check
+
+test:
+  image: python:3.8
+  stage: test
+  before_script:
+    - pip install -r requirements.txt
+    - python manage.py makemigrations
+    - python manage.py migrate
+  when: on_success
+  script:
+    - python manage.py test
+
+deployment-dev:
+  image: ruby:2.4
+  stage: deploy
+  before_script:
+    - gem install dpl
+    - wget -qO- https://cli-assets.heroku.com/install-ubuntu.sh | sh
+  script:
+    - dpl --provider=heroku --app=$HEROKU_APPNAME --api-key=$HEROKU_APIKEY
+    - export HEROKU_API_KEY=$HEROKU_APIKEY
+  environment:
+    name: production
+    url: $HEROKU_APP_HOST
+  only:
+    - main
