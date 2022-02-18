@@ -68,6 +68,5 @@ sonar-scanner:
       -Dsonar.branch.name=$CI_COMMIT_REF_NAME
   allow_failure: true
   only:
-    - merge_requests
     - main
     - prod
