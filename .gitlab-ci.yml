@@ -39,3 +39,38 @@ deploy-dev:
     url: $HEROKU_APP_HOST
   only:
     - main
+
+sonar-scanner-dev:
+  image:
+    name: sonarsource/sonar-scanner-cli:latest
+    entrypoint: [""]
+  variables:
+    SONAR_TOKEN: $SONARQUBE_TOKEN
+    SONAR_HOST_URL: "https://sonarqube.cs.ui.ac.id"
+    GIT_DEPTH: 0
+  sonarqube-check:
+    stage: linter
+    script:
+      - sonar-scanner -Dsonar.qualitygate.wait=true
+    allow_failure: true
+    except:
+      - prod
+      - main
+
+sonar-scanner:
+  image:
+    name: sonarsource/sonar-scanner-cli:latest
+    entrypoint: [""]
+  variables:
+    SONAR_TOKEN: $SONARQUBE_TOKEN
+    SONAR_HOST_URL: "https://sonarqube.cs.ui.ac.id"
+    GIT_DEPTH: 0
+  sonarqube-check:
+    stage: linter
+    script:
+      - sonar-scanner -Dsonar.qualitygate.wait=true
+    allow_failure: true
+    only:
+      - merge_requests
+      - main
+      - prod
