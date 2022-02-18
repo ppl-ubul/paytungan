@@ -9,7 +9,7 @@ from paytungan.auth.views import UserViewSet
 
 
 router = SimpleRouter(trailing_slash=False)
-router.register("api/users", UserViewSet, basename='user')
+router.register("api/users", UserViewSet, basename="user")
 
 
 swagger_info = openapi.Info(
