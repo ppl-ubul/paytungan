@@ -49,7 +49,6 @@ sonar-scanner-dev:
     - sonar-scanner
       -Dsonar.host.url=https://sonarqube.cs.ui.ac.id
       -Dsonar.login=$SONARQUBE_TOKEN
-      -Dsonar.branch.name=$CI_COMMIT_REF_NAME
       -Dsonar.branch.target=staging
   allow_failure: true
   except:
@@ -65,7 +64,6 @@ sonar-scanner:
     - sonar-scanner
       -Dsonar.host.url=https://sonarqube.cs.ui.ac.id
       -Dsonar.login=$SONARQUBE_TOKEN
-      -Dsonar.branch.name=$CI_COMMIT_REF_NAME
   allow_failure: true
   only:
     - main
