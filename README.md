@@ -55,7 +55,7 @@ Backend monorepo for Paytungan Services
 
 1. Clone the repo
     ```sh
-    git clone https://github.com/ppl-ubul/paytungan-backend.git
+    git clone https://gitlab.cs.ui.ac.id/ppl-fasilkom-ui/2022/Kelas-B/timbul/paytungan-backend
     ```
 2. Install Pip Packages (Recommended Using Python Virtual Environment)
     ```sh
