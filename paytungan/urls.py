@@ -3,13 +3,6 @@ from django.contrib import admin
 from rest_framework import permissions
 from drf_yasg import openapi
 from drf_yasg.views import get_schema_view
-from rest_framework.routers import SimpleRouter
-
-from paytungan.auth.views import UserViewSet
-
-
-router = SimpleRouter(trailing_slash=False)
-router.register("api/users", UserViewSet, basename="user")
 
 
 swagger_info = openapi.Info(
@@ -43,7 +36,7 @@ required_urlpatterns = [
 # Wire up our API using automatic URL routing.
 # Additionally, we include login URLs for the browsable API.
 urlpatterns = [
-    path("", include(router.urls)),
+    path("", include('paytungan.app.urls')),
     re_path(
         r"^swagger(?P<format>.json|.yaml)$",
         schema_view.without_ui(cache_timeout=None),

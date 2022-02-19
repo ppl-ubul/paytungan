@@ -7,7 +7,7 @@ from rest_framework.response import Response
 from .interfaces import IUserServices
 
 from .serializers import GetUserRequest, GetUserResponse
-from paytungan.di import injector
+from paytungan.app.di import injector
 
 user_service = injector.get(IUserServices)
 
