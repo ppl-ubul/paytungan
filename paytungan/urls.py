@@ -36,7 +36,7 @@ required_urlpatterns = [
 # Wire up our API using automatic URL routing.
 # Additionally, we include login URLs for the browsable API.
 urlpatterns = [
-    path("", include('paytungan.app.urls')),
+    path("", include("paytungan.app.urls")),
     re_path(
         r"^swagger(?P<format>.json|.yaml)$",
         schema_view.without_ui(cache_timeout=None),
