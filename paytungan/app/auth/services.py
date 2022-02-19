@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from injector import inject
 
 from .interfaces import IUserAccessor, IUserServices
-from .specs import GetUserListSpec
+from .specs import GetUserListSpec, CreateUserSpec
 
 
 class UserServices(IUserServices):
@@ -16,3 +16,7 @@ class UserServices(IUserServices):
 
     def get_list(self, spec: GetUserListSpec) -> List[User]:
         return self.user_accessor.get_list(spec)
+
+    def create_user(self, spec: CreateUserSpec) -> Optional[User]:
+        user = self.user_accessor.create_user(spec)
+        return user

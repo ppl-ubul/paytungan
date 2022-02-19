@@ -1,8 +1,8 @@
 from typing import List, Optional
-from django.contrib.auth.models import User, Group
+from django.contrib.auth.models import User
 
 from .interfaces import IUserAccessor
-from .specs import GetUserListSpec
+from .specs import GetUserListSpec, CreateUserSpec
 
 
 class UserAccessor(IUserAccessor):
@@ -24,3 +24,15 @@ class UserAccessor(IUserAccessor):
             queryset = queryset.filter(username__in=spec.usernames)
 
         return queryset
+
+    def create_user(self, spec: CreateUserSpec) -> Optional[User]:
+        try:
+            new_user = User.objects.create_user(
+                username=spec.username,
+                email=spec.email,
+                password=spec.password,
+            )
+            new_user.save()
+            return new_user
+        except:
+            return None

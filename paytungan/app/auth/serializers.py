@@ -14,3 +14,13 @@ class UserSerializer(serializers.Serializer):
 
 class GetUserResponse(serializers.Serializer):
     data = UserSerializer()
+
+
+class CreateUserRequest(serializers.Serializer):
+    username = serializers.CharField()
+    email = serializers.CharField()
+    password = serializers.CharField()
+
+
+class CreateUserResponse(serializers.Serializer):
+    data = UserSerializer()

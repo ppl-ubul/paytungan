@@ -6,7 +6,13 @@ from rest_framework.response import Response
 
 from .interfaces import IUserServices
 
-from .serializers import GetUserRequest, GetUserResponse
+from .serializers import (
+    GetUserRequest,
+    GetUserResponse,
+    CreateUserRequest,
+    CreateUserResponse,
+)
+from .specs import CreateUserSpec
 from paytungan.app.di import injector
 
 user_service = injector.get(IUserServices)
@@ -25,8 +31,8 @@ class UserViewSet(viewsets.ViewSet):
     )
     def get_user(self, request: Request) -> Response:
         """
-        Get single principal object
-        by principal id or principal name
+        Get single user object
+        by user id or user name
         """
         # header_serializer = BaseHeaderRequestSerializer(data=request.headers)
         # header_serializer.is_valid(raise_exception=True)
@@ -35,3 +41,28 @@ class UserViewSet(viewsets.ViewSet):
         data = serializer.data
         user = user_service.get(data["user_id"])
         return Response(GetUserResponse({"data": user}).data)
+
+    @action(
+        detail=False,
+        url_path="create",
+        methods=["post"],
+    )
+    @swagger_auto_schema(
+        # manual_parameters=ENDPOINT_DEFAULT_PARAMS,
+        request_body=CreateUserRequest(),
+        responses={200: CreateUserResponse()},
+    )
+    def create_user(self, request: Request) -> Response:
+        """
+        Create user
+        """
+        serializer = CreateUserRequest(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        data = serializer.data
+        spec = CreateUserSpec(
+            username=data["username"],
+            password=data["password"],
+            email=data["email"],
+        )
+        user = user_service.create_user(spec)
+        return Response(CreateUserResponse({"data": user}).data)
