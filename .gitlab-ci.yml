@@ -31,7 +31,6 @@ test:
     paths:
       - tests/coverage.xml
 
-
 deploy-dev:
   image: ruby:2.7.1
   stage: deploy-dev
