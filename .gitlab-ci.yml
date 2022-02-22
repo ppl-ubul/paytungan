@@ -23,7 +23,8 @@ test:
     - python manage.py migrate
   when: on_success
   script:
-    - python manage.py test
+    - coverage run --include='paytungan/app/*/services*' manage.py test
+    - coverage report -m
 
 deploy-dev:
   image: ruby:2.7.1

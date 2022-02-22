@@ -1,3 +1,7 @@
+[![pipeline status](https://gitlab.cs.ui.ac.id/ppl-fasilkom-ui/2022/Kelas-B/timbul/paytungan-backend/badges/main/pipeline.svg)](https://gitlab.cs.ui.ac.id/ppl-fasilkom-ui/2022/Kelas-B/timbul/paytungan-backend/-/commits/main)
+
+[![coverage report](https://gitlab.cs.ui.ac.id/ppl-fasilkom-ui/2022/Kelas-B/timbul/paytungan-backend/badges/main/coverage.svg)](https://gitlab.cs.ui.ac.id/ppl-fasilkom-ui/2022/Kelas-B/timbul/paytungan-backend/-/commits/main)
+
 <!-- PROJECT LOGO -->
 <br />
 <p align="center">
