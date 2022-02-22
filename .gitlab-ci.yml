@@ -23,7 +23,7 @@ test:
   when: on_success
   script:
     - coverage run --include='paytungan/app/*/services*' manage.py test
-    - coverage xml -o tests/coverage.xml
+    - coverage xml -o paytungan/app/coverage.xml
     - coverage report -m
 
 deploy-dev:
