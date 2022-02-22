@@ -1,6 +1,7 @@
 stages:
   - linter
   - test
+  - sonarqube
   - deploy-dev
   # - deploy-prod
 
@@ -50,7 +51,7 @@ sonar-scanner-dev:
   image:
     name: sonarsource/sonar-scanner-cli:latest
     entrypoint: [""]
-  stage: test
+  stage: sonarqube
   dependencies:
     - test
   script:
@@ -68,7 +69,7 @@ sonar-scanner:
   image:
     name: sonarsource/sonar-scanner-cli:latest
     entrypoint: [""]
-  stage: test
+  stage: sonarqube
   dependencies:
     - test
   script:
