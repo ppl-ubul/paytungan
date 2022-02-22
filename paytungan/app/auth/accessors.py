@@ -34,5 +34,5 @@ class UserAccessor(IUserAccessor):
             )
             new_user.save()
             return new_user
-        except:
+        except Exception as e:
             return None
