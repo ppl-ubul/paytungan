@@ -23,6 +23,7 @@ test:
   when: on_success
   script:
     - coverage run --include='paytungan/app/*/services*' manage.py test
+    - coverage xml -o tests/coverage.xml
     - coverage report -m
 
 deploy-dev:
@@ -45,6 +46,8 @@ sonar-scanner-dev:
     name: sonarsource/sonar-scanner-cli:latest
     entrypoint: [""]
   stage: test
+  dependencies:
+    - test
   script:
     - sonar-scanner
       -Dsonar.host.url=https://sonarqube.cs.ui.ac.id
@@ -60,6 +63,8 @@ sonar-scanner:
     name: sonarsource/sonar-scanner-cli:latest
     entrypoint: [""]
   stage: test
+  dependencies:
+    - test
   script:
     - sonar-scanner
       -Dsonar.host.url=https://sonarqube.cs.ui.ac.id
