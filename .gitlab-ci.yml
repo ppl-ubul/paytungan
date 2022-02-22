@@ -8,7 +8,6 @@ linter:
   image: python:3.8
   stage: linter
   before_script:
-    - pip install -r requirements.txt
     - pip install -r requirements-dev.txt
   when: on_success
   script:
