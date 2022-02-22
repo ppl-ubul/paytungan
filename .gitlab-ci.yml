@@ -23,8 +23,14 @@ test:
   when: on_success
   script:
     - coverage run --include='paytungan/app/*/services*' manage.py test
-    - coverage xml -o paytungan/app/coverage.xml
+    - coverage xml -o tests/coverage.xml
     - coverage report -m
+  artifacts:
+    untracked: true
+    when: always
+    paths:
+      - tests/coverage.xml
+
 
 deploy-dev:
   image: ruby:2.7.1
@@ -49,6 +55,7 @@ sonar-scanner-dev:
   dependencies:
     - test
   script:
+    - cat tests/coverage.xml
     - sonar-scanner
       -Dsonar.host.url=https://sonarqube.cs.ui.ac.id
       -Dsonar.login=$SONARQUBE_TOKEN
@@ -66,6 +73,7 @@ sonar-scanner:
   dependencies:
     - test
   script:
+    - cat tests/coverage.xml
     - sonar-scanner
       -Dsonar.host.url=https://sonarqube.cs.ui.ac.id
       -Dsonar.login=$SONARQUBE_TOKEN
