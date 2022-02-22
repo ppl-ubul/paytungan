@@ -60,6 +60,7 @@ sonar-scanner-dev:
       -Dsonar.host.url=https://sonarqube.cs.ui.ac.id
       -Dsonar.login=$SONARQUBE_TOKEN
       -Dsonar.branch.target=staging
+      -Dsonar.python.coverage.reportPaths=tests/coverage.xml
   allow_failure: true
   except:
     - prod
