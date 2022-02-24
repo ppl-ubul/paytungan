@@ -16,7 +16,7 @@ RUN mkdir -p /app
 COPY ./requirements.txt /app
 
 # Install requirements
-RUN pip install -r requirements
+RUN pip install -r requirements.txt
 
 COPY . /app
 WORKDIR /app
