@@ -1,0 +1,1 @@
+gunicorn paytungan.wsgi
