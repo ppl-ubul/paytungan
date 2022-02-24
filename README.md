@@ -1,3 +1,7 @@
+[![pipeline status](https://gitlab.cs.ui.ac.id/ppl-fasilkom-ui/2022/Kelas-B/timbul/paytungan-backend/badges/main/pipeline.svg)](https://gitlab.cs.ui.ac.id/ppl-fasilkom-ui/2022/Kelas-B/timbul/paytungan-backend/-/commits/main)
+
+[![coverage report](https://gitlab.cs.ui.ac.id/ppl-fasilkom-ui/2022/Kelas-B/timbul/paytungan-backend/badges/main/coverage.svg)](https://gitlab.cs.ui.ac.id/ppl-fasilkom-ui/2022/Kelas-B/timbul/paytungan-backend/-/commits/main)
+
 <!-- PROJECT LOGO -->
 <br />
 <p align="center">
@@ -55,7 +59,7 @@ Backend monorepo for Paytungan Services
 
 1. Clone the repo
     ```sh
-    git clone https://github.com/ppl-ubul/paytungan-backend.git
+    git clone https://gitlab.cs.ui.ac.id/ppl-fasilkom-ui/2022/Kelas-B/timbul/paytungan-backend
     ```
 2. Install Pip Packages (Recommended Using Python Virtual Environment)
     ```sh

@@ -1,12 +1,11 @@
-from rest_framework import routers
+from rest_framework.routers import SimpleRouter
 from django.urls import include, path
 
-from .core.user.views import UserViewSet, GroupViewSet
+from .auth.views import UserViewSet
 
 
-router = routers.DefaultRouter()
-router.register(r"users", UserViewSet)
-router.register(r"groups", GroupViewSet)
+router = SimpleRouter(trailing_slash=False)
+router.register("api/users", UserViewSet, basename="user")
 
 urlpatterns = [
     path("", include(router.urls)),
