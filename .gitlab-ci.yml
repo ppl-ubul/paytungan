@@ -3,7 +3,7 @@ stages:
   - test
   - sonarqube
   - deploy-dev
-  # - deploy-prod
+  - deploy-prod
 
 linter:
   image: python:3.8
@@ -57,10 +57,10 @@ sonar-scanner-dev:
   script:
     - cat tests/coverage.xml
     - sonar-scanner
-      -Dsonar.host.url=https://sonarqube.cs.ui.ac.id
+      -Dsonar.host.url=https://pmpl.cs.ui.ac.id/sonarqube
+      -Dsonar.branch.name=$CI_COMMIT_REF_NAME
       -Dsonar.login=$SONARQUBE_TOKEN
       -Dsonar.branch.target=staging
-      -Dsonar.python.coverage.reportPaths=tests/coverage.xml
   allow_failure: true
   except:
     - prod
@@ -76,9 +76,23 @@ sonar-scanner:
   script:
     - cat tests/coverage.xml
     - sonar-scanner
-      -Dsonar.host.url=https://sonarqube.cs.ui.ac.id
+      -Dsonar.host.url=https://pmpl.cs.ui.ac.id/sonarqube
+      -Dsonar.branch.name=$CI_COMMIT_REF_NAME
       -Dsonar.login=$SONARQUBE_TOKEN
   allow_failure: true
   only:
     - main
     - prod
+
+deploy:
+  stage: deploy-prod
+  image: google/cloud-sdk
+  services:
+    - docker:dind
+  script:
+    - echo $GCP_SERVICE_KEY > gcloud-service-key.json # Google Cloud service accounts
+    - gcloud auth activate-service-account --key-file gcloud-service-key.json
+    - gcloud config set project $GCP_PROJECT_ID
+    - gcloud builds submit . --config=cloudbuild.yaml
+  only:
+    - main

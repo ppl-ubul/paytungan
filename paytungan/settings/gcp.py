@@ -1,6 +1,8 @@
 import os
 
 from .base import *  # noqa: F403
+from paytungan.app.common.config import get_db_config
+
 
 DEBUG = True
 
@@ -17,7 +19,7 @@ SECURE_CONTENT_TYPE_NOSNIFF = True
 X_FRAME_OPTIONS = "DENY"
 
 # Database
-db_config = os.getenv("DB_CONFIG")
+db_config = get_db_config()
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
