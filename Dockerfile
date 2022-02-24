@@ -13,14 +13,13 @@ RUN apt-get update
 RUN apt-get install -y libpq-dev gcc
 
 RUN mkdir -p /app
-
 COPY ./requirements.txt /app
-WORKDIR /app
 
-# Install pipenv globally
+# Install requirements
 RUN pip install -r requirements
 
 COPY . /app
+WORKDIR /app
 
 RUN chmod +x deployment.sh run.sh
 RUN bash deployment.sh
