@@ -13,7 +13,7 @@ RUN apt-get update
 RUN apt-get install -y libpq-dev gcc
 
 RUN mkdir -p /app
-COPY ./requirements.txt /app
+COPY ./requirements.txt .
 
 # Install requirements
 RUN pip install -r requirements.txt
