@@ -4,9 +4,12 @@ from .base import *  # noqa: F403
 from paytungan.app.common.config import get_db_config
 
 
-DEBUG = True
-
-ALLOWED_HOSTS.append(".appengine.com")
+ALLOWED_HOSTS.extend(
+    [
+        ".run.app",
+        ".appengine.com",
+    ]
+)
 
 SECRET_KEY = os.getenv("DJANGO_SECRET_KEY")
 assert SECRET_KEY, "DJANGO_SECRET_KEY environment variable must be set"
@@ -17,6 +20,12 @@ CSRF_COOKIE_SECURE = True
 SECURE_BROWSER_XSS_FILTER = True
 SECURE_CONTENT_TYPE_NOSNIFF = True
 X_FRAME_OPTIONS = "DENY"
+
+# Simplified static file serving.
+# https://warehouse.python.org/project/whitenoise/
+
+STATICFILES_STORAGE = "whitenoise.storage.CompressedStaticFilesStorage"
+MIDDLEWARE.insert(0, "whitenoise.middleware.WhiteNoiseMiddleware")
 
 # Database
 db_config = get_db_config()

@@ -2,7 +2,6 @@ import dj_database_url
 
 from .base import *  # noqa: F403
 
-DEBUG = True
 
 ALLOWED_HOSTS.append(".herokuapp.com")
 
