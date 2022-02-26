@@ -16,9 +16,10 @@ linter:
 test:
   image: python:3.8
   stage: test
+  variables:
+    - DJANGO_SETTINGS_MODULE: paytungan.settings
   before_script:
     - pip install -r requirements.txt
-    - python manage.py makemigrations
     - python manage.py migrate
   when: on_success
   script:
