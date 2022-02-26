@@ -4,6 +4,8 @@ import os
 
 def get_db_config() -> Dict[str, str]:
     db_config = os.getenv("DB_CONFIG")
+    if not db_config:
+        raise Exception(f"Config Key DB_CONFIG is not configured")
     db_config = db_config.split("|")
     db_config = {
         "DB_HOST": db_config[0],

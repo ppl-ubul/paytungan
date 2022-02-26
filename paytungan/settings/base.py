@@ -12,8 +12,11 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 
 from pathlib import Path
 import os
+import sys
 
 from django.urls import reverse_lazy
+
+from paytungan.app.common.constants import DEFAULT_LOGGER, Environment
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
@@ -28,7 +31,8 @@ SECRET_KEY = "django-insecure-aet=ty5stdiik^wp6u-!$xpf+&rlt!kp3cqi6mtf1h$e4_@sp=
 # SECURITY WARNING: don't run with debug turned on in production!
 
 DEBUG = True
-if os.getenv("APP_ENV") == "prod":
+CURRENT_ENV = os.getenv("APP_ENV")
+if CURRENT_ENV == "prod":
     DEBUG = False
 
 ALLOWED_HOSTS = [
@@ -142,4 +146,33 @@ SWAGGER_SETTINGS = {
     "LOGIN_URL": reverse_lazy("admin:login"),
     "LOGOUT_URL": "/admin/logout",
     "PERSIST_AUTH": True,
+}
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "filters": {
+        "request_id": {"()": "paytungan.app.common.middlewares.RequestIDFilter"},
+    },
+    "formatters": {
+        "json": {"()": "paytungan.app.common.middlewares.JSONFormatter"},
+    },
+    "handlers": {
+        "special": {
+            "filters": ["request_id"],
+            "class": "logging.StreamHandler",
+            "formatter": "json",
+            "stream": sys.stdout,
+        }
+    },
+    "loggers": {
+        DEFAULT_LOGGER: {
+            # This will set log level for prod to be INFO and else to be DEBUG
+            # If there are log produce debug, in prod the debug log will not be printed
+            "level": "INFO" if CURRENT_ENV == Environment.PROD else "DEBUG",
+            "handlers": ["special"],
+            "filters": ["request_id"],
+            "propagate": True,
+        },
+    },
 }
