@@ -23,6 +23,7 @@ test:
     - python manage.py migrate
   when: on_success
   script:
+    - echo $DJANGO_SETTINGS_MODULE
     - coverage run --include='paytungan/app/*/services*' manage.py test
     - coverage xml -o tests/coverage.xml
     - coverage report -m
