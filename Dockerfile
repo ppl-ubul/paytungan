@@ -1,14 +1,5 @@
 FROM python:3.8-slim
 
-ARG DB_CONFIG
-ARG DJANGO_SECRET_KEY
-ARG DJANGO_SETTINGS_MODULE
-
-ENV DB_CONFIG=$DB_CONFIG
-ENV DJANGO_SECRET_KEY=$DJANGO_SECRET_KEY
-ENV DJANGO_SETTINGS_MODULE=$DJANGO_SETTINGS_MODULE
-
-
 RUN apt-get update
 RUN apt-get install -y libpq-dev gcc
 
@@ -20,6 +11,8 @@ RUN pip install -U -r requirements.txt
 
 COPY . /app
 WORKDIR /app
+
+RUN python manage.py collectstatic --noinput
 
 RUN chmod +x run.sh
 
