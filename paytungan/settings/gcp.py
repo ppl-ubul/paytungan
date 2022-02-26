@@ -8,8 +8,8 @@ DEBUG = True
 
 ALLOWED_HOSTS.extend(
     [
-        "run.app",
-        "appengine.com",
+        ".run.app",
+        ".appengine.com",
     ]
 )
 
