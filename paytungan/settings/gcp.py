@@ -6,7 +6,10 @@ from paytungan.app.common.config import get_db_config
 
 DEBUG = True
 
-ALLOWED_HOSTS.append(".appengine.com")
+ALLOWED_HOSTS.extend([
+    "run.app",
+    "appengine.com",
+])
 
 SECRET_KEY = os.getenv("DJANGO_SECRET_KEY")
 assert SECRET_KEY, "DJANGO_SECRET_KEY environment variable must be set"

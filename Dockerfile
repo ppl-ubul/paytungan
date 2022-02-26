@@ -16,12 +16,11 @@ RUN mkdir -p /app
 COPY ./requirements.txt .
 
 # Install requirements
-RUN pip install -r requirements.txt
+RUN pip install -U -r requirements.txt
 
 COPY . /app
 WORKDIR /app
 
-RUN chmod +x deployment.sh run.sh
-RUN bash deployment.sh
+RUN chmod +x run.sh
 
 ENTRYPOINT ["bash","/app/run.sh"]
