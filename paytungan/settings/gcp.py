@@ -4,8 +4,6 @@ from .base import *  # noqa: F403
 from paytungan.app.common.config import get_db_config
 
 
-DEBUG = True
-
 ALLOWED_HOSTS.extend(
     [
         ".run.app",
