@@ -32,8 +32,6 @@ class LoggingMiddleware:
         local.request_id = request_id
         local.request_path = request.path
         local.request_payload = self._get_request_payload(request)
-        local.channel = request.headers.get("channel")
-        local.modifier = request.headers.get("modifier")
         request.id = request_id
 
     def get_log_message(self, request, response):
@@ -43,7 +41,7 @@ class LoggingMiddleware:
     def process_response(self, request, response):
         response[REQUEST_HEADER] = request.id
 
-        # Don't log favicon
+        # Only log /api
         if "/api" not in request.path:
             return response
 

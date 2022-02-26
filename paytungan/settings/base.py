@@ -41,6 +41,7 @@ ALLOWED_HOSTS = [
     "test.local",
 ]
 
+CORS_ALLOW_ALL_ORIGINS = True
 
 # Application definition
 
@@ -55,16 +56,19 @@ INSTALLED_APPS = [
     "drf_yasg",
     "paytungan",
     "paytungan.app",
+    "corsheaders",
 ]
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "paytungan.app.common.middlewares.LoggingMiddleware",
 ]
 
 ROOT_URLCONF = "paytungan.urls"
