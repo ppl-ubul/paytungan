@@ -1,7 +1,8 @@
 from typing import Dict
 import os
 
-from  .exceptions import BaseException
+from .exceptions import BaseException
+
 
 def get_db_config() -> Dict[str, str]:
     db_config = os.getenv("DB_CONFIG")
