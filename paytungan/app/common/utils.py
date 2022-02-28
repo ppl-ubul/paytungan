@@ -8,9 +8,10 @@ from decimal import Decimal
 from enum import Enum
 from typing import Optional, TypeVar, Type, List, Dict, Any, _GenericAlias
 
+T = TypeVar("T")
+
 
 class ObjectMapperUtil:
-    T = TypeVar("T")
 
     @staticmethod
     def map(source_model_object, destination_domain_class: Type[T]) -> T:
@@ -136,8 +137,6 @@ class DictionaryUtil:
 
         if not isinstance(data_object, Dict):
             return None
-
-        T = TypeVar("T")
 
         def transform_data(data: T) -> T:
             if isinstance(data, Enum):
