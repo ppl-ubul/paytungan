@@ -44,24 +44,6 @@ deploy-dev:
   only:
     - main
 
-sonar-scanner-dev:
-  image:
-    name: sonarsource/sonar-scanner-cli:latest
-    entrypoint: [""]
-  stage: sonarqube
-  dependencies:
-    - test
-  script:
-    - cat tests/coverage.xml
-    - sonar-scanner
-      -Dsonar.host.url=https://pmpl.cs.ui.ac.id/sonarqube
-      -Dsonar.branch.name=$CI_COMMIT_REF_NAME
-      -Dsonar.login=$SONARQUBE_TOKEN
-  allow_failure: true
-  except:
-    - prod
-    - main
-
 sonar-scanner:
   image:
     name: sonarsource/sonar-scanner-cli:latest
@@ -76,9 +58,6 @@ sonar-scanner:
       -Dsonar.branch.name=$CI_COMMIT_REF_NAME
       -Dsonar.login=$SONARQUBE_TOKEN
   allow_failure: true
-  only:
-    - main
-    - prod
 
 deploy:
   stage: deploy-prod
