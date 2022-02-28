@@ -59,7 +59,6 @@ sonar-scanner-dev:
       -Dsonar.host.url=https://pmpl.cs.ui.ac.id/sonarqube
       -Dsonar.branch.name=$CI_COMMIT_REF_NAME
       -Dsonar.login=$SONARQUBE_TOKEN
-      -Dsonar.branch.target=staging
   allow_failure: true
   except:
     - prod
