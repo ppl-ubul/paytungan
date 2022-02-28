@@ -12,7 +12,6 @@ T = TypeVar("T")
 
 
 class ObjectMapperUtil:
-
     @staticmethod
     def map(source_model_object, destination_domain_class: Type[T]) -> T:
         """
