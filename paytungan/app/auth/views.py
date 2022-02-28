@@ -25,7 +25,6 @@ class UserViewSet(viewsets.ViewSet):
         methods=["get"],
     )
     @swagger_auto_schema(
-        # manual_parameters=ENDPOINT_DEFAULT_PARAMS,
         query_serializer=GetUserRequest(),
         responses={200: GetUserResponse()},
     )
@@ -34,8 +33,6 @@ class UserViewSet(viewsets.ViewSet):
         Get single user object
         by user id or user name
         """
-        # header_serializer = BaseHeaderRequestSerializer(data=request.headers)
-        # header_serializer.is_valid(raise_exception=True)
         serializer = GetUserRequest(data=request.query_params)
         serializer.is_valid(raise_exception=True)
         data = serializer.data
@@ -48,7 +45,6 @@ class UserViewSet(viewsets.ViewSet):
         methods=["post"],
     )
     @swagger_auto_schema(
-        # manual_parameters=ENDPOINT_DEFAULT_PARAMS,
         request_body=CreateUserRequest(),
         responses={200: CreateUserResponse()},
     )
