@@ -5,10 +5,8 @@ stages:
   - deploy-prod
 
 linter:
-  image: python:3.8
+  image: registry.gitlab.com/pipeline-components/black:latest
   stage: test
-  before_script:
-    - pip install -r requirements-dev.txt
   when: on_success
   script:
     - black . --check

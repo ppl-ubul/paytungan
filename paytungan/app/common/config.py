@@ -1,11 +1,13 @@
 from typing import Dict
 import os
 
+from .exceptions import BaseException
+
 
 def get_db_config() -> Dict[str, str]:
     db_config = os.getenv("DB_CONFIG")
     if not db_config:
-        raise Exception(f"Config Key DB_CONFIG is not configured")
+        raise BaseException("Config Key DB_CONFIG is not configured")
 
     db_config = db_config.split("|")
     db_config = {

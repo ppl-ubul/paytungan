@@ -1,11 +1,17 @@
+import logging
 from typing import List, Optional
 from django.contrib.auth.models import User
+import logging
 
 from .interfaces import IUserAccessor
 from .specs import GetUserListSpec, CreateUserSpec
+from paytungan.app.common.constants import DEFAULT_LOGGER
 
 
 class UserAccessor(IUserAccessor):
+    def __init__(self) -> None:
+        self.logger = logging.getLogger(DEFAULT_LOGGER)
+
     def get(self, user_id: int) -> Optional[User]:
         try:
             user = User.objects.get(pk=user_id)
@@ -35,4 +41,5 @@ class UserAccessor(IUserAccessor):
             new_user.save()
             return new_user
         except Exception as e:
+            self.logger.error(f"Error when try to create user with spec {spec}: {e}")
             return None
