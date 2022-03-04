@@ -2,7 +2,6 @@ import logging
 from typing import Dict, List, Optional
 from .models import User
 from firebase_admin import initialize_app, auth, credentials
-from firebase_admin._token_gen import ExpiredIdTokenError
 from injector import inject
 
 from .interfaces import IUserAccessor, IFirebaseProvider
