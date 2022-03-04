@@ -86,3 +86,12 @@ class FirebaseProvider(IFirebaseProvider):
             user_id=decoded_token["user_id"],
             phone_number=decoded_token["phone_number"],
         )
+
+
+class DummyFirebaseProvider(IFirebaseProvider):
+    @inject
+    def __init__(self) -> None:
+        pass
+
+    def decode_token(self, token: str) -> Optional[FirebaseDecodedToken]:
+        return None

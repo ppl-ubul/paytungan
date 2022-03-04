@@ -17,7 +17,7 @@ test:
   before_script:
     - pip install -r requirements.txt
     - export DJANGO_SETTINGS_MODULE=paytungan.settings
-    - echo "dummy secret" > ./firebase-admin-secret.json
+    - export DJANGO_SETTINGS_MODULE=test
     - python manage.py migrate
   when: on_success
   script:
