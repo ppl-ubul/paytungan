@@ -65,22 +65,28 @@ class UserAccessor(IUserAccessor):
 class FirebaseProvider(IFirebaseProvider):
     @inject
     def __init__(self) -> None:
-        self.cred = credentials.Certificate(SERVICE_ACCOUNT_FILE)
-        self.app = initialize_app(self.cred)
+        self._cred = None
+        self._app = None
         self.logger = logging.getLogger(DEFAULT_LOGGER)
+
+    def _get_app(self):
+        if self._app:
+            return self._app
+        
+        self._cred = credentials.Certificate(SERVICE_ACCOUNT_FILE)
+        self._app = initialize_app(self._cred)
+        return self._app
 
     def decode_token(self, token: str) -> Optional[FirebaseDecodedToken]:
         decoded_token: Dict[str, str]
         try:
-            decoded_token = auth.verify_id_token(token, app=self.app)
+            decoded_token = auth.verify_id_token(token, app=self._get_app())
         except Exception as e:
             self.logger.error(f"Error when verify token: {e}")
 
         if decoded_token.get("aud") != FIREBASE_PROJECT_ID:
             self.logger.info(f"Token not from {FIREBASE_PROJECT_ID} project")
             return None
-
-        print(decoded_token)
 
         return FirebaseDecodedToken(
             user_id=decoded_token["user_id"],

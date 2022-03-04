@@ -39,7 +39,7 @@ class AuthService:
         )
 
         if user:
-            return user
+            return user[0]
 
         return self.user_accessor.create_user(
             CreateUserSpec(
