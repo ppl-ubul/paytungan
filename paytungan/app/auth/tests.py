@@ -21,6 +21,6 @@ class TestService(TestCase):
         assert True
 
     def test_user_service_register(self):
-        spec = CreateUserSpec(username="aa", email="aaa", password="aaa")
+        spec = CreateUserSpec(firebase_uid="aa", phone_number="aaa")
         self.user_service.create_user(spec)
         assert True

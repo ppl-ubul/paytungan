@@ -8,8 +8,13 @@ class GetUserRequest(serializers.Serializer):
 
 class UserSerializer(serializers.Serializer):
     id = serializers.IntegerField(min_value=1)
-    username = serializers.CharField()
-    email = serializers.CharField()
+    firebase_uid = serializers.CharField()
+    username = serializers.CharField(required=False)
+    email = serializers.CharField(required=False)
+    name = serializers.CharField(required=False)
+    phone_number = serializers.CharField(required=False)
+    profil_image = serializers.CharField(required=False)
+    is_onboarding = serializers.BooleanField(default=False)
 
 
 class GetUserResponse(serializers.Serializer):
@@ -19,8 +24,15 @@ class GetUserResponse(serializers.Serializer):
 class CreateUserRequest(serializers.Serializer):
     username = serializers.CharField()
     email = serializers.CharField()
-    password = serializers.CharField()
 
 
 class CreateUserResponse(serializers.Serializer):
     data = UserSerializer()
+
+
+class LoginRequest(serializers.Serializer):
+    token = serializers.CharField()
+
+
+class LoginResponse(serializers.Serializer):
+    user = UserSerializer()
