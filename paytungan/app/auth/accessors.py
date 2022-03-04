@@ -72,7 +72,7 @@ class FirebaseProvider(IFirebaseProvider):
     def _get_app(self):
         if self._app:
             return self._app
-        
+
         self._cred = credentials.Certificate(SERVICE_ACCOUNT_FILE)
         self._app = initialize_app(self._cred)
         return self._app
