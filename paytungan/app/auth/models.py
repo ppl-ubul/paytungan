@@ -1,9 +1,34 @@
 from safedelete.models import SafeDeleteModel
 from django.db import models
+from django.db.models import Q
 
 
 class User(SafeDeleteModel):
-    name = models.CharField(max_length=150)
-    username = models.CharField(max_length=50)
+    firebase_uid = models.CharField(max_length=512)
+    phone_number = models.CharField(max_length=50)
+    username = models.CharField(max_length=50, null=True, blank=True)
+    name = models.CharField(max_length=150, null=True, blank=True)
     email = models.CharField(max_length=50, null=True, blank=True)
-    profil_url = models.TextField(null=True, blank=True)
+    profil_image = models.TextField(null=True, blank=True)
+
+    class Meta:
+        db_table = "user"
+        constraints = [
+            models.UniqueConstraint(
+                fields=["firebase_uid"],
+                condition=Q(deleted__isnull=True),
+                name="unique_firebase_uid_if_not_deleted",
+            ),
+            models.UniqueConstraint(
+                fields=["username"],
+                condition=Q(deleted__isnull=True, username__isnull=False),
+                name="unique_username_if_not_deleted",
+            ),
+        ]
+
+    @property
+    def is_onboarding(self) -> bool:
+        return not (self.username and self.name)
+
+    def __str__(self) -> str:
+        return f"{str(self.username)} - {str(self.id)}"

@@ -1,12 +1,12 @@
 from typing import List, Optional
-from django.contrib.auth.models import User
+from .models import User
 from injector import inject
 
-from .interfaces import IUserAccessor, IUserServices
+from .interfaces import IFirebaseProvider, IUserAccessor
 from .specs import GetUserListSpec, CreateUserSpec
 
 
-class UserServices(IUserServices):
+class UserServices:
     @inject
     def __init__(self, user_accessor: IUserAccessor) -> None:
         self.user_accessor = user_accessor
@@ -20,3 +20,30 @@ class UserServices(IUserServices):
     def create_user(self, spec: CreateUserSpec) -> Optional[User]:
         user = self.user_accessor.create_user(spec)
         return user
+
+
+class AuthService:
+    @inject
+    def __init__(
+        self,
+        user_accessor: IUserAccessor,
+        firebase_provider: IFirebaseProvider,
+    ) -> None:
+        self.user_accessor = user_accessor
+        self.firebase_provider = firebase_provider
+
+    def login(self, token: str) -> Optional[User]:
+        decoded_token = self.firebase_provider.decode_token(token)
+        user = self.user_accessor.get_list(
+            GetUserListSpec(firebase_uids=[decoded_token.user_id])
+        )
+
+        if user:
+            return user[0]
+
+        return self.user_accessor.create_user(
+            CreateUserSpec(
+                firebase_uid=decoded_token.user_id,
+                phone_number=decoded_token.phone_number,
+            )
+        )

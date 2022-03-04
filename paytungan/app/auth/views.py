@@ -4,18 +4,24 @@ from rest_framework.decorators import action
 from rest_framework.request import Request
 from rest_framework.response import Response
 
-from .interfaces import IUserServices
+from paytungan.app.auth.services import (
+    AuthService,
+    UserServices,
+)
 
 from .serializers import (
     GetUserRequest,
     GetUserResponse,
     CreateUserRequest,
     CreateUserResponse,
+    LoginRequest,
+    LoginResponse,
 )
 from .specs import CreateUserSpec
 from paytungan.app.di import injector
 
-user_service = injector.get(IUserServices)
+user_service = injector.get(UserServices)
+auth_service = injector.get(AuthService)
 
 
 class UserViewSet(viewsets.ViewSet):
@@ -61,4 +67,25 @@ class UserViewSet(viewsets.ViewSet):
             email=data["email"],
         )
         user = user_service.create_user(spec)
+        return Response(CreateUserResponse({"data": user}).data)
+
+
+class AuthViewSet(viewsets.ViewSet):
+    @action(
+        detail=False,
+        url_path="login",
+        methods=["post"],
+    )
+    @swagger_auto_schema(
+        request_body=LoginRequest(),
+        responses={200: LoginResponse()},
+    )
+    def create_user(self, request: Request) -> Response:
+        """
+        Authentication Register
+        """
+        serializer = LoginRequest(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        data = serializer.data
+        user = auth_service.login(data["token"])
         return Response(CreateUserResponse({"data": user}).data)

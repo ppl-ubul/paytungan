@@ -32,7 +32,7 @@ SECRET_KEY = "django-insecure-aet=ty5stdiik^wp6u-!$xpf+&rlt!kp3cqi6mtf1h$e4_@sp=
 
 DEBUG = True
 CURRENT_ENV = os.getenv("APP_ENV", "local")
-if CURRENT_ENV == "prod":
+if CURRENT_ENV == Environment.PROD:
     DEBUG = False
 
 ALLOWED_HOSTS = [

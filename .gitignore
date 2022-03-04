@@ -130,3 +130,6 @@ dmypy.json
 
 # staticfiles
 staticfiles/
+
+# firebase-admin secret
+firebase-admin-secret.json
