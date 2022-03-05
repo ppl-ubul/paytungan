@@ -3,6 +3,7 @@ from typing import Dict, List, Optional
 from .models import User
 from firebase_admin import initialize_app, auth, credentials
 from injector import inject
+from django.db import IntegrityError
 
 from .interfaces import IUserAccessor, IFirebaseProvider
 from .specs import (
@@ -68,7 +69,14 @@ class UserAccessor(IUserAccessor):
             user.name = spec.name
             user.profil_image = spec.profil_image
             user.save()
+
         except User.DoesNotExist:
+            return None
+
+        except IntegrityError as e:
+            self.logger.error(
+                f"Error when try to update username:{spec.username} has been used : {e}"
+            )
             return None
 
         except Exception as e:
