@@ -64,9 +64,12 @@ class UserViewSet(viewsets.ViewSet):
         serializer.is_valid(raise_exception=True)
         data = serializer.data
         spec = CreateUserSpec(
+            firebase_uid=data["username"],
+            phone_number=data["phone_number"],
             username=data["username"],
-            password=data["password"],
+            name=data["name"],
             email=data["email"],
+            profil_image=data["profil_image"],
         )
         user = user_service.create_user(spec)
         return Response(CreateUserResponse({"data": user}).data)
