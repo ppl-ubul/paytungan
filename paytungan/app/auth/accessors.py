@@ -77,7 +77,7 @@ class UserAccessor(IUserAccessor):
 
         return user
 
-        
+
 class FirebaseProvider(IFirebaseProvider):
     @inject
     def __init__(self) -> None:

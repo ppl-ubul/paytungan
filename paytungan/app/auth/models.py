@@ -30,6 +30,5 @@ class User(SafeDeleteModel):
     def is_onboarding(self) -> bool:
         return not (self.username and self.name)
 
-
     def __str__(self) -> str:
         return f"{str(self.username)} - {str(self.id)}"
