@@ -6,6 +6,7 @@ from .specs import (
     GetUserListSpec,
     CreateUserSpec,
     FirebaseDecodedToken,
+    UpdateUserSpec,
 )
 
 
@@ -20,6 +21,10 @@ class IUserAccessor(ABC):
 
     @abstractmethod
     def create_user(self, spec: CreateUserSpec) -> Optional[User]:
+        raise NotImplementedError
+    
+    @abstractmethod
+    def update_user(self, spec: UpdateUserSpec) -> Optional[User]:
         raise NotImplementedError
 
 

@@ -36,3 +36,13 @@ class LoginRequest(serializers.Serializer):
 
 class LoginResponse(serializers.Serializer):
     user = UserSerializer()
+
+
+class UpdateUserRequest(serializers.Serializer):
+    username = serializers.CharField(required=True)
+    name = serializers.CharField(required=True)
+    profil_image = serializers.CharField(required=False)
+
+
+class UpdateUserResponse(serializers.Serializer):
+    user = UserSerializer()

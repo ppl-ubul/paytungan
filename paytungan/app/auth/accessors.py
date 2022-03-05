@@ -9,6 +9,7 @@ from .specs import (
     GetUserListSpec,
     CreateUserSpec,
     FirebaseDecodedToken,
+    UpdateUserSpec,
 )
 from paytungan.app.common.constants import (
     DEFAULT_LOGGER,
@@ -58,6 +59,21 @@ class UserAccessor(IUserAccessor):
             return new_user
         except Exception as e:
             self.logger.error(f"Error when try to create user with spec {spec}: {e}")
+            return None
+    
+    def update_user(self, spec: UpdateUserSpec) -> Optional[User]:
+        try:
+            user = User.objects.get(pk=spec.firebase_uid)
+            user = User(
+                username=spec.username,
+                name=spec.name,
+                profil_image=spec.profil_image,
+            )
+            user.save()
+            return user
+
+        except Exception as e:
+            self.logger.error(f"Error when try to update user with spec {spec}: {e}")
             return None
 
 
