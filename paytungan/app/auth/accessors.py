@@ -1,5 +1,7 @@
 import logging
 from typing import Dict, List, Optional
+
+from paytungan.app.common.exceptions import UnauthorizedError
 from .models import User
 from firebase_admin import initialize_app, auth, credentials
 from injector import inject
@@ -25,6 +27,17 @@ class UserAccessor(IUserAccessor):
         try:
             user = User.objects.get(pk=user_id)
         except User.DoesNotExist:
+            return None
+
+        return user
+
+    def get_by_firebase_uid(self, firebase_uid: str) -> Optional[User]:
+        try:
+            user = User.objects.get(firebase_uid=firebase_uid)
+        except User.DoesNotExist:
+            user = User(
+                firebase_uid=firebase_uid
+            )
             return None
 
         return user
@@ -82,6 +95,9 @@ class FirebaseProvider(IFirebaseProvider):
             decoded_token = auth.verify_id_token(token, app=self._get_app())
         except Exception as e:
             self.logger.error(f"Error when verify token: {e}")
+            raise UnauthorizedError(
+                "Token is Invalid", 401, 
+            )
 
         if decoded_token.get("aud") != FIREBASE_PROJECT_ID:
             self.logger.info(f"Token not from {FIREBASE_PROJECT_ID} project")

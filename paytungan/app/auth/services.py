@@ -32,8 +32,16 @@ class AuthService:
         self.user_accessor = user_accessor
         self.firebase_provider = firebase_provider
 
+    def get_user_from_token(self, token: str) -> Optional[User]:
+        decoded_token = self.firebase_provider.decode_token(token)
+
+        return self.user_accessor.get_by_firebase_uid(
+            firebase_uid=decoded_token.user_id
+        )
+
     def login(self, token: str) -> Optional[User]:
         decoded_token = self.firebase_provider.decode_token(token)
+
         user = self.user_accessor.get_list(
             GetUserListSpec(firebase_uids=[decoded_token.user_id])
         )

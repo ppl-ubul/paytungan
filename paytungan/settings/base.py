@@ -31,7 +31,7 @@ SECRET_KEY = "django-insecure-aet=ty5stdiik^wp6u-!$xpf+&rlt!kp3cqi6mtf1h$e4_@sp=
 # SECURITY WARNING: don't run with debug turned on in production!
 
 DEBUG = True
-CURRENT_ENV = os.getenv("APP_ENV", "local")
+CURRENT_ENV = os.getenv("APP_ENV", Environment.LOCAL)
 if CURRENT_ENV == Environment.PROD:
     DEBUG = False
 

@@ -8,6 +8,8 @@ from paytungan.app.auth.services import (
     AuthService,
     UserServices,
 )
+from paytungan.app.common.headers import AUTH_HEADERS, DEFAULT_HEADERS
+from paytungan.app.common.serializers import AuthHeaderRequest
 
 from .serializers import (
     GetUserRequest,
@@ -51,6 +53,7 @@ class UserViewSet(viewsets.ViewSet):
         methods=["post"],
     )
     @swagger_auto_schema(
+        manual_parameters=AUTH_HEADERS,
         request_body=CreateUserRequest(),
         responses={200: CreateUserResponse()},
     )
@@ -58,13 +61,15 @@ class UserViewSet(viewsets.ViewSet):
         """
         Create user
         """
+        header_serializer = AuthHeaderRequest(data=request.headers)
+        header_serializer.is_valid(raise_exception=True)
+        print(header_serializer)
         serializer = CreateUserRequest(data=request.data)
         serializer.is_valid(raise_exception=True)
         data = serializer.data
         spec = CreateUserSpec(
-            username=data["username"],
-            password=data["password"],
-            email=data["email"],
+            firebase_uid=data['firebase_uid'],
+            phone_number=data["phone_number"],
         )
         user = user_service.create_user(spec)
         return Response(CreateUserResponse({"data": user}).data)
@@ -77,15 +82,16 @@ class AuthViewSet(viewsets.ViewSet):
         methods=["post"],
     )
     @swagger_auto_schema(
+        manual_parameters=DEFAULT_HEADERS,
         request_body=LoginRequest(),
         responses={200: LoginResponse()},
     )
-    def create_user(self, request: Request) -> Response:
+    def login(self, request: Request) -> Response:
         """
-        Authentication Register
+        Authentication Login and Register
         """
         serializer = LoginRequest(data=request.data)
         serializer.is_valid(raise_exception=True)
         data = serializer.data
         user = auth_service.login(data["token"])
-        return Response(CreateUserResponse({"data": user}).data)
+        return Response(LoginResponse({"data": user}).data)
