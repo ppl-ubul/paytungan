@@ -68,13 +68,16 @@ class UserAccessor(IUserAccessor):
             user.name = spec.name
             user.profil_image = spec.profil_image
             user.save()
-            return user
+        except User.DoesNotExist:
+            return None
 
         except Exception as e:
             self.logger.error(f"Error when try to update user with spec {spec}: {e}")
             return None
 
+        return user
 
+        
 class FirebaseProvider(IFirebaseProvider):
     @inject
     def __init__(self) -> None:

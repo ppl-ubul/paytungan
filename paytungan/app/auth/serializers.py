@@ -52,4 +52,4 @@ class UpdateUserRequest(serializers.Serializer):
 
 
 class UpdateUserResponse(serializers.Serializer):
-    user = UserSerializer()
+    data = UserSerializer()
