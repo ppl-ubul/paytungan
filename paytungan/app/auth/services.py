@@ -15,7 +15,7 @@ class UserServices:
         return self.user_accessor.get(user_id)
 
     def get_by_firebase_uid(self, firebase_uid: int) -> Optional[User]:
-        return self.user_accessor.get_by_firebase_uid(firebase_uid=firebase_uid)
+        return self.user_accessor.get_by_firebase_uid(firebase_uid)
 
     def get_list(self, spec: GetUserListSpec) -> List[User]:
         return self.user_accessor.get_list(spec)
