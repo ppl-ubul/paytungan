@@ -27,7 +27,7 @@ class TestService(TestCase):
         assert True
 
     def test_user_service_get_by_firebase_uid(self):
-        self.user_service.get_by_firebase_uid('asasas')
+        self.user_service.get_by_firebase_uid("asasas")
         assert True
 
     def test_user_service_get_list(self):
@@ -77,7 +77,7 @@ class TestService(TestCase):
         self.assertEqual(user.firebase_uid, dummy_user.firebase_uid)
 
     def test_auth_service_get_user_from_token(self):
-        self.auth_service.get_user_from_token('aaa')
+        self.auth_service.get_user_from_token("aaa")
         assert True
 
     def test_auth_service_decode_token(self):
@@ -90,5 +90,5 @@ class TestService(TestCase):
         self.mock.get_by_firebase_uid.return_value = dummy_user
         self.mock.decode_token.return_value = decode_token_return
         self.auth_service.decode_token(token)
-        
+
         self.assertEqual(dummy_user.firebase_uid, decode_token_return.user_id)
