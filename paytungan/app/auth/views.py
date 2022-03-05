@@ -19,7 +19,7 @@ from .serializers import (
     UpdateUserRequest,
     UpdateUserResponse,
 )
-from .specs import CreateUserSpec, UpdateUserSpec
+from .specs import CreateUserSpec,UpdateUserSpec
 from paytungan.app.di import injector
 
 user_service = injector.get(UserServices)
@@ -93,8 +93,8 @@ class UserViewSet(viewsets.ViewSet):
             name=data["name"],
             profil_image=data["profil_image"],
         )
-        user = auth_service.login(data["token"])
-        return Response(CreateUserResponse({"data": user}).data)
+        user = user_service.update_user(spec)
+        return Response(UpdateUserResponse({"data": user}).data)
 
 
 class AuthViewSet(viewsets.ViewSet):

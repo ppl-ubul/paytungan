@@ -64,11 +64,9 @@ class UserAccessor(IUserAccessor):
     def update_user(self, spec: UpdateUserSpec) -> Optional[User]:
         try:
             user = User.objects.get(firebase_uid=spec.firebase_uid)
-            user = User(
-                username=spec.username,
-                name=spec.name,
-                profil_image=spec.profil_image,
-            )
+            user.username = spec.username
+            user.name = spec.name
+            user.profil_image = spec.profil_image
             user.save()
             return user
 
