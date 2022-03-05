@@ -18,7 +18,7 @@ def firebase_auth(func):
         request = args[1]
         header_serializer = AuthHeaderRequest(data=request.headers)
         header_serializer.is_valid(raise_exception=True)
-        token = header_serializer.data['Authentication']
+        token = header_serializer.data["Authentication"]
         user = auth_service.decode_token(token)
         return func(*args, user, **kwargs)
 

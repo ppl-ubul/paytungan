@@ -94,7 +94,9 @@ class UserViewSet(viewsets.ViewSet):
     )
     @api_exception
     @firebase_auth
-    def update_user(self, request: Request, decoded_token: FirebaseDecodedToken) -> Response:
+    def update_user(
+        self, request: Request, decoded_token: FirebaseDecodedToken
+    ) -> Response:
         """
         Update User
         """

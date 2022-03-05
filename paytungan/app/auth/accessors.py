@@ -116,13 +116,15 @@ class FirebaseProvider(IFirebaseProvider):
         except Exception as e:
             self.logger.error(f"Error when verify token: {e}")
             raise UnauthorizedError(
-                "Token is Invalid", 401, 
+                "Token is Invalid",
+                401,
             )
 
         if decoded_token.get("aud") != FIREBASE_PROJECT_ID:
             self.logger.info(f"Token not from {FIREBASE_PROJECT_ID} project")
             raise UnauthorizedError(
-                "Token is Invalid", 401, 
+                "Token is Invalid",
+                401,
             )
 
         return FirebaseDecodedToken(

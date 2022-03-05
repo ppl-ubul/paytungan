@@ -29,7 +29,9 @@ class NotFoundException(BaseException):
 
 
 class UnauthorizedError(BaseException):
-    def __init__(self, message: str = "Unauthorized Request.", code: Optional[str] = None):
+    def __init__(
+        self, message: str = "Unauthorized Request.", code: Optional[str] = None
+    ):
         super().__init__(message=message, code=code)
 
 

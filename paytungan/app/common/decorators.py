@@ -28,7 +28,9 @@ def api_exception(function):
         except OurValidationError as error:
             raise error
         except ValidationErrorException as error:
-            raise OurValidationError(message=error.message, detail=error.field_errors, code=error.code)
+            raise OurValidationError(
+                message=error.message, detail=error.field_errors, code=error.code
+            )
         except NotFoundException as error:
             raise OurValidationError(message=error.message, detail={}, code=error.code)
         except ValidationError as error:
