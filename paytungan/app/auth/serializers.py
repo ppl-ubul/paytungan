@@ -39,6 +39,7 @@ class LoginResponse(serializers.Serializer):
 
 
 class UpdateUserRequest(serializers.Serializer):
+    firebase_uid = serializers.CharField()
     username = serializers.CharField(required=True)
     name = serializers.CharField(required=True)
     profil_image = serializers.CharField(required=False)
