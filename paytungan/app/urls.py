@@ -2,7 +2,7 @@ from rest_framework.routers import SimpleRouter
 from django.urls import include, path
 
 from .auth.views import UserViewSet, AuthViewSet
-from .common.views import HealthCheckViewSet
+from .base.views import HealthCheckViewSet
 
 
 router = SimpleRouter(trailing_slash=False)

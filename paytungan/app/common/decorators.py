@@ -1,5 +1,4 @@
 from functools import wraps
-from py import code
 from rest_framework.exceptions import ValidationError
 
 from paytungan.app.common.exceptions import (
@@ -9,17 +8,6 @@ from paytungan.app.common.exceptions import (
     ValidationErrorException,
     OurValidationError,
 )
-
-
-def jwt_auth(func):
-    @wraps(func)
-    def wrapper(*args, **kwargs):
-        """
-        Decorator
-        """
-        func(*args, **kwargs)
-
-    return wrapper
 
 
 def api_exception(function):

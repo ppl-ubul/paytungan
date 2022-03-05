@@ -43,7 +43,7 @@ class TestService(TestCase):
         )
         dummy_user = User(firebase_uid="342dwsdsd", phone_number="+62")
 
-        self.mock.get_list.return_value = [dummy_user]
+        self.mock.get_by_firebase_uid.return_value = [dummy_user]
         self.mock.decode_token.return_value = decode_token_return
 
         user = self.auth_service.login(token)
@@ -58,7 +58,7 @@ class TestService(TestCase):
         dummy_user = User(firebase_uid="342dwsdsd", phone_number="+62")
 
         self.mock.create_user.return_value = dummy_user
-        self.mock.get_list.return_value = []
+        self.mock.get_by_firebase_uid.return_value = None
         self.mock.decode_token.return_value = decode_token_return
 
         user = self.auth_service.login(token)

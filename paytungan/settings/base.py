@@ -16,7 +16,7 @@ import sys
 
 from django.urls import reverse_lazy
 
-from paytungan.app.common.constants import DEFAULT_LOGGER, Environment
+from paytungan.app.base.constants import DEFAULT_LOGGER, Environment
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
@@ -58,6 +58,13 @@ INSTALLED_APPS = [
     "paytungan.app",
     "corsheaders",
 ]
+
+REST_FRAMEWORK = {
+    "DEFAULT_SCHEMA_CLASS": "rest_framework.schemas.coreapi.AutoSchema",
+    "DEFAULT_PERMISSION_CLASSES": ["rest_framework.permissions.AllowAny"],
+    "EXCEPTION_HANDLER": "paytungan.app.common.exception_handlers.paytungan_exception_handler",
+    "COERCE_DECIMAL_TO_STRING": False,
+}
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",

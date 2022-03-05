@@ -3,11 +3,13 @@ from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.request import Request
 from rest_framework.response import Response
+from paytungan.app.auth.models import User
 
 from paytungan.app.auth.services import (
     AuthService,
     UserServices,
 )
+from paytungan.app.auth.utils import firebase_auth
 from paytungan.app.common.decorators import api_exception
 from paytungan.app.base.headers import AUTH_HEADERS, DEFAULT_HEADERS
 from paytungan.app.base.serializers import AuthHeaderRequest
@@ -22,7 +24,7 @@ from .serializers import (
     UpdateUserRequest,
     UpdateUserResponse,
 )
-from .specs import CreateUserSpec, UpdateUserSpec
+from .specs import CreateUserSpec, FirebaseDecodedToken, UpdateUserSpec
 from paytungan.app.di import injector
 
 user_service = injector.get(UserServices)
@@ -66,8 +68,6 @@ class UserViewSet(viewsets.ViewSet):
         """
         Create user
         """
-        header_serializer = AuthHeaderRequest(data=request.headers)
-        header_serializer.is_valid(raise_exception=True)
         serializer = CreateUserRequest(data=request.data)
         serializer.is_valid(raise_exception=True)
         data = serializer.data
@@ -88,11 +88,13 @@ class UserViewSet(viewsets.ViewSet):
         methods=["post"],
     )
     @swagger_auto_schema(
+        manual_parameters=AUTH_HEADERS,
         request_body=UpdateUserRequest(),
         responses={200: UpdateUserResponse()},
     )
     @api_exception
-    def update_user(self, request: Request) -> Response:
+    @firebase_auth
+    def update_user(self, request: Request, decoded_token: FirebaseDecodedToken) -> Response:
         """
         Update User
         """
@@ -100,7 +102,7 @@ class UserViewSet(viewsets.ViewSet):
         serializer.is_valid(raise_exception=True)
         data = serializer.data
         spec = UpdateUserSpec(
-            firebase_uid=data["firebase_uid"],
+            firebase_uid=decoded_token.user_id,
             username=data["username"],
             name=data["name"],
             profil_image=data["profil_image"],
