@@ -19,7 +19,7 @@ from .serializers import (
     UpdateUserRequest,
     UpdateUserResponse,
 )
-from .specs import CreateUserSpec,UpdateUserSpec
+from .specs import CreateUserSpec, UpdateUserSpec
 from paytungan.app.di import injector
 
 user_service = injector.get(UserServices)

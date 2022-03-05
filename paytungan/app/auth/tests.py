@@ -66,6 +66,8 @@ class TestService(TestCase):
         self.assertEqual(user.firebase_uid, dummy_user.firebase_uid)
 
     def test_user_service_update_user(self):
-        spec = UpdateUserSpec(firebase_uid="aa", username="aaa", name="aaaa", profil_image="aaaaa")
+        spec = UpdateUserSpec(
+            firebase_uid="aa", username="aaa", name="aaaa", profil_image="aaaaa"
+        )
         self.user_service.update_user(spec)
         assert True

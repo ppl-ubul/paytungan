@@ -20,7 +20,7 @@ class UserServices:
     def create_user(self, spec: CreateUserSpec) -> Optional[User]:
         user = self.user_accessor.create_user(spec)
         return user
-    
+
     def update_user(self, spec: UpdateUserSpec) -> Optional[User]:
         user = self.user_accessor.update_user(spec)
         return user

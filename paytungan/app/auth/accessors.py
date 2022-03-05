@@ -60,7 +60,7 @@ class UserAccessor(IUserAccessor):
         except Exception as e:
             self.logger.error(f"Error when try to create user with spec {spec}: {e}")
             return None
-    
+
     def update_user(self, spec: UpdateUserSpec) -> Optional[User]:
         try:
             user = User.objects.get(pk=spec.firebase_uid)
