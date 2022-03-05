@@ -16,8 +16,10 @@ from .serializers import (
     CreateUserResponse,
     LoginRequest,
     LoginResponse,
+    UpdateUserRequest,
+    UpdateUserResponse,
 )
-from .specs import CreateUserSpec
+from .specs import CreateUserSpec, UpdateUserSpec
 from paytungan.app.di import injector
 
 user_service = injector.get(UserServices)
@@ -62,12 +64,40 @@ class UserViewSet(viewsets.ViewSet):
         serializer.is_valid(raise_exception=True)
         data = serializer.data
         spec = CreateUserSpec(
+            firebase_uid=data["username"],
+            phone_number=data["phone_number"],
             username=data["username"],
-            password=data["password"],
+            name=data["name"],
             email=data["email"],
+            profil_image=data["profil_image"],
         )
         user = user_service.create_user(spec)
         return Response(CreateUserResponse({"data": user}).data)
+
+    @action(
+        detail=False,
+        url_path="update",
+        methods=["post"],
+    )
+    @swagger_auto_schema(
+        request_body=UpdateUserRequest(),
+        responses={200: UpdateUserResponse()},
+    )
+    def update_user(self, request: Request) -> Response:
+        """
+        Update User
+        """
+        serializer = UpdateUserRequest(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        data = serializer.data
+        spec = UpdateUserSpec(
+            firebase_uid=data["firebase_uid"],
+            username=data["username"],
+            name=data["name"],
+            profil_image=data["profil_image"],
+        )
+        user = user_service.update_user(spec)
+        return Response(UpdateUserResponse({"data": user}).data)
 
 
 class AuthViewSet(viewsets.ViewSet):

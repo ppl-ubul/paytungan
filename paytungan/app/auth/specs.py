@@ -29,3 +29,11 @@ class CreateUserSpec:
 class FirebaseDecodedToken:
     user_id: str
     phone_number: str
+
+
+@dataclass
+class UpdateUserSpec:
+    firebase_uid: str
+    username: str
+    name: str
+    profil_image: Optional[str] = None
