@@ -4,7 +4,7 @@ import logging
 import time
 from json_log_formatter import JSONFormatter
 
-from .constants import DEFAULT_LOGGER
+from ..base.constants import DEFAULT_LOGGER
 
 local = threading.local()
 REQUEST_HEADER = "x-request-id"

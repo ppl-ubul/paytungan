@@ -3,7 +3,7 @@ from .models import User
 from injector import inject
 
 from .interfaces import IFirebaseProvider, IUserAccessor
-from .specs import GetUserListSpec, CreateUserSpec
+from .specs import GetUserListSpec, CreateUserSpec, UpdateUserSpec
 
 
 class UserServices:
@@ -19,6 +19,10 @@ class UserServices:
 
     def create_user(self, spec: CreateUserSpec) -> Optional[User]:
         user = self.user_accessor.create_user(spec)
+        return user
+
+    def update_user(self, spec: UpdateUserSpec) -> Optional[User]:
+        user = self.user_accessor.update_user(spec)
         return user
 
 

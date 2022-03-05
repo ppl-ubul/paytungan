@@ -1,10 +1,13 @@
 from functools import wraps
+from py import code
 from rest_framework.exceptions import ValidationError
 
 from paytungan.app.common.exceptions import (
+    BaseException,
     NotFoundException,
+    UnauthorizedError,
     ValidationErrorException,
-    OurValidationError
+    OurValidationError,
 )
 
 
@@ -37,11 +40,15 @@ def api_exception(function):
         except OurValidationError as error:
             raise error
         except ValidationErrorException as error:
-            raise OurValidationError(message=error.message, detail=error.field_errors)
+            raise OurValidationError(message=error.message, detail=error.field_errors, code=error.code)
         except NotFoundException as error:
-            raise OurValidationError(message=error.message, detail={})
+            raise OurValidationError(message=error.message, detail={}, code=error.code)
         except ValidationError as error:
             raise OurValidationError(detail=error.detail)
+        except UnauthorizedError as error:
+            raise OurValidationError(message=error.message, detail={}, code=error.code)
+        except BaseException as error:
+            raise OurValidationError(message=error.message, code=error.code, detail={})
         except Exception as error:
             raise error
 

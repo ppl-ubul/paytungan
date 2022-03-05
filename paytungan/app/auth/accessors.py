@@ -5,12 +5,14 @@ from paytungan.app.common.exceptions import UnauthorizedError
 from .models import User
 from firebase_admin import initialize_app, auth, credentials
 from injector import inject
+from django.db import IntegrityError
 
 from .interfaces import IUserAccessor, IFirebaseProvider
 from .specs import (
     GetUserListSpec,
     CreateUserSpec,
     FirebaseDecodedToken,
+    UpdateUserSpec,
 )
 from paytungan.app.common.constants import (
     DEFAULT_LOGGER,
@@ -72,6 +74,29 @@ class UserAccessor(IUserAccessor):
         except Exception as e:
             self.logger.error(f"Error when try to create user with spec {spec}: {e}")
             return None
+
+    def update_user(self, spec: UpdateUserSpec) -> Optional[User]:
+        try:
+            user = User.objects.get(firebase_uid=spec.firebase_uid)
+            user.username = spec.username
+            user.name = spec.name
+            user.profil_image = spec.profil_image
+            user.save()
+
+        except User.DoesNotExist:
+            return None
+
+        except IntegrityError as e:
+            self.logger.error(
+                f"Error when try to update username:{spec.username} has been used : {e}"
+            )
+            return None
+
+        except Exception as e:
+            self.logger.error(f"Error when try to update user with spec {spec}: {e}")
+            return None
+
+        return user
 
 
 class FirebaseProvider(IFirebaseProvider):
