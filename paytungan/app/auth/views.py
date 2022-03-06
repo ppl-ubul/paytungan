@@ -94,9 +94,7 @@ class UserViewSet(viewsets.ViewSet):
     )
     @api_exception
     @firebase_auth
-    def update_user(
-        self, request: Request, decoded_token: FirebaseDecodedToken
-    ) -> Response:
+    def update_user(self, request: Request, cred: FirebaseDecodedToken) -> Response:
         """
         Update User
         """
@@ -104,7 +102,7 @@ class UserViewSet(viewsets.ViewSet):
         serializer.is_valid(raise_exception=True)
         data = serializer.data
         spec = UpdateUserSpec(
-            firebase_uid=decoded_token.user_id,
+            firebase_uid=cred.user_id,
             username=data["username"],
             name=data["name"],
             profil_image=data["profil_image"],
