@@ -16,6 +16,10 @@ class IUserAccessor(ABC):
         raise NotImplementedError
 
     @abstractmethod
+    def get_by_firebase_uid(self, firebase_uid: str) -> Optional[User]:
+        raise NotImplementedError
+
+    @abstractmethod
     def get_list(self, spec: GetUserListSpec) -> List[User]:
         raise NotImplementedError
 

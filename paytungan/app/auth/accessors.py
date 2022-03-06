@@ -1,5 +1,7 @@
 import logging
 from typing import Dict, List, Optional
+
+from paytungan.app.common.exceptions import UnauthorizedError
 from .models import User
 from firebase_admin import initialize_app, auth, credentials
 from injector import inject
@@ -12,7 +14,7 @@ from .specs import (
     FirebaseDecodedToken,
     UpdateUserSpec,
 )
-from paytungan.app.common.constants import (
+from paytungan.app.base.constants import (
     DEFAULT_LOGGER,
     FIREBASE_PROJECT_ID,
     SERVICE_ACCOUNT_FILE,
@@ -26,6 +28,14 @@ class UserAccessor(IUserAccessor):
     def get(self, user_id: int) -> Optional[User]:
         try:
             user = User.objects.get(pk=user_id)
+        except User.DoesNotExist:
+            return None
+
+        return user
+
+    def get_by_firebase_uid(self, firebase_uid: str) -> Optional[User]:
+        try:
+            user = User.objects.get(firebase_uid=firebase_uid)
         except User.DoesNotExist:
             return None
 
@@ -63,22 +73,20 @@ class UserAccessor(IUserAccessor):
             return None
 
     def update_user(self, spec: UpdateUserSpec) -> Optional[User]:
+        user: User
         try:
             user = User.objects.get(firebase_uid=spec.firebase_uid)
             user.username = spec.username
             user.name = spec.name
             user.profil_image = spec.profil_image
             user.save()
-
         except User.DoesNotExist:
             return None
-
         except IntegrityError as e:
             self.logger.error(
                 f"Error when try to update username:{spec.username} has been used : {e}"
             )
             return None
-
         except Exception as e:
             self.logger.error(f"Error when try to update user with spec {spec}: {e}")
             return None
@@ -107,10 +115,17 @@ class FirebaseProvider(IFirebaseProvider):
             decoded_token = auth.verify_id_token(token, app=self._get_app())
         except Exception as e:
             self.logger.error(f"Error when verify token: {e}")
+            raise UnauthorizedError(
+                "Token is Invalid",
+                401,
+            )
 
         if decoded_token.get("aud") != FIREBASE_PROJECT_ID:
             self.logger.info(f"Token not from {FIREBASE_PROJECT_ID} project")
-            return None
+            raise UnauthorizedError(
+                "Token is Invalid",
+                401,
+            )
 
         return FirebaseDecodedToken(
             user_id=decoded_token["user_id"],

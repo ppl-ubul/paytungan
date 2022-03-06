@@ -4,7 +4,7 @@ import logging
 import time
 from json_log_formatter import JSONFormatter
 
-from .constants import DEFAULT_LOGGER
+from ..base.constants import DEFAULT_LOGGER
 
 local = threading.local()
 REQUEST_HEADER = "x-request-id"
@@ -77,8 +77,6 @@ class RequestIDFilter(logging.Filter):
         record.request_id = getattr(local, "request_id", "default")
         record.request_path = getattr(local, "request_path", "default")
         record.request_payload = getattr(local, "request_payload", "default")
-        record.channel = getattr(local, "channel", "default")
-        record.modifier = getattr(local, "modifier", "default")
         return True
 
 
@@ -88,8 +86,6 @@ class JSONFormatter(JSONFormatter):
         extra["level"] = record.levelname
         extra["request_id"] = record.request_id
         extra["request_path"] = record.request_path
-        extra["channel"] = record.channel
-        extra["modifier"] = record.modifier
         extra["request_payload"] = record.request_payload
         extra["time"] = time.strftime(
             "%Y-%m-%d %H:%M:%S%z", time.localtime(record.created)

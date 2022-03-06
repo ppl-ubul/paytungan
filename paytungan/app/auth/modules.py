@@ -1,7 +1,7 @@
 from injector import Binder, Module, singleton
 from django.conf import settings
 
-from paytungan.app.common.constants import Environment
+from paytungan.app.base.constants import Environment
 from .interfaces import IUserAccessor, IFirebaseProvider
 from .accessors import UserAccessor, FirebaseProvider, DummyFirebaseProvider
 from .services import UserServices, AuthService

@@ -3,11 +3,16 @@ from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.request import Request
 from rest_framework.response import Response
+from paytungan.app.auth.models import User
 
 from paytungan.app.auth.services import (
     AuthService,
     UserServices,
 )
+from paytungan.app.auth.utils import firebase_auth
+from paytungan.app.common.decorators import api_exception
+from paytungan.app.base.headers import AUTH_HEADERS, DEFAULT_HEADERS
+from paytungan.app.base.serializers import AuthHeaderRequest
 
 from .serializers import (
     GetUserRequest,
@@ -19,7 +24,7 @@ from .serializers import (
     UpdateUserRequest,
     UpdateUserResponse,
 )
-from .specs import CreateUserSpec, UpdateUserSpec
+from .specs import CreateUserSpec, FirebaseDecodedToken, UpdateUserSpec
 from paytungan.app.di import injector
 
 user_service = injector.get(UserServices)
@@ -36,6 +41,7 @@ class UserViewSet(viewsets.ViewSet):
         query_serializer=GetUserRequest(),
         responses={200: GetUserResponse()},
     )
+    @api_exception
     def get_user(self, request: Request) -> Response:
         """
         Get single user object
@@ -53,9 +59,11 @@ class UserViewSet(viewsets.ViewSet):
         methods=["post"],
     )
     @swagger_auto_schema(
+        manual_parameters=AUTH_HEADERS,
         request_body=CreateUserRequest(),
         responses={200: CreateUserResponse()},
     )
+    @api_exception
     def create_user(self, request: Request) -> Response:
         """
         Create user
@@ -80,10 +88,13 @@ class UserViewSet(viewsets.ViewSet):
         methods=["post"],
     )
     @swagger_auto_schema(
+        manual_parameters=AUTH_HEADERS,
         request_body=UpdateUserRequest(),
         responses={200: UpdateUserResponse()},
     )
-    def update_user(self, request: Request) -> Response:
+    @api_exception
+    @firebase_auth
+    def update_user(self, request: Request, cred: FirebaseDecodedToken) -> Response:
         """
         Update User
         """
@@ -91,7 +102,7 @@ class UserViewSet(viewsets.ViewSet):
         serializer.is_valid(raise_exception=True)
         data = serializer.data
         spec = UpdateUserSpec(
-            firebase_uid=data["firebase_uid"],
+            firebase_uid=cred.user_id,
             username=data["username"],
             name=data["name"],
             profil_image=data["profil_image"],
@@ -107,15 +118,17 @@ class AuthViewSet(viewsets.ViewSet):
         methods=["post"],
     )
     @swagger_auto_schema(
+        manual_parameters=DEFAULT_HEADERS,
         request_body=LoginRequest(),
         responses={200: LoginResponse()},
     )
-    def create_user(self, request: Request) -> Response:
+    @api_exception
+    def login(self, request: Request) -> Response:
         """
-        Authentication Register
+        Authentication Login and Register
         """
         serializer = LoginRequest(data=request.data)
         serializer.is_valid(raise_exception=True)
         data = serializer.data
         user = auth_service.login(data["token"])
-        return Response(CreateUserResponse({"data": user}).data)
+        return Response(LoginResponse({"data": user}).data)
