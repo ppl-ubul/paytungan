@@ -37,7 +37,7 @@ deploy-dev:
     - gem install dpl
     - wget -qO- https://cli-assets.heroku.com/install-ubuntu.sh | sh
   script:
-    - echo $GOOGLE_APPLICATION_CREDENTIALS > ./firebase-admin-secret.json
+    - echo $GOOGLE_APPLICATION_CREDENTIALS > firebase-admin-secret.json
     - dpl --provider=heroku --app=$HEROKU_APPNAME --api-key=$HEROKU_APIKEY
     - export HEROKU_API_KEY=$HEROKU_APIKEY
   environment:
@@ -67,7 +67,7 @@ deploy:
   services:
     - docker:dind
   script:
-    - echo $GOOGLE_APPLICATION_CREDENTIALS > ./firebase-admin-secret.json
+    - echo $GOOGLE_APPLICATION_CREDENTIALS > firebase-admin-secret.json
     - echo $GCP_SERVICE_KEY > gcloud-service-key.json # Google Cloud service accounts
     - gcloud auth activate-service-account --key-file gcloud-service-key.json
     - gcloud config set project $GCP_PROJECT_ID
