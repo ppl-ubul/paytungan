@@ -16,7 +16,10 @@ import sys
 
 from django.urls import reverse_lazy
 
-from paytungan.app.base.constants import DEFAULT_LOGGER, Environment
+from paytungan.app.base.constants import (
+    DEFAULT_LOGGER,
+    Environment,
+)
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
@@ -159,6 +162,7 @@ SWAGGER_SETTINGS = {
     "PERSIST_AUTH": True,
 }
 
+# Logging
 LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,

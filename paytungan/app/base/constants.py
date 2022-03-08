@@ -1,9 +1,15 @@
 from enum import Enum
+import os
 
 
 DEFAULT_LOGGER = "paytungan-backend"
-SERVICE_ACCOUNT_FILE = "./firebase-admin-secret.json"
+CURRENT_ENV = os.getenv("APP_ENV", "local")
+SERVICE_ACCOUNT_FILE = (
+    "firebase-admin-secret.json" if CURRENT_ENV == "local" else "firebase-admin.json"
+)
 FIREBASE_PROJECT_ID = "paytungan"
+
+DB_CONFIG = "DB_CONFIG"
 
 
 class Environment(Enum):

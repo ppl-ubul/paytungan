@@ -1,5 +1,6 @@
 import logging
 from typing import Dict, List, Optional
+from django.conf import settings
 
 from paytungan.app.common.exceptions import UnauthorizedError
 from .models import User
@@ -105,7 +106,8 @@ class FirebaseProvider(IFirebaseProvider):
         if self._app:
             return self._app
 
-        self._cred = credentials.Certificate(SERVICE_ACCOUNT_FILE)
+        firebase_file = settings.BASE_DIR / SERVICE_ACCOUNT_FILE
+        self._cred = credentials.Certificate(str(firebase_file))
         self._app = initialize_app(self._cred)
         return self._app
 
