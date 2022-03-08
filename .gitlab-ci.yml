@@ -39,6 +39,7 @@ deploy-dev:
   script:
     - echo $GOOGLE_APPLICATION_CREDENTIALS > firebase-admin-secret.json
     - cat firebase-admin-secret.json
+    - ls -la
     - dpl --provider=heroku --app=$HEROKU_APPNAME --api-key=$HEROKU_APIKEY
     - export HEROKU_API_KEY=$HEROKU_APIKEY
   environment:
