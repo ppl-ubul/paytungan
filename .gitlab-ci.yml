@@ -66,6 +66,8 @@ deploy:
   services:
     - docker:dind
   script:
+    - export FIREBASE_PRIVATE_KEY = dummy
+    - export FIREBASE_PRIVATE_KEY_ID = dummy1
     - echo $GCP_SERVICE_KEY > gcloud-service-key.json # Google Cloud service accounts
     - gcloud auth activate-service-account --key-file gcloud-service-key.json
     - gcloud config set project $GCP_PROJECT_ID
@@ -84,13 +86,3 @@ migrate-prod:
   only:
     - prod
 
-migrate-prod:
-  image: python:3.8
-  stage: deploy-prod
-  before_script:
-    - pip install -r requirements.txt
-  when: on_success
-  script:
-    - python manage.py migrate
-  only:
-    - prod
