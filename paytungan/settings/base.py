@@ -18,11 +18,8 @@ from django.urls import reverse_lazy
 
 from paytungan.app.base.constants import (
     DEFAULT_LOGGER,
-    FIREBASE_PRIVATE_KEY,
-    FIREBASE_PRIVATE_KEY_ID,
     Environment,
 )
-from paytungan.app.common.config import get_env
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
@@ -163,20 +160,6 @@ SWAGGER_SETTINGS = {
     "LOGIN_URL": reverse_lazy("admin:login"),
     "LOGOUT_URL": "/admin/logout",
     "PERSIST_AUTH": True,
-}
-
-# Firebase Config
-FIREBASE_CONFIG = {
-    "type": "service_account",
-    "project_id": "paytungan",
-    "private_key_id": get_env(FIREBASE_PRIVATE_KEY_ID),
-    "private_key": get_env(FIREBASE_PRIVATE_KEY).replace("\\n", "\n"),
-    "client_email": "firebase-adminsdk-4v672@paytungan.iam.gserviceaccount.com",
-    "client_id": "113476718206995380065",
-    "auth_uri": "https://accounts.google.com/o/oauth2/auth",
-    "token_uri": "https://oauth2.googleapis.com/token",
-    "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
-    "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-4v672%40paytungan.iam.gserviceaccount.com",
 }
 
 # Logging

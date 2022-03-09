@@ -1,6 +1,6 @@
 import logging
 from typing import Dict, List, Optional
-from django.conf import settings
+from paytungan.app.common.config import get_firebase_config
 
 from paytungan.app.common.exceptions import UnauthorizedError
 from .models import User
@@ -18,7 +18,6 @@ from .specs import (
 from paytungan.app.base.constants import (
     DEFAULT_LOGGER,
     FIREBASE_PROJECT_ID,
-    SERVICE_ACCOUNT_FILE,
 )
 
 
@@ -106,7 +105,8 @@ class FirebaseProvider(IFirebaseProvider):
         if self._app:
             return self._app
 
-        self._cred = credentials.Certificate(settings.FIREBASE_CONFIG)
+        config = get_firebase_config()
+        self._cred = credentials.Certificate(config)
         self._app = initialize_app(self._cred)
         return self._app
 
