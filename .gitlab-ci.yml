@@ -18,6 +18,8 @@ test:
     - pip install -r requirements.txt
     - export DJANGO_SETTINGS_MODULE=paytungan.settings
     - export APP_ENV=test
+    - export FIREBASE_PRIVATE_KEY=dummy
+    - export FIREBASE_PRIVATE_KEY_ID=dummy
     - python manage.py migrate
   when: on_success
   script:
@@ -70,17 +72,6 @@ deploy:
     - gcloud auth activate-service-account --key-file gcloud-service-key.json
     - gcloud config set project $GCP_PROJECT_ID
     - gcloud builds submit . --config=cloudbuild.yaml --substitutions=_DJANGO_SETTINGS_MODULE=$DJANGO_SETTINGS_MODULE,_DJANGO_SECRET_KEY=$DJANGO_SECRET_KEY,_DB_CONFIG=$DB_CONFIG,_APP_ENV="prod"
-  only:
-    - prod
-
-migrate-prod:
-  image: python:3.8
-  stage: deploy-prod
-  before_script:
-    - pip install -r requirements.txt
-  when: on_success
-  script:
-    - python manage.py migrate
   only:
     - prod
 
