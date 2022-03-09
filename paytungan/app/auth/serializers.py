@@ -10,10 +10,18 @@ class UserSerializer(serializers.Serializer):
     id = serializers.IntegerField(min_value=1)
     firebase_uid = serializers.CharField()
     phone_number = serializers.CharField()
-    username = serializers.CharField(required=False, default=None, allow_null=True)
-    email = serializers.CharField(required=False, default=None, allow_null=True)
-    name = serializers.CharField(required=False, default=None, allow_null=True)
-    profil_image = serializers.CharField(required=False, default=None, allow_null=True)
+    username = serializers.CharField(
+        required=False, default=None, allow_null=True, allow_blank=True
+    )
+    email = serializers.CharField(
+        required=False, default=None, allow_null=True, allow_blank=True
+    )
+    name = serializers.CharField(
+        required=False, default=None, allow_null=True, allow_blank=True
+    )
+    profil_image = serializers.CharField(
+        required=False, default=None, allow_null=True, allow_blank=True
+    )
     is_onboarding = serializers.BooleanField(default=False)
 
 
@@ -24,10 +32,18 @@ class GetUserResponse(serializers.Serializer):
 class CreateUserRequest(serializers.Serializer):
     firebase_uid = serializers.CharField()
     phone_number = serializers.CharField()
-    username = serializers.CharField(required=False, default=None, allow_null=True)
-    email = serializers.CharField(required=False, default=None, allow_null=True)
-    name = serializers.CharField(required=False, default=None, allow_null=True)
-    profil_image = serializers.CharField(required=False, default=None, allow_null=True)
+    username = serializers.CharField(
+        required=False, default=None, allow_null=True, allow_blank=True
+    )
+    email = serializers.CharField(
+        required=False, default=None, allow_null=True, allow_blank=True
+    )
+    name = serializers.CharField(
+        required=False, default=None, allow_null=True, allow_blank=True
+    )
+    profil_image = serializers.CharField(
+        required=False, default=None, allow_null=True, allow_blank=True
+    )
     is_onboarding = serializers.BooleanField(default=False)
 
 
@@ -46,7 +62,9 @@ class LoginResponse(serializers.Serializer):
 class UpdateUserRequest(serializers.Serializer):
     username = serializers.CharField()
     name = serializers.CharField()
-    profil_image = serializers.CharField(required=False, default=None, allow_null=True)
+    profil_image = serializers.CharField(
+        required=False, default=None, allow_null=True, allow_blank=True
+    )
 
 
 class UpdateUserResponse(serializers.Serializer):
