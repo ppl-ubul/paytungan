@@ -66,8 +66,8 @@ deploy:
   services:
     - docker:dind
   script:
-    - export FIREBASE_PRIVATE_KEY = dummy
-    - export FIREBASE_PRIVATE_KEY_ID = dummy1
+    - export FIREBASE_PRIVATE_KEY = $FIREBASE_PRIVATE_KEY
+    - export FIREBASE_PRIVATE_KEY_ID = $FIREBASE_PRIVATE_KEY_ID
     - echo $GCP_SERVICE_KEY > gcloud-service-key.json # Google Cloud service accounts
     - gcloud auth activate-service-account --key-file gcloud-service-key.json
     - gcloud config set project $GCP_PROJECT_ID
