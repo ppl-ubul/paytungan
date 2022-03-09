@@ -83,3 +83,14 @@ migrate-prod:
     - python manage.py migrate
   only:
     - prod
+
+migrate-prod:
+  image: python:3.8
+  stage: deploy-prod
+  before_script:
+    - pip install -r requirements.txt
+  when: on_success
+  script:
+    - python manage.py migrate
+  only:
+    - prod
