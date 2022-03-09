@@ -106,8 +106,7 @@ class FirebaseProvider(IFirebaseProvider):
         if self._app:
             return self._app
 
-        firebase_file = settings.BASE_DIR / SERVICE_ACCOUNT_FILE
-        self._cred = credentials.Certificate(str(firebase_file))
+        self._cred = credentials.Certificate(settings.FIREBASE_CONFIG)
         self._app = initialize_app(self._cred)
         return self._app
 
@@ -136,9 +135,5 @@ class FirebaseProvider(IFirebaseProvider):
 
 
 class DummyFirebaseProvider(IFirebaseProvider):
-    @inject
-    def __init__(self) -> None:
-        pass
-
     def decode_token(self, token: str) -> Optional[FirebaseDecodedToken]:
         return None
