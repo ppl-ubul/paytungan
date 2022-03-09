@@ -69,7 +69,18 @@ deploy:
     - echo $GCP_SERVICE_KEY > gcloud-service-key.json # Google Cloud service accounts
     - gcloud auth activate-service-account --key-file gcloud-service-key.json
     - gcloud config set project $GCP_PROJECT_ID
-    - gcloud builds submit . --config=cloudbuild.yaml --substitutions=_DJANGO_SETTINGS_MODULE=$DJANGO_SETTINGS_MODULE,_DJANGO_SECRET_KEY=$DJANGO_SECRET_KEY,_DB_CONFIG=$DB_CONFIG,_APP_ENV="prod",_FIREBASE_PRIVATE_KEY_ID=$FIREBASE_PRIVATE_KEY_ID,_FIREBASE_PRIVATE_KEY=$FIREBASE_PRIVATE_KEY
+    - gcloud builds submit . --config=cloudbuild.yaml --substitutions=_DJANGO_SETTINGS_MODULE=$DJANGO_SETTINGS_MODULE,_DJANGO_SECRET_KEY=$DJANGO_SECRET_KEY,_DB_CONFIG=$DB_CONFIG,_APP_ENV="prod"
+  only:
+    - prod
+
+migrate-prod:
+  image: python:3.8
+  stage: deploy-prod
+  before_script:
+    - pip install -r requirements.txt
+  when: on_success
+  script:
+    - python manage.py migrate
   only:
     - prod
 
