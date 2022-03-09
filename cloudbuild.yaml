@@ -7,7 +7,7 @@ steps:
     args: [ 'push', 'gcr.io/$PROJECT_ID/paytungan-backend']
     # deploy to Cloud Run
   - name: "gcr.io/cloud-builders/gcloud"
-    args: ['run', 'deploy', 'paytungan-backend', '--image', 'gcr.io/$PROJECT_ID/paytungan-backend', '--region', 'asia-southeast1', '--platform', 'managed', '--allow-unauthenticated', '--update-env-vars', 'DJANGO_SETTINGS_MODULE=${_DJANGO_SETTINGS_MODULE},DJANGO_SECRET_KEY=${_DJANGO_SECRET_KEY},DB_CONFIG=${_DB_CONFIG},APP_ENV=${_APP_ENV},FIREBASE_PRIVATE_KEY_ID=${_FIREBASE_PRIVATE_KEY_ID},FIREBASE_PRIVATE_KEY=${_FIREBASE_PRIVATE_KEY}']
+    args: ['run', 'deploy', 'paytungan-backend', '--image', 'gcr.io/$PROJECT_ID/paytungan-backend', '--region', 'asia-southeast1', '--platform', 'managed', '--allow-unauthenticated', '--update-env-vars', 'DJANGO_SETTINGS_MODULE=${_DJANGO_SETTINGS_MODULE},DJANGO_SECRET_KEY=${_DJANGO_SECRET_KEY},DB_CONFIG=${_DB_CONFIG},APP_ENV=${_APP_ENV}']
 
 options:
   logging: CLOUD_LOGGING_ONLY
