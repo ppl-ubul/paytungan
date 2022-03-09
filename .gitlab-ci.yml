@@ -18,8 +18,8 @@ test:
     - pip install -r requirements.txt
     - export DJANGO_SETTINGS_MODULE=paytungan.settings
     - export APP_ENV=test
-    - export FIREBASE_PRIVATE_KEY = $FIREBASE_PRIVATE_KEY
-    - export FIREBASE_PRIVATE_KEY_ID = $FIREBASE_PRIVATE_KEY_ID
+    - export FIREBASE_PRIVATE_KEY=$FIREBASE_PRIVATE_KEY
+    - export FIREBASE_PRIVATE_KEY_ID=$FIREBASE_PRIVATE_KEY_ID
     - python manage.py migrate
   when: on_success
   script:
