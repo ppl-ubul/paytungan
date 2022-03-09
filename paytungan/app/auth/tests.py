@@ -1,18 +1,33 @@
-from django.test import TestCase
+# from django.test import TestCase
+from unittest import TestCase
 from unittest.mock import MagicMock
+from paytungan.app.auth.models import User
 
-from paytungan.app.auth.specs import CreateUserSpec, GetUserListSpec
+from paytungan.app.auth.specs import (
+    CreateUserSpec,
+    FirebaseDecodedToken,
+    GetUserListSpec,
+    UpdateUserSpec,
+)
 
-from .services import UserServices
+from .services import AuthService, UserServices
 
 
 class TestService(TestCase):
     def setUp(self) -> None:
         self.mock = MagicMock()
         self.user_service = UserServices(user_accessor=self.mock)
+        self.auth_service = AuthService(
+            user_accessor=self.mock,
+            firebase_provider=self.mock,
+        )
 
     def test_user_service_get(self):
         self.user_service.get(1)
+        assert True
+
+    def test_user_service_get_by_firebase_uid(self):
+        self.user_service.get_by_firebase_uid("asasas")
         assert True
 
     def test_user_service_get_list(self):
@@ -21,6 +36,59 @@ class TestService(TestCase):
         assert True
 
     def test_user_service_register(self):
-        spec = CreateUserSpec(username="aa", email="aaa", password="aaa")
+        spec = CreateUserSpec(firebase_uid="aa", phone_number="aaa")
         self.user_service.create_user(spec)
         assert True
+
+    def test_user_service_update_user(self):
+        spec = UpdateUserSpec(
+            firebase_uid="aa", username="aaa", name="aaaa", profil_image="aaaaa"
+        )
+        self.user_service.update_user(spec)
+        assert True
+
+    def test_auth_login_succeed(self):
+        token = "token"
+        decode_token_return = FirebaseDecodedToken(
+            user_id="342dwsdsd", phone_number="+62"
+        )
+        dummy_user = User(firebase_uid="342dwsdsd", phone_number="+62")
+
+        self.mock.get_by_firebase_uid.return_value = dummy_user
+        self.mock.decode_token.return_value = decode_token_return
+
+        user = self.auth_service.login(token)
+
+        self.assertEqual(user.firebase_uid, dummy_user.firebase_uid)
+
+    def test_auth_login_create_new_user(self):
+        token = "token"
+        decode_token_return = FirebaseDecodedToken(
+            user_id="342dwsdsd", phone_number="+62"
+        )
+        dummy_user = User(firebase_uid="342dwsdsd", phone_number="+62")
+
+        self.mock.create_user.return_value = dummy_user
+        self.mock.get_by_firebase_uid.return_value = None
+        self.mock.decode_token.return_value = decode_token_return
+
+        user = self.auth_service.login(token)
+
+        self.assertEqual(user.firebase_uid, dummy_user.firebase_uid)
+
+    def test_auth_service_get_user_from_token(self):
+        self.auth_service.get_user_from_token("aaa")
+        assert True
+
+    def test_auth_service_decode_token(self):
+        token = "token"
+        decode_token_return = FirebaseDecodedToken(
+            user_id="342dwsdsd", phone_number="+62"
+        )
+        dummy_user = User(firebase_uid="342dwsdsd", phone_number="+62")
+
+        self.mock.get_by_firebase_uid.return_value = dummy_user
+        self.mock.decode_token.return_value = decode_token_return
+        self.auth_service.decode_token(token)
+
+        self.assertEqual(dummy_user.firebase_uid, decode_token_return.user_id)

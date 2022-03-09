@@ -16,7 +16,13 @@ import sys
 
 from django.urls import reverse_lazy
 
-from paytungan.app.common.constants import DEFAULT_LOGGER, Environment
+from paytungan.app.base.constants import (
+    DEFAULT_LOGGER,
+    FIREBASE_PRIVATE_KEY,
+    FIREBASE_PRIVATE_KEY_ID,
+    Environment,
+)
+from paytungan.app.common.config import get_env
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
@@ -31,8 +37,8 @@ SECRET_KEY = "django-insecure-aet=ty5stdiik^wp6u-!$xpf+&rlt!kp3cqi6mtf1h$e4_@sp=
 # SECURITY WARNING: don't run with debug turned on in production!
 
 DEBUG = True
-CURRENT_ENV = os.getenv("APP_ENV")
-if CURRENT_ENV == "prod":
+CURRENT_ENV = os.getenv("APP_ENV", Environment.LOCAL)
+if CURRENT_ENV == Environment.PROD:
     DEBUG = False
 
 ALLOWED_HOSTS = [
@@ -58,6 +64,13 @@ INSTALLED_APPS = [
     "paytungan.app",
     "corsheaders",
 ]
+
+REST_FRAMEWORK = {
+    "DEFAULT_SCHEMA_CLASS": "rest_framework.schemas.coreapi.AutoSchema",
+    "DEFAULT_PERMISSION_CLASSES": ["rest_framework.permissions.AllowAny"],
+    "EXCEPTION_HANDLER": "paytungan.app.common.exception_handlers.paytungan_exception_handler",
+    "COERCE_DECIMAL_TO_STRING": False,
+}
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -152,6 +165,21 @@ SWAGGER_SETTINGS = {
     "PERSIST_AUTH": True,
 }
 
+# Firebase Config
+FIREBASE_CONFIG = {
+    "type": "service_account",
+    "project_id": "paytungan",
+    "private_key_id": get_env(FIREBASE_PRIVATE_KEY_ID),
+    "private_key": get_env(FIREBASE_PRIVATE_KEY).replace("\\n", "\n"),
+    "client_email": "firebase-adminsdk-4v672@paytungan.iam.gserviceaccount.com",
+    "client_id": "113476718206995380065",
+    "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+    "token_uri": "https://oauth2.googleapis.com/token",
+    "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+    "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-4v672%40paytungan.iam.gserviceaccount.com",
+}
+
+# Logging
 LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,

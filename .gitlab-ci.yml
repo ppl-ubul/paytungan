@@ -5,10 +5,8 @@ stages:
   - deploy-prod
 
 linter:
-  image: python:3.8
+  image: registry.gitlab.com/pipeline-components/black:latest
   stage: test
-  before_script:
-    - pip install -r requirements-dev.txt
   when: on_success
   script:
     - black . --check
@@ -18,10 +16,11 @@ test:
   stage: test
   before_script:
     - pip install -r requirements.txt
+    - export DJANGO_SETTINGS_MODULE=paytungan.settings
+    - export APP_ENV=test
     - python manage.py migrate
   when: on_success
   script:
-    - export DJANGO_SETTINGS_MODULE=paytungan.settings
     - coverage run --include='paytungan/app/*/services*' manage.py test
     - coverage xml -o tests/coverage.xml
     - coverage report -m
@@ -46,25 +45,6 @@ deploy-dev:
   only:
     - main
 
-sonar-scanner-dev:
-  image:
-    name: sonarsource/sonar-scanner-cli:latest
-    entrypoint: [""]
-  stage: sonarqube
-  dependencies:
-    - test
-  script:
-    - cat tests/coverage.xml
-    - sonar-scanner
-      -Dsonar.host.url=https://pmpl.cs.ui.ac.id/sonarqube
-      -Dsonar.branch.name=$CI_COMMIT_REF_NAME
-      -Dsonar.login=$SONARQUBE_TOKEN
-      -Dsonar.branch.target=staging
-  allow_failure: true
-  except:
-    - prod
-    - main
-
 sonar-scanner:
   image:
     name: sonarsource/sonar-scanner-cli:latest
@@ -79,9 +59,6 @@ sonar-scanner:
       -Dsonar.branch.name=$CI_COMMIT_REF_NAME
       -Dsonar.login=$SONARQUBE_TOKEN
   allow_failure: true
-  only:
-    - main
-    - prod
 
 deploy:
   stage: deploy-prod
@@ -92,7 +69,18 @@ deploy:
     - echo $GCP_SERVICE_KEY > gcloud-service-key.json # Google Cloud service accounts
     - gcloud auth activate-service-account --key-file gcloud-service-key.json
     - gcloud config set project $GCP_PROJECT_ID
-    - gcloud builds submit . --config=cloudbuild.yaml --substitutions=_DJANGO_SETTINGS_MODULE=$DJANGO_SETTINGS_MODULE,_DJANGO_SECRET_KEY=$DJANGO_SECRET_KEY,_DB_CONFIG=$DB_CONFIG,_APP_ENV="prod"
+    - gcloud builds submit . --config=cloudbuild.yaml --substitutions=_DJANGO_SETTINGS_MODULE=$DJANGO_SETTINGS_MODULE,_DJANGO_SECRET_KEY=$DJANGO_SECRET_KEY,_DB_CONFIG=$DB_CONFIG,_APP_ENV="prod",_FIREBASE_PRIVATE_KEY_ID=$FIREBASE_PRIVATE_KEY_ID,_FIREBASE_PRIVATE_KEY=$FIREBASE_PRIVATE_KEY
+  only:
+    - prod
+
+migrate-prod:
+  image: python:3.8
+  stage: deploy-prod
+  before_script:
+    - pip install -r requirements.txt
+  when: on_success
+  script:
+    - python manage.py migrate
   only:
     - prod
 
