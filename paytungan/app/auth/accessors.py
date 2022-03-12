@@ -1,17 +1,17 @@
 import logging
 from typing import Dict, List, Optional
-from paytungan.app.common.config import get_firebase_config
+from firebase_admin import initialize_app, auth, credentials
+from injector import inject
+from django.db import IntegrityError
 
+from paytungan.app.common.config import get_firebase_config
 from paytungan.app.common.exceptions import (
+    BaseException,
     NotFoundException,
     UnauthorizedError,
     ValidationErrorException,
 )
 from .models import User
-from firebase_admin import initialize_app, auth, credentials
-from injector import inject
-from django.db import IntegrityError
-
 from .interfaces import IUserAccessor, IFirebaseProvider
 from .specs import (
     GetUserListSpec,
