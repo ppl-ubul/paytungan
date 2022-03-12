@@ -2,7 +2,11 @@ import logging
 from typing import Dict, List, Optional
 from paytungan.app.common.config import get_firebase_config
 
-from paytungan.app.common.exceptions import UnauthorizedError
+from paytungan.app.common.exceptions import (
+    NotFoundException,
+    UnauthorizedError,
+    ValidationErrorException,
+)
 from .models import User
 from firebase_admin import initialize_app, auth, credentials
 from injector import inject
@@ -81,15 +85,21 @@ class UserAccessor(IUserAccessor):
             user.profil_image = spec.profil_image
             user.save()
         except User.DoesNotExist:
-            return None
+            raise NotFoundException(
+                message=f"User with firebase_uid:{spec.firebase_uid}", code=400
+            )
         except IntegrityError as e:
             self.logger.error(
                 f"Error when try to update username:{spec.username} has been used : {e}"
             )
-            return None
+            raise ValidationErrorException(
+                message=f"Error when try to update username:{spec.username} has been used",
+                code=400,
+                field_errors={"username": ["username has been used"]},
+            )
         except Exception as e:
             self.logger.error(f"Error when try to update user with spec {spec}: {e}")
-            return None
+            raise BaseException(message="Error when try to update user", code=400)
 
         return user
 
