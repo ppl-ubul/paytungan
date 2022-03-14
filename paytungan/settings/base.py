@@ -21,6 +21,8 @@ from paytungan.app.base.constants import (
     Environment,
 )
 
+from corsheaders.defaults import default_headers
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
@@ -45,6 +47,10 @@ ALLOWED_HOSTS = [
 ]
 
 CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_HEADERS = list(default_headers) + [
+    "Authentication",
+    "x-request-id",
+]
 
 # Application definition
 
