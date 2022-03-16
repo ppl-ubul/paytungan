@@ -34,7 +34,7 @@ auth_service = injector.get(AuthService)
 class UserViewSet(viewsets.ViewSet):
     @action(
         detail=False,
-        url_path="get",
+        url_path="get_contact",
         methods=["get"],
     )
     @swagger_auto_schema(
@@ -45,12 +45,12 @@ class UserViewSet(viewsets.ViewSet):
     def get_user(self, request: Request) -> Response:
         """
         Get single user object
-        by user id or user name
+        by user name
         """
         serializer = GetUserRequest(data=request.query_params)
         serializer.is_valid(raise_exception=True)
         data = serializer.data
-        user = user_service.get(data["user_id"])
+        user = user_service.get(data["username"])
         return Response(GetUserResponse({"data": user}).data)
 
     @action(

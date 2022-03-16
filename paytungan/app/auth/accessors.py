@@ -29,9 +29,9 @@ class UserAccessor(IUserAccessor):
     def __init__(self) -> None:
         self.logger = logging.getLogger(DEFAULT_LOGGER)
 
-    def get(self, user_id: int) -> Optional[User]:
+    def get(self, username: str) -> Optional[User]:
         try:
-            user = User.objects.get(pk=user_id)
+            user = User.objects.get(username=username)
         except User.DoesNotExist:
             return None
 
