@@ -27,7 +27,7 @@ class TestService(TestCase):
         assert True
 
     def test_user_service_get_by_username(self):
-        self.user_service.get_user_by_username("string")
+        self.user_service.get_by_username("string")
         assert True
 
     def test_user_service_get_by_firebase_uid(self):
