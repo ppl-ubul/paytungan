@@ -3,6 +3,10 @@ from rest_framework import serializers
 
 
 class GetUserRequest(serializers.Serializer):
+    user_id = serializers.IntegerField(min_value=1)
+
+
+class GetUserByUsernameRequest(serializers.Serializer):
     username = serializers.CharField(
         required=False, default=None, allow_null=True, allow_blank=True
     )

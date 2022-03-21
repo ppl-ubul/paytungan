@@ -12,7 +12,11 @@ from .specs import (
 
 class IUserAccessor(ABC):
     @abstractmethod
-    def get(self, username: str) -> Optional[User]:
+    def get(self, user_id: int) -> Optional[User]:
+        raise NotImplementedError
+
+    @abstractmethod
+    def get_user_by_username(self, username: str) -> Optional[User]:
         raise NotImplementedError
 
     @abstractmethod
