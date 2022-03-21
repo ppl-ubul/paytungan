@@ -14,8 +14,8 @@ class UserServices:
     def get(self, user_id: int) -> Optional[User]:
         return self.user_accessor.get(user_id)
 
-    def get_user_by_username(self, username: str) -> Optional[User]:
-        return self.user_accessor.get_user_by_username(username)
+    def get_by_username(self, username: str) -> Optional[User]:
+        return self.user_accessor.get_by_username(username)
 
     def get_by_firebase_uid(self, firebase_uid: int) -> Optional[User]:
         return self.user_accessor.get_by_firebase_uid(firebase_uid)

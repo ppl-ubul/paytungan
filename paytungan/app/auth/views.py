@@ -23,7 +23,7 @@ from .serializers import (
     LoginResponse,
     UpdateUserRequest,
     UpdateUserResponse,
-    GetUserByUsernameRequest,
+    GetByUsernameRequest,
 )
 from .specs import CreateUserSpec, FirebaseDecodedToken, UpdateUserSpec
 from paytungan.app.di import injector
@@ -60,19 +60,19 @@ class UserViewSet(viewsets.ViewSet):
         methods=["get"],
     )
     @swagger_auto_schema(
-        query_serializer=GetUserByUsernameRequest(),
+        query_serializer=GetByUsernameRequest(),
         responses={200: GetUserResponse()},
     )
     @api_exception
-    def get_user_by_username(self, request: Request) -> Response:
+    def get_by_username(self, request: Request) -> Response:
         """
         Get single user object
         by user name
         """
-        serializer = GetUserByUsernameRequest(data=request.query_params)
+        serializer = GetByUsernameRequest(data=request.query_params)
         serializer.is_valid(raise_exception=True)
         data = serializer.data
-        user = user_service.get_user_by_username(data["username"])
+        user = user_service.get_by_username(data["username"])
         return Response(GetUserResponse({"data": user}).data)
 
     @action(

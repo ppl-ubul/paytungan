@@ -37,7 +37,7 @@ class UserAccessor(IUserAccessor):
 
         return user
 
-    def get_user_by_username(self, username: str) -> Optional[User]:
+    def get_by_username(self, username: str) -> Optional[User]:
         try:
             user = User.objects.get(username=username)
         except User.DoesNotExist:
