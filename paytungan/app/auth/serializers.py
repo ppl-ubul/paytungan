@@ -7,9 +7,7 @@ class GetUserRequest(serializers.Serializer):
 
 
 class GetByUsernameRequest(serializers.Serializer):
-    username = serializers.CharField(
-        required=False, default=None, allow_null=True, allow_blank=True
-    )
+    username = serializers.CharField()
 
 
 class UserSerializer(serializers.Serializer):
