@@ -37,6 +37,14 @@ class UserAccessor(IUserAccessor):
 
         return user
 
+    def get_by_username(self, username: str) -> Optional[User]:
+        try:
+            user = User.objects.get(username=username)
+        except User.DoesNotExist:
+            return None
+
+        return user
+
     def get_by_firebase_uid(self, firebase_uid: str) -> Optional[User]:
         try:
             user = User.objects.get(firebase_uid=firebase_uid)

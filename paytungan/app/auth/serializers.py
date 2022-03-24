@@ -6,6 +6,10 @@ class GetUserRequest(serializers.Serializer):
     user_id = serializers.IntegerField(min_value=1)
 
 
+class GetByUsernameRequest(serializers.Serializer):
+    username = serializers.CharField()
+
+
 class UserSerializer(serializers.Serializer):
     id = serializers.IntegerField(min_value=1)
     firebase_uid = serializers.CharField()
