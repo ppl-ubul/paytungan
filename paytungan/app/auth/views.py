@@ -3,7 +3,6 @@ from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.request import Request
 from rest_framework.response import Response
-from paytungan.app.auth.models import User
 
 from paytungan.app.auth.services import (
     AuthService,
@@ -12,7 +11,6 @@ from paytungan.app.auth.services import (
 from paytungan.app.auth.utils import firebase_auth
 from paytungan.app.common.decorators import api_exception
 from paytungan.app.base.headers import AUTH_HEADERS, DEFAULT_HEADERS
-from paytungan.app.base.serializers import AuthHeaderRequest
 
 from .serializers import (
     GetUserRequest,

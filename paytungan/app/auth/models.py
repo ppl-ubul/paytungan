@@ -25,6 +25,16 @@ class User(SafeDeleteModel):
                 name="unique_username_if_not_deleted",
             ),
         ]
+        indexes = [
+            models.Index(
+                fields=["firebase_uid"],
+                name="index_user_firebase_uid",
+            ),
+            models.Index(
+                fields=["username"],
+                name="index_user_username",
+            ),
+        ]
 
     @property
     def is_onboarding(self) -> bool:
