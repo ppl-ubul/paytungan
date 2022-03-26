@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from typing import List, Optional
-from django.contrib.auth.models import User
+
+from .models import User
 
 
 @dataclass

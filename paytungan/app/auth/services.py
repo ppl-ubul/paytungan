@@ -3,7 +3,12 @@ from .models import User
 from injector import inject
 
 from .interfaces import IFirebaseProvider, IUserAccessor
-from .specs import FirebaseDecodedToken, GetUserListSpec, CreateUserSpec, UpdateUserSpec
+from .specs import (
+    FirebaseDecodedToken,
+    GetUserListSpec,
+    CreateUserSpec,
+    UpdateUserSpec,
+)
 
 
 class UserServices:

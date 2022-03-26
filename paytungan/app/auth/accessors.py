@@ -94,14 +94,15 @@ class UserAccessor(IUserAccessor):
             user.save()
         except User.DoesNotExist:
             raise NotFoundException(
-                message=f"User with firebase_uid:{spec.firebase_uid}", code=400
+                message=f"User with firebase_uid: {spec.firebase_uid} not found",
+                code=400,
             )
         except IntegrityError as e:
             self.logger.error(
-                f"Error when try to update username:{spec.username} has been used : {e}"
+                f"Error when try to update username: {spec.username} has been used: {e}"
             )
             raise ValidationErrorException(
-                message=f"Error when try to update username:{spec.username} has been used",
+                message=f"Error when try to update username: {spec.username} has been used",
                 code=400,
                 field_errors={"username": ["username has been used"]},
             )
