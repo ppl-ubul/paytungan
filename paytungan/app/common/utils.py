@@ -92,34 +92,21 @@ class ObjectMapperUtil:
         ]
 
     @staticmethod
-    def default_domain_creation_params(
-        channel: str,
-        modifier: str,
-        is_active: bool = True,
-    ):
+    def default_domain_creation_params():
         time_now = datetime.now()
         return {
             "id": 0,
             "created_at": time_now,
-            "created_by": modifier,
             "updated_at": time_now,
-            "updated_by": modifier,
-            "deleted": None,
-            "deleted_by": None,
-            "modified_from": channel,
-            "is_active": is_active,
         }
 
     # TODO: deprecate is_create
     @staticmethod
-    def default_model_creation_params(channel: str, is_create: bool, modifier: str):
+    def default_model_creation_params():
         time_now = timezone.now()
         params = {
             "updated_at": time_now,
-            "updated_by": modifier,
-            "modified_from": channel,
             "created_at": time_now,
-            "created_by": modifier,
         }
         return params
 
