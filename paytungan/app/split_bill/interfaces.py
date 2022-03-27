@@ -4,6 +4,7 @@ from typing import List, Optional
 from .specs import (
     GetBillListSpec,
     GetSplitBillListSpec,
+    CreateBillSpec,
 )
 from .models import SplitBill, Bill
 
@@ -14,7 +15,7 @@ class ISplitBillAccessor(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    def get_list(self, spec: GetBillListSpec) -> List[SplitBill]:
+    def get_list(self, spec: GetSplitBillListSpec) -> List[SplitBill]:
         raise NotImplementedError
 
 
@@ -24,5 +25,9 @@ class IBillAccessor(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    def get_list(self, spec: GetSplitBillListSpec) -> List[Bill]:
+    def get_list(self, spec: GetBillListSpec) -> List[Bill]:
+        raise NotImplementedError
+
+    @abstractmethod
+    def create(self, spec: CreateBillSpec) -> Bill:
         raise NotImplementedError

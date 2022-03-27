@@ -7,6 +7,7 @@ from .interfaces import (
     ISplitBillAccessor,
 )
 from .specs import (
+    CreateBillSpec,
     GetBillListSpec,
     GetSplitBillListSpec,
 )
@@ -22,6 +23,9 @@ class BillService:
 
     def get_bill_list(self, spec: GetBillListSpec) -> List[Bill]:
         return self.bill_accessor.get(spec)
+
+    def create_bill(self, spec: CreateBillSpec) -> Bill:
+        return self.bill_accessor.create(spec)
 
 
 class SplitBillService:

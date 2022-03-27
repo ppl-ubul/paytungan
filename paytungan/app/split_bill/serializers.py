@@ -16,6 +16,15 @@ class GetBillResponse(serializers.Serializer):
     data = BillSerializer()
 
 
+class CreateBillRequest(serializers.Serializer):
+    split_bill_id = serializers.IntegerField(min_value=1)
+    details = serializers.CharField(required=False, allow_null=True, allow_blank=True)
+
+
+class CreateBillResponse(serializers.Serializer):
+    data = BillSerializer()
+
+
 class GetSplitBillRequest(serializers.Serializer):
     id = serializers.IntegerField(min_value=1)
 

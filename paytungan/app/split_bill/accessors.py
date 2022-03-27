@@ -2,9 +2,12 @@ import logging
 from typing import Dict, List, Optional
 from injector import inject
 
+from paytungan.app.common.utils import ObjectMapperUtil
+
 from .models import Bill, SplitBill
 from .interfaces import IBillAccessor, ISplitBillAccessor
 from .specs import (
+    CreateBillSpec,
     GetBillListSpec,
     GetBillListResult,
     GetSplitBillListSpec,
@@ -16,6 +19,16 @@ class BillAccessor(IBillAccessor):
     @inject
     def __init__(self) -> None:
         self.logger = logging.getLogger(DEFAULT_LOGGER)
+
+    def create(self, spec: CreateBillSpec) -> Bill:
+        bill = Bill(
+            user_id=spec.user_id,
+            split_bill_id=spec.split_bill_id,
+            details=spec.details,
+            **ObjectMapperUtil.default_model_creation_params()
+        )
+        bill.save()
+        return bill
 
     def get(self, bill_id: int) -> Optional[Bill]:
         try:

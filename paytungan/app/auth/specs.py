@@ -33,6 +33,15 @@ class FirebaseDecodedToken:
 
 
 @dataclass
+class UserDecoded:
+    id: int
+    firebase_id: str
+    phone_number: str
+    username: Optional[str] = None
+    name: Optional[str] = None
+
+
+@dataclass
 class UpdateUserSpec:
     firebase_uid: str
     username: str
