@@ -40,8 +40,7 @@ def user_auth(func):
         cred = ObjectMapperUtil.map(user, UserDecoded)
         if not user:
             raise UnauthorizedError(
-                message="User with current token is not found",
-                code=403
+                message="User with current token is not found", code=403
             )
 
         return func(*args, cred, **kwargs)

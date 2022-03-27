@@ -67,7 +67,7 @@ class BillViewSet(viewsets.ViewSet):
         spec = CreateBillSpec(
             user_id=user.id,
             split_bill_id=data["split_bill_id"],
-            details=data["details"]
+            details=data["details"],
         )
         user = bill_service.create_bill(spec)
         return Response(CreateBillResponse({"data": user}).data)
