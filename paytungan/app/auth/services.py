@@ -57,9 +57,7 @@ class AuthService:
     def login(self, token: str) -> Optional[User]:
         decoded_token = self.firebase_provider.decode_token(token)
 
-        user = self.user_accessor.get_by_firebase_uid(
-            firebase_uid=decoded_token.user_id
-        )
+        user = self.user_accessor.get_by_firebase_uid(decoded_token.user_id)
 
         if user:
             return user

@@ -26,3 +26,10 @@ class GetSplitBillListSpec:
 @dataclass
 class GetSplitBillListResult:
     split_bills: List[SplitBill]
+
+
+@dataclass
+class CreateBillSpec:
+    user_id: int
+    split_bill_id: int
+    details: Optional[str] = None
