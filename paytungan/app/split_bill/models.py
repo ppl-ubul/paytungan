@@ -39,7 +39,7 @@ class Bill(BaseModel):
     split_bill = models.ForeignKey(
         SplitBill, related_name="bills", on_delete=models.PROTECT
     )
-    status = models.CharField(max_length=16, default=BillStatus.PENDING)
+    status = models.CharField(max_length=16, default=BillStatus.PENDING.value)
     details = models.TextField(null=True, blank=True)
 
     class Meta:
