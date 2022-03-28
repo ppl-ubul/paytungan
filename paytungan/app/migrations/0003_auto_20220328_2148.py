@@ -15,7 +15,7 @@ class Migration(migrations.Migration):
             model_name="bill",
             name="status",
             field=models.CharField(
-                default=paytungan.app.base.constants.BillStatus["PENDING"],
+                default="PENDING",
                 max_length=16,
             ),
         ),
