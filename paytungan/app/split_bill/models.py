@@ -2,6 +2,7 @@ from django.db import models
 from django.db.models import Q
 
 from paytungan.app.auth.models import User
+from paytungan.app.base.constants import BillStatus
 from paytungan.app.base.models import BaseModel
 
 
@@ -38,10 +39,18 @@ class Bill(BaseModel):
     split_bill = models.ForeignKey(
         SplitBill, related_name="bills", on_delete=models.PROTECT
     )
+    status = models.CharField(max_length=16, default=BillStatus.PENDING.value)
     details = models.TextField(null=True, blank=True)
 
     class Meta:
         db_table = "bill"
+        constraints = [
+            models.UniqueConstraint(
+                fields=["user_id", "split_bill_id"],
+                condition=Q(deleted__isnull=True),
+                name="unique_user_id_and_split_bill_id_if_not_deleted",
+            ),
+        ]
 
     def __str__(self) -> str:
         return f"{str(self.id)}"

@@ -9,6 +9,7 @@ class BillSerializer(serializers.Serializer):
     id = serializers.IntegerField(min_value=1)
     user_id = serializers.IntegerField(min_value=1)
     split_bill_id = serializers.IntegerField(min_value=1)
+    status = serializers.CharField()
     details = serializers.CharField(required=False, allow_null=True)
 
 
