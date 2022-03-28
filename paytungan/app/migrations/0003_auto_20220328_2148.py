@@ -7,17 +7,24 @@ import paytungan.app.base.constants
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('app', '0002_auto_20220325_2308'),
+        ("app", "0002_auto_20220325_2308"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='bill',
-            name='status',
-            field=models.CharField(default=paytungan.app.base.constants.BillStatus['PENDING'], max_length=16),
+            model_name="bill",
+            name="status",
+            field=models.CharField(
+                default=paytungan.app.base.constants.BillStatus["PENDING"],
+                max_length=16,
+            ),
         ),
         migrations.AddConstraint(
-            model_name='bill',
-            constraint=models.UniqueConstraint(condition=models.Q(('deleted__isnull', True)), fields=('user_id', 'split_bill_id'), name='unique_user_id_and_split_bill_id_if_not_deleted'),
+            model_name="bill",
+            constraint=models.UniqueConstraint(
+                condition=models.Q(("deleted__isnull", True)),
+                fields=("user_id", "split_bill_id"),
+                name="unique_user_id_and_split_bill_id_if_not_deleted",
+            ),
         ),
     ]
