@@ -19,3 +19,9 @@ class Environment(Enum):
     DEV = "dev"
     PROD = "prod"
     TEST = "test"
+
+
+class BillStatus(Enum):
+    PENDING = "PENDING"
+    PAID = "PAID"
+    FAILED = "FAILED"
