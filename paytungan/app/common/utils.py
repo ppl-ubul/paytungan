@@ -6,7 +6,7 @@ from dataclasses import fields
 from datetime import datetime, time, date
 from decimal import Decimal
 from enum import Enum
-from typing import Optional, TypeVar, Type, List, Dict, Any, _GenericAlias
+from typing import Optional, Tuple, TypeVar, Type, List, Dict, Any, _GenericAlias
 
 T = TypeVar("T")
 
@@ -65,16 +65,9 @@ class ObjectMapperUtil:
         return destination_domain_class(**attributes)
 
     @staticmethod
-    def map_domain(
-        source_model_object,
-        destination_domain_class: Type[T],
-        channel: str,
-        modifier: str,
-    ) -> T:
+    def map_domain(source_model_object, destination_domain_class: Type[T]) -> T:
         result = ObjectMapperUtil.map(source_model_object, destination_domain_class)
-        creation_dict = ObjectMapperUtil.default_domain_creation_params(
-            channel=channel, modifier=modifier
-        )
+        creation_dict = ObjectMapperUtil.default_domain_creation_params()
 
         objects = result if isinstance(result, List) else [result]
         for obj in objects:
@@ -169,3 +162,45 @@ class DictionaryUtil:
             )
 
         return results
+
+
+class StringUtil:
+    @staticmethod
+    def transform_enum_to_title(enum_value: str) -> str:
+        return enum_value.replace("_", " ").title()
+
+
+class EnumUtil:
+    T = TypeVar("T")
+
+    @staticmethod
+    def extract_enum_values(enum_class: Type[Enum]):
+        return [enum.value for enum in enum_class]
+
+    @staticmethod
+    def convert_string_to_enum(
+        value: str, enum_class: Type[T], allow_null: bool = True
+    ) -> Optional[T]:
+        if value is not None or not allow_null:
+            return enum_class(value)
+        return None
+
+    @staticmethod
+    def is_valid(value: str, enum_class: Type[Enum]):
+        return value in EnumUtil.extract_enum_values(enum_class)
+
+    @staticmethod
+    def transform_to_choice(enum_object: Type[Enum]) -> List[Tuple[str, str]]:
+        return list(
+            map(
+                lambda enum_value: (
+                    enum_value,
+                    StringUtil.transform_enum_to_title(enum_value),
+                ),
+                EnumUtil.extract_enum_values(enum_object),
+            )
+        )
+
+    @staticmethod
+    def value_or_none(enum_object: Optional[Enum]) -> Optional[str]:
+        return enum_object.value if enum_object else None
