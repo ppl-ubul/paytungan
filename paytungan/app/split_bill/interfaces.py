@@ -2,6 +2,8 @@ from abc import ABC, abstractmethod
 from typing import List, Optional
 
 from .specs import (
+    BillDomain,
+    CreateSplitBillSpec,
     GetBillListSpec,
     GetSplitBillListSpec,
     CreateBillSpec,
@@ -18,6 +20,10 @@ class ISplitBillAccessor(ABC):
     def get_list(self, spec: GetSplitBillListSpec) -> List[SplitBill]:
         raise NotImplementedError
 
+    @abstractmethod
+    def create(self, spec: CreateSplitBillSpec) -> SplitBill:
+        raise NotImplementedError
+
 
 class IBillAccessor(ABC):
     @abstractmethod
@@ -29,5 +35,9 @@ class IBillAccessor(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    def create(self, spec: CreateBillSpec) -> Bill:
+    def create(self, obj: BillDomain) -> Bill:
+        raise NotImplementedError
+
+    @abstractmethod
+    def bulk_create(self, objs: List[BillDomain]) -> List[Bill]:
         raise NotImplementedError

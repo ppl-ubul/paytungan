@@ -21,6 +21,13 @@ class Environment(Enum):
     TEST = "test"
 
 
+class WithdrawalMethod(Enum):
+    GOPAY = "GOPAY"
+    OVO = "OVO"
+    BNI = "BNI"
+    BRI = "BRI"
+
+
 class BillStatus(Enum):
     PENDING = "PENDING"
     PAID = "PAID"

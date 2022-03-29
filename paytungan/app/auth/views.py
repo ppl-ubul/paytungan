@@ -3,6 +3,7 @@ from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.request import Request
 from rest_framework.response import Response
+from django.db import transaction
 
 from paytungan.app.auth.services import (
     AuthService,
@@ -83,6 +84,7 @@ class UserViewSet(viewsets.ViewSet):
         request_body=CreateUserRequest(),
         responses={200: CreateUserResponse()},
     )
+    @transaction.atomic
     @api_exception
     def create_user(self, request: Request) -> Response:
         """
@@ -112,6 +114,7 @@ class UserViewSet(viewsets.ViewSet):
         request_body=UpdateUserRequest(),
         responses={200: UpdateUserResponse()},
     )
+    @transaction.atomic
     @api_exception
     @firebase_auth
     def update_user(self, request: Request, cred: FirebaseDecodedToken) -> Response:
@@ -142,6 +145,7 @@ class AuthViewSet(viewsets.ViewSet):
         request_body=LoginRequest(),
         responses={200: LoginResponse()},
     )
+    @transaction.atomic
     @api_exception
     def login(self, request: Request) -> Response:
         """

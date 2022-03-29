@@ -14,7 +14,7 @@ class SplitBill(BaseModel):
         on_delete=models.PROTECT,
     )
     withdrawal_method = models.CharField(max_length=128)
-    wirhdrawal_number = models.CharField(max_length=128)
+    withdrawal_number = models.CharField(max_length=128)
     details = models.TextField(null=True, blank=True)
 
     class Meta:
