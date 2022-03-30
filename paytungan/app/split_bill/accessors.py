@@ -13,6 +13,7 @@ from .specs import (
     GetBillListSpec,
     GetBillListResult,
     GetSplitBillListSpec,
+    GetSplitBillListResult,
 )
 from paytungan.app.base.constants import DEFAULT_LOGGER
 
@@ -83,7 +84,7 @@ class SplitBillAccessor(ISplitBillAccessor):
         return split_bill
 
     def get_list(self, spec: GetSplitBillListSpec) -> List[SplitBill]:
-        queryset = Bill.objects
+        queryset = SplitBill.objects
 
         if spec.split_bill_ids:
             queryset = queryset.filter(id__in=spec.split_bill_ids)
@@ -107,3 +108,15 @@ class SplitBillAccessor(ISplitBillAccessor):
         )
         split_bill.save()
         return split_bill
+
+    def get_list_by_user(self, user_id: int) -> List[SplitBill]:
+        queryset = Bill.objects.all()
+        list_split_bill_id = (
+            queryset.filter(user_id=user_id)
+            .values_list("split_bill_id", flat=True)
+            .distinct()
+        )
+        queryset = SplitBill.objects.all()
+        queryset = queryset.filter(id__in=list_split_bill_id).distinct()
+
+        return queryset

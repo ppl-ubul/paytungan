@@ -63,3 +63,16 @@ class CreateSplitBillRequest(serializers.Serializer):
 
 class CreateSplitBillResponse(serializers.Serializer):
     data = GroupSplitBillSerializer()
+
+
+class SplitBillWithBillCurrentUserSerializer(serializers.Serializer):
+    split_bill = SplitBillSerializer()
+    bill = BillSerializer()
+
+
+class GetListSplitBillRequest(serializers.Serializer):
+    user_id = serializers.IntegerField(min_value=1)
+
+
+class GetListSplitBillResponse(serializers.Serializer):
+    data = SplitBillWithBillCurrentUserSerializer(many=True)

@@ -23,6 +23,8 @@ from .serializers import (
     GetBillRequest,
     GetSplitBillResponse,
     GetSplitBillRequest,
+    GetListSplitBillRequest,
+    GetListSplitBillResponse,
 )
 from .services import (
     BillService,
@@ -42,7 +44,7 @@ class BillViewSet(viewsets.ViewSet):
     )
     @swagger_auto_schema(
         query_serializer=GetBillRequest(),
-        responses={200: GetSplitBillResponse()},
+        responses={200: GetBillResponse()},
     )
     @api_exception
     def get_bill(self, request: Request) -> Response:
@@ -52,8 +54,8 @@ class BillViewSet(viewsets.ViewSet):
         serializer = GetBillRequest(data=request.query_params)
         serializer.is_valid(raise_exception=True)
         data = serializer.data
-        user = bill_service.get_bill(data["id"])
-        return Response(GetSplitBillResponse({"data": user}).data)
+        bill = bill_service.get_bill(data["id"])
+        return Response(GetBillResponse({"data": bill}).data)
 
     @action(
         detail=False,
@@ -89,7 +91,7 @@ class SplitBillViewSet(viewsets.ViewSet):
     )
     @swagger_auto_schema(
         query_serializer=GetSplitBillRequest(),
-        responses={200: GetBillResponse()},
+        responses={200: GetSplitBillResponse()},
     )
     @api_exception
     def get_split_bill(self, request: Request) -> Response:
@@ -129,3 +131,21 @@ class SplitBillViewSet(viewsets.ViewSet):
         )
         split_bill = split_bill_service.create_group_split_bill(spec)
         return Response(CreateSplitBillResponse({"data": split_bill}).data)
+
+    @action(
+        detail=False,
+        url_path="get_list",
+        methods=["get"],
+    )
+    @swagger_auto_schema(
+        manual_parameters=AUTH_HEADERS,
+        responses={200: GetListSplitBillResponse()},
+    )
+    @api_exception
+    @user_auth
+    def get_list_split_bill(self, request: Request, user: UserDecoded) -> Response:
+        """
+        Get list split_bill object
+        """
+        list_split_bill = split_bill_service.get_split_bill_list(user.id)
+        return Response(GetListSplitBillResponse({"data": list_split_bill}).data)

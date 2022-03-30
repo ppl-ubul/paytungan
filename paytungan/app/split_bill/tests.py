@@ -42,3 +42,7 @@ class TestService(TestCase):
     def test_split_bill_service_get_list(self):
         self.split_bill_service.get_split_bill_list(GetSplitBillListSpec(bill_ids=[1]))
         assert True
+
+    def test_split_bill_service_get_list_by_user_id(self):
+        self.split_bill_service.get_split_bill_list(GetSplitBillListSpec(bill_ids=[1]))
+        assert True
