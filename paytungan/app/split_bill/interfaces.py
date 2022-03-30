@@ -24,6 +24,10 @@ class ISplitBillAccessor(ABC):
     def create(self, spec: CreateSplitBillSpec) -> SplitBill:
         raise NotImplementedError
 
+    @abstractmethod
+    def get_list_by_user(self, user_id: int) -> List[SplitBill]:
+        raise NotImplementedError
+
 
 class IBillAccessor(ABC):
     @abstractmethod

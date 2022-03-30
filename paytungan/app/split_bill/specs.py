@@ -24,6 +24,12 @@ class BillDomain(BaseDomain):
 
 
 @dataclass
+class SplitBillWithBillDomain:
+    split_bill: SplitBill
+    bill: Bill
+
+
+@dataclass
 class GetBillListSpec:
     user_ids: Optional[List[int]] = None
     bill_ids: Optional[List[int]] = None
