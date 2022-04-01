@@ -48,8 +48,8 @@ class SplitBillService:
     def get_split_bill(self, split_bill_id: int) -> Optional[SplitBill]:
         return self.split_bill_accessor.get(split_bill_id)
 
-    def get_split_bill_list(self, spec: GetSplitBillListSpec) -> Optional[SplitBill]:
-        return self.split_bill_accessor.get(spec)
+    def get_split_bill_list(self, spec: GetSplitBillListSpec) -> List[SplitBill]:
+        return self.split_bill_accessor.get_list(spec)
 
     def create_split_bill(self, spec: CreateSplitBillSpec) -> SplitBill:
         return self.split_bill_accessor.create(spec)
@@ -57,8 +57,8 @@ class SplitBillService:
     def create_group_split_bill(
         self, spec: CreateGroupSplitBillSpec
     ) -> GroupSplitBillDomain:
-        split_bill_spec = ObjectMapperUtil.map(spec, CreateSplitBillSpec)
-        split_bill = self.create_split_bill(split_bill_spec)
+        split_bill_create_spec = ObjectMapperUtil.map(spec, CreateSplitBillSpec)
+        split_bill = self.create_split_bill(split_bill_create_spec)
 
         bills_domain = [
             BillDomain(
@@ -83,18 +83,19 @@ class SplitBillService:
             bills=bills,
         )
 
-    def get_split_bill_list(self, user_id: int) -> List[SplitBillWithBillDomain]:
-        spec_bill = GetBillListSpec(
-            user_ids=[user_id],
+    def get_list_current_user(self, user_id: int) -> List[SplitBillWithBillDomain]:
+        bills = self.bill_accessor.get_list(
+            GetBillListSpec(
+                user_ids=[user_id],
+            )
         )
-        bills = self.bill_accessor.get_list(spec_bill)
 
         split_bills_ids = [bill.split_bill_id for bill in bills]
-        spec_split_bill = GetSplitBillListSpec(split_bill_ids=split_bills_ids)
-        split_bills = self.split_bill_accessor.get_list(spec_split_bill)
+        split_bills = self.split_bill_accessor.get_list(
+            GetSplitBillListSpec(split_bill_ids=split_bills_ids)
+        )
 
         split_bill_to_bill_mapping = {bill.split_bill_id: bill for bill in bills}
-
         split_bill_with_bill_domain = [
             SplitBillWithBillDomain(
                 split_bill=split_bill,

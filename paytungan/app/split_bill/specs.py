@@ -50,7 +50,8 @@ class CreateBillSpec:
 
 @dataclass
 class GetSplitBillListSpec:
-    user_fund_ids: Optional[List[int]] = None
+    user_fund_id: Optional[int] = None
+    user_id: Optional[int] = None
     bill_ids: Optional[List[int]] = None
     split_bill_ids: Optional[List[int]] = None
 

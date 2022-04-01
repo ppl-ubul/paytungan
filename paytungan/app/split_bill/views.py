@@ -13,6 +13,7 @@ from .specs import (
     CreateBillSpec,
     CreateGroupSplitBillSpec,
     CreateSplitBillSpec,
+    GetSplitBillListSpec,
 )
 from .serializers import (
     CreateBillRequest,
@@ -21,10 +22,11 @@ from .serializers import (
     CreateSplitBillResponse,
     GetBillResponse,
     GetBillRequest,
+    GetSplitBillListCurrentUserResponse,
     GetSplitBillResponse,
     GetSplitBillRequest,
-    GetListSplitBillRequest,
-    GetListSplitBillResponse,
+    GetSplitBillListRequest,
+    GetSplitBillListResponse,
 )
 from .services import (
     BillService,
@@ -134,18 +136,44 @@ class SplitBillViewSet(viewsets.ViewSet):
 
     @action(
         detail=False,
-        url_path="get_list",
+        url_path="list/get",
         methods=["get"],
     )
     @swagger_auto_schema(
         manual_parameters=AUTH_HEADERS,
-        responses={200: GetListSplitBillResponse()},
+        query_serializer=GetSplitBillListRequest(),
+        responses={200: GetSplitBillListResponse()},
     )
     @api_exception
     @user_auth
-    def get_list_split_bill(self, request: Request, user: UserDecoded) -> Response:
+    def get_split_bill_list(self, request: Request, user: UserDecoded) -> Response:
         """
         Get list split_bill object
         """
-        list_split_bill = split_bill_service.get_split_bill_list(user.id)
-        return Response(GetListSplitBillResponse({"data": list_split_bill}).data)
+        serializer = GetSplitBillListRequest(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        data = serializer.data
+        list_split_bill = split_bill_service.get_split_bill_list(
+            GetSplitBillListSpec(user_fund_id=1)
+        )
+        return Response(GetSplitBillListResponse({"data": list_split_bill}).data)
+
+    @action(
+        detail=False,
+        url_path="list/get-current-user",
+        methods=["get"],
+    )
+    @swagger_auto_schema(
+        manual_parameters=AUTH_HEADERS,
+        responses={200: GetSplitBillListCurrentUserResponse()},
+    )
+    @api_exception
+    @user_auth
+    def get_list_current_user(self, request: Request, user: UserDecoded) -> Response:
+        """
+        Get list split_bill object
+        """
+        list_split_bill = split_bill_service.get_list_current_user(user.id)
+        return Response(
+            GetSplitBillListCurrentUserResponse({"data": list_split_bill}).data
+        )

@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from paytungan.app.base.constants import WithdrawalMethod
+from paytungan.app.base.constants import BillStatus, WithdrawalMethod
 
 from paytungan.app.common.utils import EnumUtil
 
@@ -12,7 +12,7 @@ class BillSerializer(serializers.Serializer):
     id = serializers.IntegerField(min_value=1)
     user_id = serializers.IntegerField(min_value=1)
     split_bill_id = serializers.IntegerField(min_value=1)
-    status = serializers.CharField()
+    status = serializers.ChoiceField(choices=EnumUtil.extract_enum_values(BillStatus))
     details = serializers.CharField(required=False, allow_null=True)
 
 
@@ -43,7 +43,7 @@ class SplitBillSerializer(serializers.Serializer):
 
 
 class GroupSplitBillSerializer(SplitBillSerializer):
-    bills = BillSerializer(many=True)
+    bills = BillSerializer(many=True, required=False)
 
 
 class GetSplitBillResponse(serializers.Serializer):
@@ -70,9 +70,20 @@ class SplitBillWithBillCurrentUserSerializer(serializers.Serializer):
     bill = BillSerializer()
 
 
-class GetListSplitBillRequest(serializers.Serializer):
-    user_id = serializers.IntegerField(min_value=1)
+class GetSplitBillListRequest(serializers.Serializer):
+    user_id = serializers.IntegerField(min_value=1, required=False)
+    user_fund_id = serializers.IntegerField(min_value=1, required=False)
+    bill_ids = serializers.ListField(
+        child=serializers.IntegerField(min_value=1), required=False
+    )
+    split_bill_ids = serializers.ListField(
+        child=serializers.IntegerField(min_value=1), required=False
+    )
 
 
-class GetListSplitBillResponse(serializers.Serializer):
+class GetSplitBillListResponse(serializers.Serializer):
+    data = GroupSplitBillSerializer(many=True)
+
+
+class GetSplitBillListCurrentUserResponse(serializers.Serializer):
     data = SplitBillWithBillCurrentUserSerializer(many=True)
