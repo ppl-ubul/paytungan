@@ -106,11 +106,6 @@ class UserAccessor(IUserAccessor):
                 code=400,
                 field_errors={"username": ["username has been used"]},
             )
-            raise ValidationErrorException(
-                message=f"Error when try to update username:{spec.username} has been used",
-                code=400,
-                field_errors={"username": ["username has been used"]},
-            )
         except Exception as e:
             self.logger.error(f"Error when try to update user with spec {spec}: {e}")
             raise BaseException(message="Error when try to update user", code=400)
