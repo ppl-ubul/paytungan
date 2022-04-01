@@ -8,12 +8,9 @@ from .models import Bill, SplitBill
 from .interfaces import IBillAccessor, ISplitBillAccessor
 from .specs import (
     BillDomain,
-    CreateBillSpec,
     CreateSplitBillSpec,
     GetBillListSpec,
-    GetBillListResult,
     GetSplitBillListSpec,
-    GetSplitBillListResult,
 )
 from paytungan.app.base.constants import DEFAULT_LOGGER
 
@@ -41,7 +38,7 @@ class BillAccessor(IBillAccessor):
         return bill
 
     def get_list(self, spec: GetBillListSpec) -> List[Bill]:
-        queryset = Bill.objects
+        queryset = Bill.objects.all()
 
         if spec.bill_ids:
             queryset = queryset.filter(id__in=spec.bill_ids)
@@ -84,7 +81,15 @@ class SplitBillAccessor(ISplitBillAccessor):
         return split_bill
 
     def get_list(self, spec: GetSplitBillListSpec) -> List[SplitBill]:
-        queryset = SplitBill.objects
+        queryset = SplitBill.objects.all()
+
+        if spec.user_id:
+            bill_ids = list(
+                Bill.objects.queryset.filter(user_id=spec.user_id)
+                .values_list("split_bill_id", flat=True)
+                .distinct()
+            )
+            spec.bill_ids = bill_ids + (spec.bill_ids or [])
 
         if spec.split_bill_ids:
             queryset = queryset.filter(id__in=spec.split_bill_ids)
@@ -92,8 +97,8 @@ class SplitBillAccessor(ISplitBillAccessor):
         if spec.bill_ids:
             queryset = queryset.filter(bills__id__in=spec.bill_ids)
 
-        if spec.user_fund_ids:
-            queryset = queryset.filter(user_fund__id__in=spec.user_fund_ids)
+        if spec.user_fund_id:
+            queryset = queryset.filter(user_fund__id=spec.user_fund_id)
 
         return queryset
 
@@ -110,13 +115,11 @@ class SplitBillAccessor(ISplitBillAccessor):
         return split_bill
 
     def get_list_by_user(self, user_id: int) -> List[SplitBill]:
-        queryset = Bill.objects.all()
-        list_split_bill_id = (
-            queryset.filter(user_id=user_id)
+        split_bill_ids = list(
+            Bill.objects.filter(user_id=user_id)
             .values_list("split_bill_id", flat=True)
             .distinct()
         )
-        queryset = SplitBill.objects.all()
-        queryset = queryset.filter(id__in=list_split_bill_id).distinct()
 
+        queryset = SplitBill.objects.filter(id__in=split_bill_ids)
         return queryset
