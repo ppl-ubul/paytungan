@@ -73,6 +73,7 @@ class SplitBillWithBillCurrentUserSerializer(serializers.Serializer):
 class GetSplitBillListRequest(serializers.Serializer):
     user_id = serializers.IntegerField(min_value=1, required=False)
     user_fund_id = serializers.IntegerField(min_value=1, required=False)
+    name = serializers.CharField(required=False)
     bill_ids = serializers.ListField(
         child=serializers.IntegerField(min_value=1), required=False
     )
@@ -87,3 +88,7 @@ class GetSplitBillListResponse(serializers.Serializer):
 
 class GetSplitBillListCurrentUserResponse(serializers.Serializer):
     data = SplitBillWithBillCurrentUserSerializer(many=True)
+
+
+class DeleteSplitBillRequest(serializers.Serializer):
+    split_bill_id = serializers.IntegerField(min_value=1)

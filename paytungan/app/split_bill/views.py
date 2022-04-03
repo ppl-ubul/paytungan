@@ -7,12 +7,13 @@ from django.db import transaction
 
 from paytungan.app.common.decorators import api_exception
 from paytungan.app.base.headers import AUTH_HEADERS
-from paytungan.app.auth.utils import user_auth
-from paytungan.app.auth.specs import UserDecoded
+from paytungan.app.auth.utils import firebase_auth, user_auth
+from paytungan.app.auth.specs import FirebaseDecodedToken, UserDecoded
+from paytungan.app.common.utils import ObjectMapperUtil
 from .specs import (
     CreateBillSpec,
     CreateGroupSplitBillSpec,
-    CreateSplitBillSpec,
+    DeleteSplitBillSpec,
     GetSplitBillListSpec,
 )
 from .serializers import (
@@ -20,6 +21,7 @@ from .serializers import (
     CreateBillResponse,
     CreateSplitBillRequest,
     CreateSplitBillResponse,
+    DeleteSplitBillRequest,
     GetBillResponse,
     GetBillRequest,
     GetSplitBillListCurrentUserResponse,
@@ -145,18 +147,18 @@ class SplitBillViewSet(viewsets.ViewSet):
         responses={200: GetSplitBillListResponse()},
     )
     @api_exception
-    @user_auth
-    def get_split_bill_list(self, request: Request, user: UserDecoded) -> Response:
+    @firebase_auth
+    def get_split_bill_list(
+        self, request: Request, cred: FirebaseDecodedToken
+    ) -> Response:
         """
         Get list split_bill object
         """
         serializer = GetSplitBillListRequest(data=request.data)
         serializer.is_valid(raise_exception=True)
-        data = serializer.data
-        list_split_bill = split_bill_service.get_split_bill_list(
-            GetSplitBillListSpec(user_fund_id=1)
-        )
-        return Response(GetSplitBillListResponse({"data": list_split_bill}).data)
+        spec = ObjectMapperUtil.map(serializer.data, GetSplitBillListSpec)
+        split_bills = split_bill_service.get_split_bill_list(spec)
+        return Response(GetSplitBillListResponse({"data": split_bills}).data)
 
     @action(
         detail=False,
@@ -171,9 +173,28 @@ class SplitBillViewSet(viewsets.ViewSet):
     @user_auth
     def get_list_current_user(self, request: Request, user: UserDecoded) -> Response:
         """
-        Get list split_bill object
+        Get list split_bill object of current user
         """
-        list_split_bill = split_bill_service.get_list_current_user(user.id)
-        return Response(
-            GetSplitBillListCurrentUserResponse({"data": list_split_bill}).data
-        )
+        split_bills = split_bill_service.get_list_current_user(user.id)
+        return Response(GetSplitBillListCurrentUserResponse({"data": split_bills}).data)
+
+    @action(
+        detail=False,
+        url_path="delete",
+        methods=["delete"],
+    )
+    @swagger_auto_schema(
+        manual_parameters=AUTH_HEADERS,
+        request_body=DeleteSplitBillRequest(),
+        responses={200: ""},
+    )
+    @transaction.atomic
+    @api_exception
+    @user_auth
+    def delete_split_bill(self, request: Request, user: UserDecoded) -> Response:
+        serializer = CreateSplitBillRequest(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        data = serializer.data
+        spec = DeleteSplitBillSpec(split_bill_ids=[data["split_bill_id"]])
+        split_bill = split_bill_service.delete(spec)
+        return Response(CreateSplitBillResponse({"data": split_bill}).data)

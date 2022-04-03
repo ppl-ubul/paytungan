@@ -4,9 +4,9 @@ from typing import List, Optional
 from .specs import (
     BillDomain,
     CreateSplitBillSpec,
+    DeleteSplitBillSpec,
     GetBillListSpec,
     GetSplitBillListSpec,
-    CreateBillSpec,
 )
 from .models import SplitBill, Bill
 
@@ -26,6 +26,10 @@ class ISplitBillAccessor(ABC):
 
     @abstractmethod
     def get_list_by_user(self, user_id: int) -> List[SplitBill]:
+        raise NotImplementedError
+
+    @abstractmethod
+    def delete(self, spec: DeleteSplitBillSpec) -> None:
         raise NotImplementedError
 
 

@@ -8,6 +8,7 @@ from paytungan.app.split_bill.services import BillService, SplitBillService
 from paytungan.app.split_bill.specs import (
     CreateBillSpec,
     CreateGroupSplitBillSpec,
+    DeleteSplitBillSpec,
     GetBillListSpec,
     GetSplitBillListSpec,
 )
@@ -85,7 +86,7 @@ class TestService(TestCase):
 
         self.assertEqual(result.name, spec.name)
 
-    def test_get_split_bill_list_current_user(self):
+    def test_get_split_bill_list_current_user_success(self):
         dummy_split_bills = [
             SplitBill(
                 id=1,
@@ -111,3 +112,23 @@ class TestService(TestCase):
         result = self.split_bill_service.get_list_current_user(1)
 
         self.assertEqual(result[0].split_bill.id, dummy_split_bills[0].id)
+
+    def test_get_split_bill_list_current_user_empty_success(self):
+        self.bill_accessor.get_list.return_value = []
+        result = self.split_bill_service.get_list_current_user(1)
+        self.assertEqual(len(result), 0)
+
+        dummy_bills = [
+            Bill(
+                user_id=1,
+                split_bill_id=1,
+                status="PENDING",
+            )
+        ]
+        self.bill_accessor.get_list.return_value = dummy_bills
+        self.split_bill_accessor.get_list.return_value = []
+        result = self.split_bill_service.get_list_current_user(1)
+        self.assertEqual(len(result), 0)
+
+    def test_delete_split_bill_success(self):
+        self.split_bill_service.delete(DeleteSplitBillSpec(split_bill_ids=[1]))
