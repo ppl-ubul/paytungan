@@ -9,6 +9,7 @@ from .interfaces import IBillAccessor, ISplitBillAccessor
 from .specs import (
     BillDomain,
     CreateSplitBillSpec,
+    DeleteSplitBillSpec,
     GetBillListSpec,
     GetSplitBillListSpec,
 )
@@ -91,6 +92,9 @@ class SplitBillAccessor(ISplitBillAccessor):
             )
             spec.bill_ids = bill_ids + (spec.bill_ids or [])
 
+        if spec.name:
+            queryset = queryset.filter(name__iexact=spec.name)
+
         if spec.split_bill_ids:
             queryset = queryset.filter(id__in=spec.split_bill_ids)
 
@@ -123,3 +127,17 @@ class SplitBillAccessor(ISplitBillAccessor):
 
         queryset = SplitBill.objects.filter(id__in=split_bill_ids)
         return queryset
+
+    def delete(self, spec: DeleteSplitBillSpec) -> None:
+        queryset = SplitBill.objects.all()
+
+        if spec.split_bill_ids:
+            queryset = queryset.filter(id__in=spec.split_bill_ids)
+
+        if spec.bill_ids:
+            queryset = queryset.filter(bills__id__in=spec.bill_ids)
+
+        if spec.user_fund_id:
+            queryset = queryset.filter(user_fund__id=spec.user_fund_id)
+
+        queryset.delete()

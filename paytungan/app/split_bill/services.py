@@ -13,6 +13,7 @@ from .specs import (
     CreateBillSpec,
     CreateGroupSplitBillSpec,
     CreateSplitBillSpec,
+    DeleteSplitBillSpec,
     GetBillListSpec,
     GetSplitBillListSpec,
     GroupSplitBillDomain,
@@ -90,17 +91,25 @@ class SplitBillService:
             )
         )
 
+        if not bills:
+            return []
+
         split_bills_ids = [bill.split_bill_id for bill in bills]
         split_bills = self.split_bill_accessor.get_list(
             GetSplitBillListSpec(split_bill_ids=split_bills_ids)
         )
 
+        if not split_bills:
+            return []
+
         split_bill_to_bill_mapping = {bill.split_bill_id: bill for bill in bills}
-        split_bill_with_bill_domain = [
+        return [
             SplitBillWithBillDomain(
                 split_bill=split_bill,
                 bill=split_bill_to_bill_mapping[split_bill.id],
             )
             for split_bill in split_bills
         ]
-        return split_bill_with_bill_domain
+
+    def delete(self, spec: DeleteSplitBillSpec) -> None:
+        return self.split_bill_accessor.delete(spec)

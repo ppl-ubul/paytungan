@@ -52,6 +52,7 @@ class CreateBillSpec:
 class GetSplitBillListSpec:
     user_fund_id: Optional[int] = None
     user_id: Optional[int] = None
+    name: Optional[str] = None
     bill_ids: Optional[List[int]] = None
     split_bill_ids: Optional[List[int]] = None
 
@@ -78,3 +79,10 @@ class CreateGroupSplitBillSpec:
     withdrawal_number: str
     user_ids: List[int] = None
     details: Optional[str] = None
+
+
+@dataclass
+class DeleteSplitBillSpec:
+    user_fund_id: Optional[int] = None
+    bill_ids: Optional[List[int]] = None
+    split_bill_ids: Optional[List[int]] = None
