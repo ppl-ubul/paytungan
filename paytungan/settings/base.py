@@ -18,6 +18,7 @@ from django.urls import reverse_lazy
 
 from paytungan.app.base.constants import (
     DEFAULT_LOGGER,
+    SENTRY_DSN,
     Environment,
 )
 
@@ -39,6 +40,19 @@ DEBUG = True
 CURRENT_ENV = os.getenv("APP_ENV", Environment.LOCAL)
 if CURRENT_ENV == Environment.PROD:
     DEBUG = False
+
+
+if CURRENT_ENV != Environment.LOCAL:
+    import sentry_sdk
+    from sentry_sdk.integrations.django import DjangoIntegration
+
+    sentry_sdk.init(
+        dsn=SENTRY_DSN,
+        integrations=[DjangoIntegration()],
+        send_default_pii=True,
+        attach_stacktrace=True,
+    )
+
 
 ALLOWED_HOSTS = [
     "127.0.0.1",

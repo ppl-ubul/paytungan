@@ -7,6 +7,7 @@ CURRENT_ENV = os.getenv("APP_ENV", "local")
 SERVICE_ACCOUNT_FILE = (
     "firebase-admin-secret.json" if CURRENT_ENV == "local" else "firebase-admin.json"
 )
+SENTRY_DSN = os.getenv("SENTRY_DSN")
 FIREBASE_PROJECT_ID = "paytungan"
 
 DB_CONFIG = "DB_CONFIG"
