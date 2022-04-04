@@ -1,8 +1,8 @@
 from typing import List, Optional
 from injector import inject
 
+from paytungan.app.base.constants import BillStatus
 from paytungan.app.common.utils import ObjectMapperUtil
-
 from .models import Bill, SplitBill
 from .interfaces import (
     IBillAccessor,
@@ -70,6 +70,14 @@ class SplitBillService:
             for user_id in spec.user_ids
         ]
 
+        bills_domain.append(
+            BillDomain(
+                user_id=spec.user_fund_id,
+                split_bill_id=split_bill.id,
+                status=BillStatus.PAID.value,
+                **ObjectMapperUtil.default_domain_creation_params()
+            )
+        )
         bills = self.bill_accessor.bulk_create(bills_domain)
 
         return GroupSplitBillDomain(
