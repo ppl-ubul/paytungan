@@ -1,4 +1,3 @@
-import logging
 from typing import Dict, List, Optional
 from firebase_admin import initialize_app, auth, credentials
 from injector import inject
@@ -11,6 +10,7 @@ from paytungan.app.common.exceptions import (
     UnauthorizedError,
     ValidationErrorException,
 )
+from paytungan.app.logging.interface import ILoggingProvider
 from .models import User
 from .interfaces import IUserAccessor, IFirebaseProvider
 from .specs import (
@@ -19,15 +19,13 @@ from .specs import (
     FirebaseDecodedToken,
     UpdateUserSpec,
 )
-from paytungan.app.base.constants import (
-    DEFAULT_LOGGER,
-    FIREBASE_PROJECT_ID,
-)
+from paytungan.app.base.constants import FIREBASE_PROJECT_ID
 
 
 class UserAccessor(IUserAccessor):
-    def __init__(self) -> None:
-        self.logger = logging.getLogger(DEFAULT_LOGGER)
+    @inject
+    def __init__(self, logger: ILoggingProvider) -> None:
+        self.logger = logger
 
     def get(self, user_id: int) -> Optional[User]:
         try:
@@ -115,10 +113,10 @@ class UserAccessor(IUserAccessor):
 
 class FirebaseProvider(IFirebaseProvider):
     @inject
-    def __init__(self) -> None:
+    def __init__(self, logger: ILoggingProvider) -> None:
         self._cred = None
         self._app = None
-        self.logger = logging.getLogger(DEFAULT_LOGGER)
+        self.logger = logger
 
     def _get_app(self):
         if self._app:

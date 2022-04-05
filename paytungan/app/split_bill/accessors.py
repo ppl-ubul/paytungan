@@ -3,6 +3,7 @@ from typing import Dict, List, Optional
 from injector import inject
 
 from paytungan.app.common.utils import ObjectMapperUtil
+from paytungan.app.logging.interface import ILoggingProvider
 
 from .models import Bill, SplitBill
 from .interfaces import IBillAccessor, ISplitBillAccessor
@@ -18,8 +19,8 @@ from paytungan.app.base.constants import DEFAULT_LOGGER
 
 class BillAccessor(IBillAccessor):
     @inject
-    def __init__(self) -> None:
-        self.logger = logging.getLogger(DEFAULT_LOGGER)
+    def __init__(self, logger: ILoggingProvider) -> None:
+        self.logger = logger
 
     def create(self, obj: BillDomain) -> Bill:
         bill = self._convert_to_model(obj)
@@ -71,8 +72,8 @@ class BillAccessor(IBillAccessor):
 
 class SplitBillAccessor(ISplitBillAccessor):
     @inject
-    def __init__(self) -> None:
-        self.logger = logging.getLogger(DEFAULT_LOGGER)
+    def __init__(self, logger: ILoggingProvider) -> None:
+        self.logger = logger
 
     def get(self, id: int) -> Optional[SplitBill]:
         try:
