@@ -68,6 +68,7 @@ class SplitBillService:
                 **ObjectMapperUtil.default_domain_creation_params()
             )
             for user_id in spec.user_ids
+            if user_id != spec.user_fund_id
         ]
 
         bills_domain.append(
