@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 from typing import List, Optional
+from paytungan.app.base.constants import BillStatus
 
 from paytungan.app.base.specs import BaseDomain
 from .models import Bill, SplitBill
@@ -19,7 +20,7 @@ class GroupSplitBillDomain(BaseDomain):
 class BillDomain(BaseDomain):
     user_id: int
     split_bill_id: int
-    status: Optional[str] = None
+    status: str = BillStatus.PENDING.value
     details: Optional[str] = None
 
 
