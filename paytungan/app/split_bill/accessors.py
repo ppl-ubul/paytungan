@@ -58,6 +58,7 @@ class BillAccessor(IBillAccessor):
             id=None if is_create else obj.id,
             user_id=obj.user_id,
             split_bill_id=obj.split_bill_id,
+            status=obj.status,
             details=obj.details,
             **ObjectMapperUtil.default_model_creation_params()
         )
