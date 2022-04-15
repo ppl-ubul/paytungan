@@ -63,22 +63,21 @@ class SplitBillService:
 
         bills_domain = [
             BillDomain(
-                user_id=user_id,
+                user_id=bill["user_id"],
                 split_bill_id=split_bill.id,
+                amount=bill["amount"],
                 **ObjectMapperUtil.default_domain_creation_params()
             )
-            for user_id in spec.user_ids
-            if user_id != spec.user_fund_id
-        ]
-
-        bills_domain.append(
-            BillDomain(
+            if bill["user_id"] != spec.user_fund_id
+            else BillDomain(
                 user_id=spec.user_fund_id,
                 split_bill_id=split_bill.id,
+                amount=bill["amount"],
                 status=BillStatus.PAID.value,
                 **ObjectMapperUtil.default_domain_creation_params()
             )
-        )
+            for bill in spec.bills
+        ]
         bills = self.bill_accessor.bulk_create(bills_domain)
 
         return GroupSplitBillDomain(
@@ -89,6 +88,7 @@ class SplitBillService:
             user_fund_id=split_bill.user_fund_id,
             withdrawal_method=split_bill.withdrawal_method,
             withdrawal_number=split_bill.withdrawal_number,
+            amount=split_bill.amount,
             details=split_bill.details,
             bills=bills,
         )

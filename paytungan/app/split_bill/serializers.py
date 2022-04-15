@@ -13,6 +13,7 @@ class BillSerializer(serializers.Serializer):
     user_id = serializers.IntegerField(min_value=1)
     split_bill_id = serializers.IntegerField(min_value=1)
     status = serializers.ChoiceField(choices=EnumUtil.extract_enum_values(BillStatus))
+    amount = serializers.IntegerField(min_value=0)
     details = serializers.CharField(required=False, allow_null=True)
 
 
@@ -22,6 +23,7 @@ class GetBillResponse(serializers.Serializer):
 
 class CreateBillRequest(serializers.Serializer):
     split_bill_id = serializers.IntegerField(min_value=1)
+    amount = serializers.IntegerField(min_value=0)
     details = serializers.CharField(required=False, allow_null=True, allow_blank=True)
 
 
@@ -39,6 +41,7 @@ class SplitBillSerializer(serializers.Serializer):
     user_fund_id = serializers.IntegerField(min_value=1)
     withdrawal_method = serializers.CharField(required=False)
     withdrawal_number = serializers.CharField(required=False)
+    amount = serializers.IntegerField(min_value=0)
     details = serializers.CharField(required=False, allow_null=True)
 
 
@@ -50,6 +53,11 @@ class GetSplitBillResponse(serializers.Serializer):
     data = SplitBillSerializer()
 
 
+class UserIdWithAmountBillSerializer(serializers.Serializer):
+    user_id = serializers.IntegerField(min_value=1)
+    amount = serializers.IntegerField(min_value=0)
+
+
 class CreateSplitBillRequest(serializers.Serializer):
     name = serializers.CharField()
     user_fund_id = serializers.IntegerField(min_value=1)
@@ -58,7 +66,8 @@ class CreateSplitBillRequest(serializers.Serializer):
     )
     withdrawal_number = serializers.CharField()
     details = serializers.CharField(required=False, allow_null=True)
-    user_ids = serializers.ListField(child=serializers.IntegerField(min_value=1))
+    amount = serializers.IntegerField(min_value=0)
+    bills = UserIdWithAmountBillSerializer(many=True)
 
 
 class CreateSplitBillResponse(serializers.Serializer):

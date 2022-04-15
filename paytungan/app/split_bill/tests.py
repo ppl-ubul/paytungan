@@ -2,6 +2,7 @@
 from datetime import datetime
 from unittest import TestCase
 from unittest.mock import MagicMock
+from collections import OrderedDict
 
 from paytungan.app.split_bill.models import Bill, SplitBill
 from paytungan.app.split_bill.services import BillService, SplitBillService
@@ -37,7 +38,9 @@ class TestService(TestCase):
         assert True
 
     def test_bill_service_create(self):
-        self.bill_service.create_bill(CreateBillSpec(user_id=1, split_bill_id=1))
+        self.bill_service.create_bill(
+            CreateBillSpec(user_id=1, split_bill_id=1, amount=123)
+        )
         assert True
 
     def test_split_bill_service_get(self):
@@ -58,23 +61,30 @@ class TestService(TestCase):
             user_fund_id=1,
             withdrawal_method="GOPAY",
             withdrawal_number="asasa",
-            user_ids=[1, 2],
+            amount=2460,
+            bills=[
+                OrderedDict([("user_id", 1), ("amount", 2460)]),
+                OrderedDict([("user_id", 2), ("amount", 2460)]),
+            ],
         )
         dummy_split_bill = SplitBill(
             name="tets",
             user_fund_id=1,
             withdrawal_method="GOPAY",
             withdrawal_number="asasa",
+            amount=2460,
         )
         dummy_bills = [
             Bill(
                 user_id=1,
                 split_bill_id=1,
+                amount=2460,
                 status="PENDING",
             ),
             Bill(
                 user_id=2,
                 split_bill_id=1,
+                amount=2460,
                 status="PENDING",
             ),
         ]
