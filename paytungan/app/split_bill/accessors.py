@@ -59,6 +59,7 @@ class BillAccessor(IBillAccessor):
             id=None if is_create else obj.id,
             user_id=obj.user_id,
             split_bill_id=obj.split_bill_id,
+            amount=obj.amount,
             status=obj.status,
             details=obj.details,
             **ObjectMapperUtil.default_model_creation_params()
@@ -114,6 +115,7 @@ class SplitBillAccessor(ISplitBillAccessor):
             user_fund_id=spec.user_fund_id,
             withdrawal_method=spec.withdrawal_method,
             withdrawal_number=spec.withdrawal_number,
+            amount=spec.amount,
             details=spec.details,
             **ObjectMapperUtil.default_model_creation_params()
         )

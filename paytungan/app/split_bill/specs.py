@@ -12,6 +12,7 @@ class GroupSplitBillDomain(BaseDomain):
     user_fund_id: int
     withdrawal_method: str
     withdrawal_number: int
+    amount: int
     details: Optional[str] = None
     bills: Optional[Bill] = None
 
@@ -20,6 +21,7 @@ class GroupSplitBillDomain(BaseDomain):
 class BillDomain(BaseDomain):
     user_id: int
     split_bill_id: int
+    amount: int
     status: str = BillStatus.PENDING.value
     details: Optional[str] = None
 
@@ -46,6 +48,7 @@ class GetBillListResult:
 class CreateBillSpec:
     user_id: int
     split_bill_id: int
+    amount: int
     details: Optional[str] = None
 
 
@@ -69,7 +72,14 @@ class CreateSplitBillSpec:
     user_fund_id: int
     withdrawal_method: str
     withdrawal_number: str
+    amount: int
     details: Optional[str] = None
+
+
+@dataclass
+class UserIdWithAmountBillDomain:
+    user_id: int
+    amount: int
 
 
 @dataclass
@@ -78,7 +88,8 @@ class CreateGroupSplitBillSpec:
     user_fund_id: int
     withdrawal_method: str
     withdrawal_number: str
-    user_ids: List[int] = None
+    amount: int
+    bills: List[UserIdWithAmountBillDomain]
     details: Optional[str] = None
 
 

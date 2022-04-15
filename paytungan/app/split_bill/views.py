@@ -81,6 +81,7 @@ class BillViewSet(viewsets.ViewSet):
         spec = CreateBillSpec(
             user_id=user.id,
             split_bill_id=data["split_bill_id"],
+            amount=data["amount"],
             details=data["details"],
         )
         user = bill_service.create_bill(spec)
@@ -130,8 +131,9 @@ class SplitBillViewSet(viewsets.ViewSet):
             user_fund_id=data["user_fund_id"],
             withdrawal_method=data["withdrawal_method"],
             withdrawal_number=data["withdrawal_number"],
+            amount=data["amount"],
             details=data["details"],
-            user_ids=data["user_ids"],
+            bills=data["bills"],
         )
         split_bill = split_bill_service.create_group_split_bill(spec)
         return Response(CreateSplitBillResponse({"data": split_bill}).data)

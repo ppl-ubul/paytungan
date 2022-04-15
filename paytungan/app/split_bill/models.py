@@ -15,6 +15,7 @@ class SplitBill(BaseModel):
     )
     withdrawal_method = models.CharField(max_length=128)
     withdrawal_number = models.CharField(max_length=128)
+    amount = models.PositiveIntegerField()
     details = models.TextField(null=True, blank=True)
 
     class Meta:
@@ -40,6 +41,7 @@ class Bill(BaseModel):
         SplitBill, related_name="bills", on_delete=models.PROTECT
     )
     status = models.CharField(max_length=16, default=BillStatus.PENDING.value)
+    amount = models.PositiveIntegerField()
     details = models.TextField(null=True, blank=True)
 
     class Meta:
