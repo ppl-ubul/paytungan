@@ -15,6 +15,7 @@ from .specs import (
     CreateGroupSplitBillSpec,
     DeleteSplitBillSpec,
     GetSplitBillListSpec,
+    GetBillListSpec,
 )
 from .serializers import (
     CreateBillRequest,
@@ -29,6 +30,8 @@ from .serializers import (
     GetSplitBillRequest,
     GetSplitBillListRequest,
     GetSplitBillListResponse,
+    GetBillListRequest,
+    GetBillListResponse,
 )
 from .services import (
     BillService,
@@ -60,6 +63,29 @@ class BillViewSet(viewsets.ViewSet):
         data = serializer.data
         bill = bill_service.get_bill(data["id"])
         return Response(GetBillResponse({"data": bill}).data)
+
+    @action(
+        detail=False,
+        url_path="list/get",
+        methods=["get"],
+    )
+    @swagger_auto_schema(
+        manual_parameters=AUTH_HEADERS,
+        query_serializer=GetBillListRequest(),
+        responses={200: GetBillListResponse()},
+    )
+    @api_exception
+    @firebase_auth
+    def get_bill_list(self, request: Request, cred: FirebaseDecodedToken) -> Response:
+        """
+        Get list bill object
+        """
+        serializer = GetBillListRequest(data=request.query_params)
+        serializer.is_valid(raise_exception=True)
+        data = serializer.data
+        spec = ObjectMapperUtil.map(serializer.data, GetBillListSpec)
+        bills = bill_service.get_bill_list(spec)
+        return Response(GetBillListResponse({"data": bills}).data)
 
     @action(
         detail=False,
@@ -156,7 +182,7 @@ class SplitBillViewSet(viewsets.ViewSet):
         """
         Get list split_bill object
         """
-        serializer = GetSplitBillListRequest(data=request.data)
+        serializer = GetSplitBillListRequest(data=request.query_params)
         serializer.is_valid(raise_exception=True)
         spec = ObjectMapperUtil.map(serializer.data, GetSplitBillListSpec)
         split_bills = split_bill_service.get_split_bill_list(spec)

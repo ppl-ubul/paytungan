@@ -101,3 +101,19 @@ class GetSplitBillListCurrentUserResponse(serializers.Serializer):
 
 class DeleteSplitBillRequest(serializers.Serializer):
     split_bill_id = serializers.IntegerField(min_value=1)
+
+
+class GetBillListRequest(serializers.Serializer):
+    user_ids = serializers.ListField(
+        child=serializers.IntegerField(min_value=1), required=False
+    )
+    bill_ids = serializers.ListField(
+        child=serializers.IntegerField(min_value=1), required=False
+    )
+    split_bill_ids = serializers.ListField(
+        child=serializers.IntegerField(min_value=1), required=False
+    )
+
+
+class GetBillListResponse(serializers.Serializer):
+    data = BillSerializer(many=True)

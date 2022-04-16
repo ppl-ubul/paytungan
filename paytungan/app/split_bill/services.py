@@ -30,7 +30,7 @@ class BillService:
         return self.bill_accessor.get(bill_id)
 
     def get_bill_list(self, spec: GetBillListSpec) -> List[Bill]:
-        return self.bill_accessor.get(spec)
+        return self.bill_accessor.get_list(spec)
 
     def create_bill(self, spec: CreateBillSpec) -> Bill:
         return self.bill_accessor.create(spec)
