@@ -20,3 +20,8 @@ class PaymentSerializers(serializers.Serializer):
 
 class GetPaymentResponse(serializers.Serializer):
     data = PaymentSerializers()
+
+
+class CreatePaymentRequest(serializers.Serializer):
+    bill_id = serializers.IntegerField(min_value=1)
+    method = serializers.CharField()

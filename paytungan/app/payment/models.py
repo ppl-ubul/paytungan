@@ -13,8 +13,9 @@ class Payment(BaseModel):
         on_delete=models.PROTECT,
     )
     status = models.CharField(max_length=20, default=PaymentStatus.PENDING.value)
-    method = models.CharField(max_length=64)
+    method = models.CharField(max_length=64, blank=True, null=True)
     reference_no = models.CharField(max_length=128)
+    paid_at = models.DateTimeField(blank=True, null=True)
 
     class Meta:
         db_table = "payment"

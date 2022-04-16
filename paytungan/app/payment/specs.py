@@ -1,4 +1,5 @@
 from dataclasses import dataclass, field
+from datetime import datetime
 from typing import List, Optional
 
 from paytungan.app.base.specs import BaseDomain
@@ -17,6 +18,7 @@ class PaymentDomain(BaseDomain):
     status: str
     method: str
     reference_no: str
+    paid_at: Optional[datetime] = None
     number: Optional[str] = None
 
 
