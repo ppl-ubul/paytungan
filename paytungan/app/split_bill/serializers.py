@@ -14,6 +14,8 @@ class BillSerializer(serializers.Serializer):
     split_bill_id = serializers.IntegerField(min_value=1)
     status = serializers.ChoiceField(choices=EnumUtil.extract_enum_values(BillStatus))
     amount = serializers.IntegerField(min_value=0)
+    created_at = serializers.DateTimeField()
+    updated_at = serializers.DateTimeField()
     details = serializers.CharField(required=False, allow_null=True)
 
 
