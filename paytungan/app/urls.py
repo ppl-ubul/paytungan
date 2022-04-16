@@ -1,6 +1,7 @@
 from rest_framework.routers import SimpleRouter
 from django.urls import include, path
 
+from .payment.views import PaymentViewSet
 from .auth.views import UserViewSet, AuthViewSet
 from .base.views import HealthCheckViewSet
 from .split_bill.views import SplitBillViewSet, BillViewSet
@@ -12,6 +13,7 @@ router.register("api/users", UserViewSet, basename="user")
 router.register("api/authentication", AuthViewSet, basename="authentication")
 router.register("api/split-bills", SplitBillViewSet, basename="split-bill")
 router.register("api/bills", BillViewSet, basename="bill")
+router.register("api/payments", PaymentViewSet, basename="payment")
 
 urlpatterns = [
     path("", include(router.urls)),

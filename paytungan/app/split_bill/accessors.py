@@ -23,7 +23,7 @@ class BillAccessor(IBillAccessor):
         self.logger = logger
 
     def create(self, obj: BillDomain) -> Bill:
-        bill = self._convert_to_model(obj)
+        bill = self._convert_to_model(obj=obj, is_create=True)
         bill.save()
         return bill
 
@@ -88,12 +88,12 @@ class SplitBillAccessor(ISplitBillAccessor):
         queryset = SplitBill.objects.all()
 
         if spec.user_id:
-            bill_ids = list(
+            ids = list(
                 Bill.objects.queryset.filter(user_id=spec.user_id)
                 .values_list("split_bill_id", flat=True)
                 .distinct()
             )
-            spec.bill_ids = bill_ids + (spec.bill_ids or [])
+            spec.split_bill_ids = ids + (spec.split_bill_ids or [])
 
         if spec.name:
             queryset = queryset.filter(name__iexact=spec.name)
