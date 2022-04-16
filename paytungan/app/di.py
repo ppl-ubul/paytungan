@@ -1,8 +1,9 @@
 from injector import Injector
 
-from .logging.modules import LoggingModule
-from .auth.modules import AuthModule
-from .split_bill.modules import SplitBillModule
+from paytungan.app.payment.modules import PaymentModule
+from paytungan.app.logging.modules import LoggingModule
+from paytungan.app.auth.modules import AuthModule
+from paytungan.app.split_bill.modules import SplitBillModule
 
 
 injector = Injector(
@@ -10,5 +11,6 @@ injector = Injector(
         AuthModule,
         SplitBillModule,
         LoggingModule,
+        PaymentModule,
     ]
 )
