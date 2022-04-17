@@ -16,6 +16,7 @@ class BillSerializer(serializers.Serializer):
     amount = serializers.IntegerField(min_value=0)
     created_at = serializers.DateTimeField()
     updated_at = serializers.DateTimeField()
+    user_name = serializers.CharField(required=False, allow_null=True)
     details = serializers.CharField(required=False, allow_null=True)
 
 

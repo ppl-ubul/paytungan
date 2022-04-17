@@ -23,6 +23,7 @@ class BillDomain(BaseDomain):
     split_bill_id: int
     amount: int
     status: str = BillStatus.PENDING.value
+    user_name: Optional[str] = None
     details: Optional[str] = None
 
 

@@ -56,3 +56,7 @@ class Bill(BaseModel):
 
     def __str__(self) -> str:
         return f"{str(self.id)}"
+
+    @property
+    def user_name(self) -> str:
+        return self.user.name
