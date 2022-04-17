@@ -26,5 +26,5 @@ class PaymentDomain(BaseDomain):
 class CreatePaymentSpec:
     bill_id: int
     method: str
-    status: str
     reference_no: str
+    status: Optional[str] = None

@@ -25,3 +25,8 @@ class GetPaymentResponse(serializers.Serializer):
 class CreatePaymentRequest(serializers.Serializer):
     bill_id = serializers.IntegerField(min_value=1)
     method = serializers.CharField()
+    reference_no = serializers.CharField()
+
+
+class CreatePaymentResponse(serializers.Serializer):
+    data = PaymentSerializers()

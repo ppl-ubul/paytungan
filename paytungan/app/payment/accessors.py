@@ -25,7 +25,7 @@ class PaymentAccessor(IPaymentAccessor):
                 .values_list("id", flat=True)
                 .distinct()
             )
-            spec.bill_ids = bill_ids + (spec.bill_ids or [])
+            spec.bill_ids.extend(bill_ids)
 
         if spec.bill_ids:
             queryset = queryset.filter(bill_id=spec.bill_id)

@@ -14,6 +14,8 @@ from .specs import (
     CreatePaymentSpec,
 )
 from .serializers import (
+    CreatePaymentRequest,
+    CreatePaymentResponse,
     GetPaymentResponse,
     GetPaymentRequest,
 )
@@ -46,27 +48,28 @@ class PaymentViewSet(viewsets.ViewSet):
         payment = payment_service.get_payment(data["id"])
         return Response(GetPaymentResponse({"data": payment}).data)
 
-    # @action(
-    #     detail=False,
-    #     url_path="create",
-    #     methods=["post"],
-    # )
-    # @swagger_auto_schema(
-    #     manual_parameters=AUTH_HEADERS,
-    #     request_body=CreatePaymentRequest(),
-    #     responses={200: CreatePaymentResponse()},
-    # )
-    # @transaction.atomic
-    # @api_exception
-    # @user_auth
-    # def create_bill(self, request: Request, user: UserDecoded) -> Response:
-    #     serializer = CreatePaymentRequest(data=request.data)
-    #     serializer.is_valid(raise_exception=True)
-    #     data = serializer.data
-    #     spec = CreatePaymentSpec(
-    #         user_id=user.id,
-    #         split_bill_id=data["split_bill_id"],
-    #         details=data["details"],
-    #     )
-    #     user = payment_service.create_bill(spec)
-    #     return Response(CreatePaymentResponse({"data": user}).data)
+    @action(
+        detail=False,
+        url_path="create",
+        methods=["post"],
+    )
+    @swagger_auto_schema(
+        manual_parameters=AUTH_HEADERS,
+        request_body=CreatePaymentRequest(),
+        responses={200: CreatePaymentResponse()},
+    )
+    @transaction.atomic
+    @api_exception
+    @user_auth
+    def create_bill(self, request: Request, user: UserDecoded) -> Response:
+        serializer = CreatePaymentRequest(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        data = serializer.data
+        spec = CreatePaymentSpec(
+            bill_id=data["bill_id"],
+            method=data["method"],
+            reference_no=data["reference_no"],
+            status=data["status"],
+        )
+        user = payment_service.create_bill(spec)
+        return Response(CreatePaymentResponse({"data": user}).data)
