@@ -15,6 +15,7 @@ from .specs import (
     CreateSplitBillSpec,
     DeleteSplitBillSpec,
     GetBillListSpec,
+    GetSplitBillCurrentUserSpec,
     GetSplitBillListSpec,
     GroupSplitBillDomain,
     SplitBillWithBillDomain,
@@ -93,10 +94,12 @@ class SplitBillService:
             bills=bills,
         )
 
-    def get_list_current_user(self, user_id: int) -> List[SplitBillWithBillDomain]:
+    def get_list_current_user(
+        self, spec: GetSplitBillCurrentUserSpec
+    ) -> List[SplitBillWithBillDomain]:
         bills = self.bill_accessor.get_list(
             GetBillListSpec(
-                user_ids=[user_id],
+                user_ids=[spec.user_id],
             )
         )
 
@@ -105,7 +108,10 @@ class SplitBillService:
 
         split_bills_ids = [bill.split_bill_id for bill in bills]
         split_bills = self.split_bill_accessor.get_list(
-            GetSplitBillListSpec(split_bill_ids=split_bills_ids)
+            GetSplitBillListSpec(
+                split_bill_ids=split_bills_ids,
+                user_fund_id=spec.user_id if spec.is_user_fund else None,
+            )
         )
 
         if not split_bills:

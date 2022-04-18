@@ -14,6 +14,7 @@ from .specs import (
     CreateBillSpec,
     CreateGroupSplitBillSpec,
     DeleteSplitBillSpec,
+    GetSplitBillCurrentUserSpec,
     GetSplitBillListSpec,
     GetBillListSpec,
 )
@@ -25,6 +26,7 @@ from .serializers import (
     DeleteSplitBillRequest,
     GetBillResponse,
     GetBillRequest,
+    GetSplitBillListCurrentUserRequest,
     GetSplitBillListCurrentUserResponse,
     GetSplitBillResponse,
     GetSplitBillRequest,
@@ -195,6 +197,7 @@ class SplitBillViewSet(viewsets.ViewSet):
     )
     @swagger_auto_schema(
         manual_parameters=AUTH_HEADERS,
+        query_serializer=GetSplitBillListCurrentUserRequest(),
         responses={200: GetSplitBillListCurrentUserResponse()},
     )
     @api_exception
@@ -203,7 +206,13 @@ class SplitBillViewSet(viewsets.ViewSet):
         """
         Get list split_bill object of current user
         """
-        split_bills = split_bill_service.get_list_current_user(user.id)
+        serializer = GetSplitBillListCurrentUserRequest(data=request.query_params)
+        serializer.is_valid(raise_exception=True)
+        data = serializer.data
+        spec = GetSplitBillCurrentUserSpec(
+            user_id=user.id, is_user_fund=data["is_user_fund"]
+        )
+        split_bills = split_bill_service.get_list_current_user(spec)
         return Response(GetSplitBillListCurrentUserResponse({"data": split_bills}).data)
 
     @action(

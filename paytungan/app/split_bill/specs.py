@@ -99,3 +99,9 @@ class DeleteSplitBillSpec:
     user_fund_id: Optional[int] = None
     bill_ids: Optional[List[int]] = None
     split_bill_ids: Optional[List[int]] = None
+
+
+@dataclass
+class GetSplitBillCurrentUserSpec:
+    user_id: int
+    is_user_fund: Optional[bool] = None

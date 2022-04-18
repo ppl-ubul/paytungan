@@ -98,6 +98,10 @@ class GetSplitBillListResponse(serializers.Serializer):
     data = GroupSplitBillSerializer(many=True)
 
 
+class GetSplitBillListCurrentUserRequest(serializers.Serializer):
+    is_user_fund = serializers.BooleanField(default=False)
+
+
 class GetSplitBillListCurrentUserResponse(serializers.Serializer):
     data = SplitBillWithBillCurrentUserSerializer(many=True)
 
