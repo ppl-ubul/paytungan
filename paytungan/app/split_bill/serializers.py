@@ -8,6 +8,22 @@ class GetBillRequest(serializers.Serializer):
     id = serializers.IntegerField(min_value=1)
 
 
+class UserSerializer(serializers.Serializer):
+    phone_number = serializers.CharField()
+    username = serializers.CharField(
+        required=False, default=None, allow_null=True, allow_blank=True
+    )
+    email = serializers.CharField(
+        required=False, default=None, allow_null=True, allow_blank=True
+    )
+    name = serializers.CharField(
+        required=False, default=None, allow_null=True, allow_blank=True
+    )
+    profil_image = serializers.CharField(
+        required=False, default=None, allow_null=True, allow_blank=True
+    )
+
+
 class BillSerializer(serializers.Serializer):
     id = serializers.IntegerField(min_value=1)
     user_id = serializers.IntegerField(min_value=1)
@@ -16,7 +32,7 @@ class BillSerializer(serializers.Serializer):
     amount = serializers.IntegerField(min_value=0)
     created_at = serializers.DateTimeField()
     updated_at = serializers.DateTimeField()
-    user_name = serializers.CharField(required=False, allow_null=True)
+    user = UserSerializer(required=False, allow_null=True)
     details = serializers.CharField(required=False, allow_null=True)
 
 

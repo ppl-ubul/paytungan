@@ -3,7 +3,7 @@ from typing import List, Optional
 from paytungan.app.base.constants import BillStatus
 
 from paytungan.app.base.specs import BaseDomain
-from .models import Bill, SplitBill
+from .models import Bill, SplitBill, User
 
 
 @dataclass
@@ -23,7 +23,7 @@ class BillDomain(BaseDomain):
     split_bill_id: int
     amount: int
     status: str = BillStatus.PENDING.value
-    user_name: Optional[str] = None
+    user: Optional[User] = None
     details: Optional[str] = None
 
 
