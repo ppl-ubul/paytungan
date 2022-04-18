@@ -1,5 +1,6 @@
 # from django.test import TestCase
 from datetime import datetime
+from re import U
 from unittest import TestCase
 from unittest.mock import MagicMock
 from collections import OrderedDict
@@ -11,6 +12,7 @@ from paytungan.app.split_bill.specs import (
     CreateGroupSplitBillSpec,
     DeleteSplitBillSpec,
     GetBillListSpec,
+    GetSplitBillCurrentUserSpec,
     GetSplitBillListSpec,
 )
 
@@ -123,17 +125,20 @@ class TestService(TestCase):
                 status="PENDING",
             )
         ]
+        spec = GetSplitBillCurrentUserSpec(user_id=1)
 
         self.split_bill_accessor.get_list.return_value = dummy_split_bills
         self.bill_accessor.get_list.return_value = dummy_bills
 
-        result = self.split_bill_service.get_list_current_user(1)
+        result = self.split_bill_service.get_list_current_user(spec)
 
         self.assertEqual(result[0].split_bill.id, dummy_split_bills[0].id)
 
     def test_get_split_bill_list_current_user_empty_success(self):
+        spec = GetSplitBillCurrentUserSpec(user_id=1)
+
         self.bill_accessor.get_list.return_value = []
-        result = self.split_bill_service.get_list_current_user(1)
+        result = self.split_bill_service.get_list_current_user(spec)
         self.assertEqual(len(result), 0)
 
         dummy_bills = [
@@ -143,9 +148,10 @@ class TestService(TestCase):
                 status="PENDING",
             )
         ]
+
         self.bill_accessor.get_list.return_value = dummy_bills
         self.split_bill_accessor.get_list.return_value = []
-        result = self.split_bill_service.get_list_current_user(1)
+        result = self.split_bill_service.get_list_current_user(spec)
         self.assertEqual(len(result), 0)
 
     def test_delete_split_bill_success(self):
