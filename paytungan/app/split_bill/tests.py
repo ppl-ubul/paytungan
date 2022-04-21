@@ -119,7 +119,6 @@ class TestService(TestCase):
         result = self.split_bill_service.create_group_split_bill(spec)
 
         self.assertEqual(result.name, spec.name)
-        self.assertEqual(False, True)
 
     def test_get_split_bill_list_current_user_success(self):
         dummy_split_bills = [
