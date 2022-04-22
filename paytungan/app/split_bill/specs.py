@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import List, Optional
 from paytungan.app.base.constants import BillStatus
 
@@ -59,7 +59,7 @@ class GetSplitBillListSpec:
     user_id: Optional[int] = None
     name: Optional[str] = None
     bill_ids: Optional[List[int]] = None
-    split_bill_ids: Optional[List[int]] = None
+    split_bill_ids: List[int] = field(default_factory=list)
 
 
 @dataclass

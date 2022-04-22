@@ -89,11 +89,11 @@ class SplitBillAccessor(ISplitBillAccessor):
 
         if spec.user_id:
             ids = list(
-                Bill.objects.queryset.filter(user_id=spec.user_id)
+                Bill.objects.filter(user_id=spec.user_id)
                 .values_list("split_bill_id", flat=True)
                 .distinct()
             )
-            spec.split_bill_ids = ids + (spec.split_bill_ids or [])
+            spec.split_bill_ids.extend(ids)
 
         if spec.name:
             queryset = queryset.filter(name__iexact=spec.name)

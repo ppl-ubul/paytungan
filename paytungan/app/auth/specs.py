@@ -37,6 +37,7 @@ class UserDecoded:
     id: int
     firebase_id: str
     phone_number: str
+    email: Optional[str] = None
     username: Optional[str] = None
     name: Optional[str] = None
 

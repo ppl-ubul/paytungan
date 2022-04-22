@@ -13,8 +13,10 @@ class Payment(BaseModel):
         on_delete=models.PROTECT,
     )
     status = models.CharField(max_length=20, default=PaymentStatus.PENDING.value)
-    method = models.CharField(max_length=64)
-    reference_no = models.CharField(max_length=128)
+    method = models.CharField(max_length=64, blank=True, null=True)
+    reference_no = models.CharField(max_length=256, blank=True, null=True)
+    paid_at = models.DateTimeField(blank=True, null=True)
+    expiry_date = models.DateTimeField(blank=True, null=True)
 
     class Meta:
         db_table = "payment"
@@ -26,3 +28,7 @@ class Payment(BaseModel):
     def number(self) -> str:
         date = self.created_at.strftime("%y%m%d")
         return f"PAY/{self.bill_id:05d}/{date}/{self.id:05d}"
+
+    @property
+    def amount(self) -> int:
+        return self.bill.amount

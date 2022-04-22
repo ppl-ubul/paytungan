@@ -1,6 +1,9 @@
 from dataclasses import dataclass, field
+from datetime import datetime
 from typing import List, Optional
+from xendit import Invoice
 
+from paytungan.app.base.constants import PaymentStatus
 from paytungan.app.base.specs import BaseDomain
 
 
@@ -13,16 +16,51 @@ class GetPaymentListSpec:
 
 @dataclass
 class PaymentDomain(BaseDomain):
-    bill_id: str
-    status: str
-    method: str
-    reference_no: str
+    bill_id: int
+    status: str = PaymentStatus.PENDING.value
+    method: Optional[str] = None
+    reference_no: Optional[str] = None
+    paid_at: Optional[datetime] = None
+    expiry_date: Optional[datetime] = None
+    amount: Optional[str] = None
     number: Optional[str] = None
+    payment_url: Optional[str] = None
+    invoice: Optional[Invoice] = None
 
 
 @dataclass
 class CreatePaymentSpec:
     bill_id: int
-    method: str
+    success_redirect_url: Optional[str] = None
+    failed_redirect_url: Optional[str] = None
+
+
+@dataclass
+class UpdatePaymentSpec:
+    obj: PaymentDomain
+    updated_fields: Optional[List[str]] = None
+
+
+@dataclass
+class InvoiceDomain:
+    description: str
+    invoice_url: str
+    expiry_date: datetime
     status: str
-    reference_no: str
+    amount: int
+    payment_method: Optional[str] = None
+    paid_amount: Optional[int] = None
+    payer_email: Optional[str] = None
+    paid_at: Optional[datetime] = None
+    success_redirect_url: Optional[str] = None
+    failure_redirect_url: Optional[str] = None
+
+
+@dataclass
+class CreateXenditInvoiceSpec:
+    external_id: str
+    amount: int
+    payer_email: str
+    description: str
+    success_redirect_url: Optional[str] = None
+    failure_redirect_url: Optional[str] = None

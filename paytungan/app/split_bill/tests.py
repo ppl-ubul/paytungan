@@ -4,6 +4,7 @@ from re import U
 from unittest import TestCase
 from unittest.mock import MagicMock
 from collections import OrderedDict
+from faker import Faker
 
 from paytungan.app.split_bill.models import Bill, SplitBill
 from paytungan.app.split_bill.services import BillService, SplitBillService
@@ -19,6 +20,7 @@ from paytungan.app.split_bill.specs import (
 
 class TestService(TestCase):
     def setUp(self) -> None:
+        self.fake = Faker()
         self.bill_accessor = MagicMock()
         self.split_bill_accessor = MagicMock()
         self.bill_service = BillService(bill_accessor=self.bill_accessor)
@@ -26,6 +28,11 @@ class TestService(TestCase):
             split_bill_accessor=self.split_bill_accessor,
             bill_accessor=self.bill_accessor,
         )
+
+    @staticmethod
+    def _get_bill_dummy() -> Bill:
+        time_now = datetime.now()
+        return Bill()
 
     def test_bill_service_get(self):
         self.bill_service.get_bill(1)

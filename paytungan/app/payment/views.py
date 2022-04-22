@@ -7,13 +7,14 @@ from django.db import transaction
 
 from paytungan.app.common.decorators import api_exception
 from paytungan.app.base.headers import AUTH_HEADERS
-from paytungan.app.auth.utils import firebase_auth, user_auth
-from paytungan.app.auth.specs import FirebaseDecodedToken, UserDecoded
-from paytungan.app.common.utils import ObjectMapperUtil
+from paytungan.app.auth.utils import user_auth
+from paytungan.app.auth.specs import UserDecoded
 from .specs import (
     CreatePaymentSpec,
 )
 from .serializers import (
+    CreatePaymentRequest,
+    CreatePaymentResponse,
     GetPaymentResponse,
     GetPaymentRequest,
 )
@@ -36,9 +37,9 @@ class PaymentViewSet(viewsets.ViewSet):
         responses={200: GetPaymentResponse()},
     )
     @api_exception
-    def get_bill(self, request: Request) -> Response:
+    def get_payment(self, request: Request) -> Response:
         """
-        Get single bill object by id
+        Get single payment object by id
         """
         serializer = GetPaymentRequest(data=request.query_params)
         serializer.is_valid(raise_exception=True)
@@ -46,27 +47,23 @@ class PaymentViewSet(viewsets.ViewSet):
         payment = payment_service.get_payment(data["id"])
         return Response(GetPaymentResponse({"data": payment}).data)
 
-    # @action(
-    #     detail=False,
-    #     url_path="create",
-    #     methods=["post"],
-    # )
-    # @swagger_auto_schema(
-    #     manual_parameters=AUTH_HEADERS,
-    #     request_body=CreatePaymentRequest(),
-    #     responses={200: CreatePaymentResponse()},
-    # )
-    # @transaction.atomic
-    # @api_exception
-    # @user_auth
-    # def create_bill(self, request: Request, user: UserDecoded) -> Response:
-    #     serializer = CreatePaymentRequest(data=request.data)
-    #     serializer.is_valid(raise_exception=True)
-    #     data = serializer.data
-    #     spec = CreatePaymentSpec(
-    #         user_id=user.id,
-    #         split_bill_id=data["split_bill_id"],
-    #         details=data["details"],
-    #     )
-    #     user = payment_service.create_bill(spec)
-    #     return Response(CreatePaymentResponse({"data": user}).data)
+    @action(
+        detail=False,
+        url_path="create",
+        methods=["post"],
+    )
+    @swagger_auto_schema(
+        manual_parameters=AUTH_HEADERS,
+        request_body=CreatePaymentRequest(),
+        responses={200: CreatePaymentResponse()},
+    )
+    @transaction.atomic
+    @api_exception
+    @user_auth
+    def create_payment(self, request: Request, user: UserDecoded) -> Response:
+        serializer = CreatePaymentRequest(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        data = serializer.data
+        spec = CreatePaymentSpec(bill_id=data["bill_id"])
+        user = payment_service.create_payment(spec, user)
+        return Response(CreatePaymentResponse({"data": user}).data)
