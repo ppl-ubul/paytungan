@@ -12,3 +12,4 @@ django-cors-headers==3.11.0
 django-safedelete==1.1.2
 firebase_admin==5.2.0
 sentry_sdk==1.5.8
+xendit_python==0.1.6

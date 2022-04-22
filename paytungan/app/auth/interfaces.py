@@ -28,11 +28,11 @@ class IUserAccessor(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    def create_user(self, spec: CreateUserSpec) -> Optional[User]:
+    def create(self, spec: CreateUserSpec) -> Optional[User]:
         raise NotImplementedError
 
     @abstractmethod
-    def update_user(self, spec: UpdateUserSpec) -> Optional[User]:
+    def update(self, spec: UpdateUserSpec) -> Optional[User]:
         raise NotImplementedError
 
 

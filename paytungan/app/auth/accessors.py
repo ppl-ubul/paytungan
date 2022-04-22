@@ -65,7 +65,7 @@ class UserAccessor(IUserAccessor):
 
         return queryset
 
-    def create_user(self, spec: CreateUserSpec) -> Optional[User]:
+    def create(self, spec: CreateUserSpec) -> Optional[User]:
         try:
             new_user = User(
                 firebase_uid=spec.firebase_uid,
@@ -82,7 +82,7 @@ class UserAccessor(IUserAccessor):
             self.logger.error(f"Error when try to create user with spec {spec}: {e}")
             return None
 
-    def update_user(self, spec: UpdateUserSpec) -> Optional[User]:
+    def update(self, spec: UpdateUserSpec) -> Optional[User]:
         user: User
         try:
             user = User.objects.get(firebase_uid=spec.firebase_uid)
