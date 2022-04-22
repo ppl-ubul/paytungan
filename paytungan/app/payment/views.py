@@ -64,6 +64,10 @@ class PaymentViewSet(viewsets.ViewSet):
         serializer = CreatePaymentRequest(data=request.data)
         serializer.is_valid(raise_exception=True)
         data = serializer.data
-        spec = CreatePaymentSpec(bill_id=data["bill_id"])
+        spec = CreatePaymentSpec(
+            bill_id=data["bill_id"],
+            success_redirect_url=data["success_redirect_url"],
+            failure_redirect_url=data["failure_redirect_url"],
+        )
         user = payment_service.create_payment(spec, user)
         return Response(CreatePaymentResponse({"data": user}).data)

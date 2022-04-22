@@ -32,7 +32,7 @@ class PaymentDomain(BaseDomain):
 class CreatePaymentSpec:
     bill_id: int
     success_redirect_url: Optional[str] = None
-    failed_redirect_url: Optional[str] = None
+    failure_redirect_url: Optional[str] = None
 
 
 @dataclass

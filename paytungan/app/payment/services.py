@@ -71,6 +71,8 @@ class PaymentService:
                 amount=payment.amount,
                 payer_email=user.email,
                 description=payment.number,
+                success_redirect_url=spec.success_redirect_url,
+                failure_redirect_url=spec.failure_redirect_url,
             )
         )
 
