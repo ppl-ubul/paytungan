@@ -67,6 +67,7 @@ class SplitBillService:
                 user_id=bill["user_id"],
                 split_bill_id=split_bill.id,
                 amount=bill["amount"],
+                details=bill["details"],
                 **ObjectMapperUtil.default_domain_creation_params()
             )
             if bill["user_id"] != spec.user_fund_id
@@ -75,6 +76,7 @@ class SplitBillService:
                 split_bill_id=split_bill.id,
                 amount=bill["amount"],
                 status=BillStatus.PAID.value,
+                details=bill["details"],
                 **ObjectMapperUtil.default_domain_creation_params()
             )
             for bill in spec.bills
