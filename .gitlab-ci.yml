@@ -16,6 +16,7 @@ test:
   stage: test
   before_script:
     - pip install -r requirements.txt
+    - pip install -r requirements-dev.txt
     - export DJANGO_SETTINGS_MODULE=paytungan.settings
     - export APP_ENV=test
     - export FIREBASE_PRIVATE_KEY=dummy
