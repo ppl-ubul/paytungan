@@ -1,6 +1,6 @@
 from functools import wraps
 
-from paytungan.app.auth.specs import UserDecoded
+from paytungan.app.auth.specs import UserDomain
 from paytungan.app.base.serializers import AuthHeaderRequest
 from paytungan.app.common.exceptions import UnauthorizedError
 from paytungan.app.common.utils import ObjectMapperUtil
@@ -37,7 +37,7 @@ def user_auth(func):
         header_serializer.is_valid(raise_exception=True)
         token = header_serializer.data["Authentication"]
         user = auth_service.get_user_from_token(token)
-        cred = ObjectMapperUtil.map(user, UserDecoded)
+        cred = ObjectMapperUtil.map(user, UserDomain)
         if not user:
             raise UnauthorizedError(
                 message="User with current token is not found", code=403

@@ -8,7 +8,7 @@ from django.db import transaction
 from paytungan.app.common.decorators import api_exception
 from paytungan.app.base.headers import AUTH_HEADERS
 from paytungan.app.auth.utils import firebase_auth, user_auth
-from paytungan.app.auth.specs import FirebaseDecodedToken, UserDecoded
+from paytungan.app.auth.specs import FirebaseDecodedToken, UserDomain
 from paytungan.app.common.utils import ObjectMapperUtil
 from .specs import (
     CreateBillSpec,
@@ -102,7 +102,7 @@ class BillViewSet(viewsets.ViewSet):
     @transaction.atomic
     @api_exception
     @user_auth
-    def create_bill(self, request: Request, user: UserDecoded) -> Response:
+    def create_bill(self, request: Request, user: UserDomain) -> Response:
         serializer = CreateBillRequest(data=request.data)
         serializer.is_valid(raise_exception=True)
         data = serializer.data
@@ -150,7 +150,7 @@ class SplitBillViewSet(viewsets.ViewSet):
     @transaction.atomic
     @api_exception
     @user_auth
-    def create_split_bill(self, request: Request, user: UserDecoded) -> Response:
+    def create_split_bill(self, request: Request, user: UserDomain) -> Response:
         serializer = CreateSplitBillRequest(data=request.data)
         serializer.is_valid(raise_exception=True)
         data = serializer.data
@@ -202,7 +202,7 @@ class SplitBillViewSet(viewsets.ViewSet):
     )
     @api_exception
     @user_auth
-    def get_list_current_user(self, request: Request, user: UserDecoded) -> Response:
+    def get_list_current_user(self, request: Request, user: UserDomain) -> Response:
         """
         Get list split_bill object of current user
         """
@@ -228,7 +228,7 @@ class SplitBillViewSet(viewsets.ViewSet):
     @transaction.atomic
     @api_exception
     @user_auth
-    def delete_split_bill(self, request: Request, user: UserDecoded) -> Response:
+    def delete_split_bill(self, request: Request, user: UserDomain) -> Response:
         serializer = CreateSplitBillRequest(data=request.data)
         serializer.is_valid(raise_exception=True)
         data = serializer.data

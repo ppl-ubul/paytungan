@@ -1,25 +1,42 @@
 # from django.test import TestCase
+from typing import Optional
 from unittest import TestCase
 from unittest.mock import MagicMock
-from paytungan.app.auth.models import User
+from faker import Faker
 
+from paytungan.app.auth.models import User
 from paytungan.app.auth.specs import (
     CreateUserSpec,
     FirebaseDecodedToken,
     GetUserListSpec,
     UpdateUserSpec,
+    UserDomain,
 )
 
 from .services import AuthService, UserServices
 
 
-class TestService(TestCase):
+class TestAuthService(TestCase):
     def setUp(self) -> None:
         self.mock = MagicMock()
         self.user_service = UserServices(user_accessor=self.mock)
         self.auth_service = AuthService(
             user_accessor=self.mock,
             firebase_provider=self.mock,
+        )
+
+    @staticmethod
+    def _get_user_dummy(seed: int):
+        fake = Faker()
+        Faker.seed(seed)
+
+        return UserDomain(
+            id=fake.pyint(),
+            firebase_id=fake.pystr(),
+            phone_number=fake.phone_number(),
+            email=fake.email(),
+            username=fake.pystr(),
+            name=fake.name(),
         )
 
     def test_user_service_get(self):

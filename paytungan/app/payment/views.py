@@ -8,7 +8,7 @@ from django.db import transaction
 from paytungan.app.common.decorators import api_exception
 from paytungan.app.base.headers import AUTH_HEADERS
 from paytungan.app.auth.utils import user_auth
-from paytungan.app.auth.specs import UserDecoded
+from paytungan.app.auth.specs import UserDomain
 from .specs import (
     CreatePaymentSpec,
 )
@@ -60,7 +60,7 @@ class PaymentViewSet(viewsets.ViewSet):
     @transaction.atomic
     @api_exception
     @user_auth
-    def create_payment(self, request: Request, user: UserDecoded) -> Response:
+    def create_payment(self, request: Request, user: UserDomain) -> Response:
         serializer = CreatePaymentRequest(data=request.data)
         serializer.is_valid(raise_exception=True)
         data = serializer.data

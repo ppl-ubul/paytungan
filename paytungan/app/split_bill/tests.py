@@ -1,6 +1,7 @@
 # from django.test import TestCase
 from datetime import datetime
 from re import U
+from typing import Optional
 from unittest import TestCase
 from unittest.mock import MagicMock
 from collections import OrderedDict
@@ -9,6 +10,7 @@ from faker import Faker
 from paytungan.app.split_bill.models import Bill, SplitBill
 from paytungan.app.split_bill.services import BillService, SplitBillService
 from paytungan.app.split_bill.specs import (
+    BillDomain,
     CreateBillSpec,
     CreateGroupSplitBillSpec,
     DeleteSplitBillSpec,
@@ -18,9 +20,8 @@ from paytungan.app.split_bill.specs import (
 )
 
 
-class TestService(TestCase):
+class TestSplitBillService(TestCase):
     def setUp(self) -> None:
-        self.fake = Faker()
         self.bill_accessor = MagicMock()
         self.split_bill_accessor = MagicMock()
         self.bill_service = BillService(bill_accessor=self.bill_accessor)
@@ -30,9 +31,22 @@ class TestService(TestCase):
         )
 
     @staticmethod
-    def _get_bill_dummy() -> Bill:
+    def _get_bill_dummy(
+        seed: int, split_bill_id: Optional[int] = None, user_id: Optional[int] = None
+    ) -> BillDomain:
+        fake = Faker()
+        Faker.seed(seed)
         time_now = datetime.now()
-        return Bill()
+        return BillDomain(
+            id=fake.pyint(),
+            user_id=user_id or fake.pyint(),
+            split_bill_id=split_bill_id or fake.pyint(),
+            amount=fake.pyint(min_value=5000, max_value=10000),
+            status=fake.pystr(),
+            details=fake.pystr_format(),
+            created_at=time_now,
+            updated_at=time_now,
+        )
 
     def test_bill_service_get(self):
         self.bill_service.get_bill(1)

@@ -43,6 +43,7 @@ class UpdatePaymentSpec:
 
 @dataclass
 class InvoiceDomain:
+    id: str
     description: str
     invoice_url: str
     expiry_date: datetime
