@@ -33,7 +33,7 @@ class FirebaseDecodedToken:
 
 
 @dataclass
-class UserDecoded:
+class UserDomain:
     id: int
     firebase_id: str
     phone_number: str

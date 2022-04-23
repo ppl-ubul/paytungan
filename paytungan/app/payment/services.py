@@ -1,9 +1,9 @@
 from typing import List, Optional
 from injector import inject
 
-from paytungan.app.auth.specs import UserDecoded
+from paytungan.app.auth.specs import UserDomain
 from paytungan.app.base.constants import BillStatus
-from paytungan.app.common.exceptions import NotFoundException, ValidationError
+from paytungan.app.common.exceptions import NotFoundException, ValidationErrorException
 from paytungan.app.common.utils import ObjectMapperUtil
 from paytungan.app.payment.interfaces import IPaymentAccessor, IXenditProvider
 from paytungan.app.payment.models import Payment
@@ -45,7 +45,7 @@ class PaymentService:
         return self.payment_accessor.get_list(spec)
 
     def create_payment(
-        self, spec: CreatePaymentSpec, user: UserDecoded
+        self, spec: CreatePaymentSpec, user: UserDomain
     ) -> PaymentDomain:
         bill = self.bill_accessor.get(spec.bill_id)
 
@@ -53,10 +53,12 @@ class PaymentService:
             raise NotFoundException(f"Bill object with id: {spec.bill_id} not found")
 
         if bill.user_id != user.id:
-            raise ValidationError("User of Bill and user from token don't match")
+            raise ValidationErrorException(
+                "User of Bill and user from token don't match"
+            )
 
         if bill.status == BillStatus.PAID.value:
-            raise ValidationError("Bill already been paid")
+            raise ValidationErrorException("Bill already been paid")
 
         payment = self.payment_accessor.create(
             PaymentDomain(
