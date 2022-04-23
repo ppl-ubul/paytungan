@@ -80,8 +80,20 @@ class TestService(TestCase):
             withdrawal_number="asasa",
             amount=2460,
             bills=[
-                OrderedDict([("user_id", 1), ("amount", 2460)]),
-                OrderedDict([("user_id", 2), ("amount", 2460)]),
+                OrderedDict(
+                    [
+                        ("user_id", 1),
+                        ("amount", 2460),
+                        ("details", "Beli nasi goreng si dandang"),
+                    ]
+                ),
+                OrderedDict(
+                    [
+                        ("user_id", 2),
+                        ("amount", 2460),
+                        ("details", "Beli nasi goreng si dandang"),
+                    ]
+                ),
             ],
         )
         dummy_split_bill = SplitBill(
@@ -97,12 +109,14 @@ class TestService(TestCase):
                 split_bill_id=1,
                 amount=2460,
                 status="PENDING",
+                details="Beli nasi goreng si dandang",
             ),
             Bill(
                 user_id=2,
                 split_bill_id=1,
                 amount=2460,
                 status="PENDING",
+                details="Beli nasi goreng si dandang",
             ),
         ]
 
