@@ -1,6 +1,7 @@
 from rest_framework import serializers
 
 from paytungan.app.common.utils import EnumUtil
+from paytungan.app.base.constants import PaymentStatus
 from paytungan.app.split_bill.serializers import BillSerializer
 
 
@@ -50,6 +51,20 @@ class CreatePaymentRequest(serializers.Serializer):
 
 class CreatePaymentResponse(serializers.Serializer):
     data = PaymentSerializers()
+
+
+class GetPaymentListRequest(serializers.Serializer):
+    bill_ids = serializers.ListField(
+        child=serializers.IntegerField(min_value=1), required=False
+    )
+    user_id = serializers.IntegerField(min_value=1, required=False)
+    status = serializers.ChoiceField(
+        choices=EnumUtil.extract_enum_values(PaymentStatus), required=False
+    )
+
+
+class GetPaymentListResponse(serializers.Serializer):
+    data = PaymentSerializers(many=True)
 
 
 class UpdateStatusRequest(serializers.Serializer):
