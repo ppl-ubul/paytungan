@@ -5,6 +5,7 @@ from xendit import Invoice
 
 from paytungan.app.base.constants import PaymentStatus
 from paytungan.app.base.specs import BaseDomain
+from .models import Bill
 
 
 @dataclass
@@ -65,3 +66,14 @@ class CreateXenditInvoiceSpec:
     description: str
     success_redirect_url: Optional[str] = None
     failure_redirect_url: Optional[str] = None
+
+
+@dataclass
+class UpdateStatusSpec:
+    bill_id: int
+
+
+@dataclass
+class PaymentWithBillDomain:
+    payment: PaymentDomain
+    bill: Bill

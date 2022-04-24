@@ -13,8 +13,14 @@ from paytungan.app.payment.specs import (
     GetPaymentListSpec,
     PaymentDomain,
     UpdatePaymentSpec,
+    UpdateStatusSpec,
+    PaymentWithBillDomain,
+)
+from paytungan.app.split_bill.specs import (
+    UpdateBillSpec,
 )
 from paytungan.app.split_bill.interfaces import IBillAccessor
+from datetime import datetime
 
 
 class PaymentService:
@@ -87,3 +93,32 @@ class PaymentService:
         )
 
         return payment
+
+    def update_status(self, spec: UpdateStatusSpec) -> Optional[PaymentWithBillDomain]:
+        payment_spec = GetPaymentListSpec(
+            bill_ids=list([spec.bill_id]),
+        )
+        payment = self.payment_accessor.get_list(payment_spec)
+
+        obj_payment = payment[0]
+        obj_payment.status = "PAID"
+        obj_payment.updated_at = datetime.now()
+
+        update_payment_spec = UpdatePaymentSpec(
+            obj=obj_payment, updated_fields=["status", "updated_at"]
+        )
+        payment = self.payment_accessor.update(update_payment_spec)
+
+        obj_bill = obj_payment.bill
+        obj_bill.status = "PAID"
+        obj_bill.updated_at = datetime.now()
+
+        update_bill_spec = UpdateBillSpec(
+            obj=obj_bill, updated_fields=["status", "updated_at"]
+        )
+        bill = self.bill_accessor.update(update_bill_spec)
+
+        return PaymentWithBillDomain(
+            payment=payment,
+            bill=bill,
+        )

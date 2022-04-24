@@ -7,16 +7,20 @@ from django.db import transaction
 
 from paytungan.app.common.decorators import api_exception
 from paytungan.app.base.headers import AUTH_HEADERS
-from paytungan.app.auth.utils import user_auth
-from paytungan.app.auth.specs import UserDomain
+from paytungan.app.auth.utils import user_auth, firebase_auth
+from paytungan.app.auth.specs import UserDomain, FirebaseDecodedToken
+
 from .specs import (
     CreatePaymentSpec,
+    UpdateStatusSpec,
 )
 from .serializers import (
     CreatePaymentRequest,
     CreatePaymentResponse,
     GetPaymentResponse,
     GetPaymentRequest,
+    UpdateStatusRequest,
+    UpdateStatusResponse,
 )
 from .services import (
     PaymentService,
@@ -71,3 +75,29 @@ class PaymentViewSet(viewsets.ViewSet):
         )
         user = payment_service.create_payment(spec, user)
         return Response(CreatePaymentResponse({"data": user}).data)
+
+    @action(
+        detail=False,
+        url_path="update/paid",
+        methods=["post"],
+    )
+    @swagger_auto_schema(
+        manual_parameters=AUTH_HEADERS,
+        request_body=UpdateStatusRequest(),
+        responses={200: UpdateStatusResponse()},
+    )
+    @transaction.atomic
+    @api_exception
+    @firebase_auth
+    def update_user(self, request: Request, cred: FirebaseDecodedToken) -> Response:
+        """
+        Update Status
+        """
+        serializer = UpdateStatusRequest(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        data = serializer.data
+        spec = UpdateStatusSpec(
+            bill_id=data["bill_id"],
+        )
+        payment = payment_service.update_status(spec)
+        return Response(UpdateStatusResponse({"data": payment}).data)
