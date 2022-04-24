@@ -21,6 +21,8 @@ from .serializers import (
     GetPaymentRequest,
     UpdateStatusRequest,
     UpdateStatusResponse,
+    GetPaymentByBillIdRequest,
+    GetPaymentByBillIdResponse,
 )
 from .services import (
     PaymentService,
@@ -101,3 +103,27 @@ class PaymentViewSet(viewsets.ViewSet):
         )
         payment = payment_service.update_status(spec)
         return Response(UpdateStatusResponse({"data": payment}).data)
+
+    @action(
+        detail=False,
+        url_path="get/bill_id",
+        methods=["get"],
+    )
+    @swagger_auto_schema(
+        manual_parameters=AUTH_HEADERS,
+        query_serializer=GetPaymentByBillIdRequest(),
+        responses={200: GetPaymentByBillIdResponse()},
+    )
+    @api_exception
+    @firebase_auth
+    def get_split_bill_list(
+        self, request: Request, cred: FirebaseDecodedToken
+    ) -> Response:
+        """
+        Get payment by bill id
+        """
+        serializer = GetPaymentByBillIdRequest(data=request.query_params)
+        serializer.is_valid(raise_exception=True)
+        data = serializer.data
+        payment = payment_service.get_payment_by_bill_id(data["bill_id"])
+        return Response(GetPaymentByBillIdResponse({"data": payment}).data)
