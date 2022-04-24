@@ -105,3 +105,9 @@ class DeleteSplitBillSpec:
 class GetSplitBillCurrentUserSpec:
     user_id: int
     is_user_fund: Optional[bool] = None
+
+
+@dataclass
+class UpdateBillSpec:
+    obj: BillDomain
+    updated_fields: Optional[List[str]] = None

@@ -13,6 +13,7 @@ from .specs import (
     DeleteSplitBillSpec,
     GetBillListSpec,
     GetSplitBillListSpec,
+    UpdateBillSpec,
 )
 from paytungan.app.base.constants import DEFAULT_LOGGER
 
@@ -52,6 +53,16 @@ class BillAccessor(IBillAccessor):
             queryset = queryset.filter(user__id__in=spec.user_ids)
 
         return queryset
+
+    def update(self, spec: UpdateBillSpec) -> BillDomain:
+        bill = self._convert_to_model(obj=spec.obj, is_create=False)
+        bill.save(update_fields=spec.updated_fields)
+
+        return self._convert_to_domain(bill)
+
+    @staticmethod
+    def _convert_to_domain(obj: Bill) -> BillDomain:
+        return ObjectMapperUtil.map(obj, BillDomain)
 
     @staticmethod
     def _convert_to_model(obj: BillDomain, is_create: bool) -> Bill:

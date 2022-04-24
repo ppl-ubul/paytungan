@@ -31,14 +31,14 @@ class PaymentAccessor(IPaymentAccessor):
 
         if spec.user_id:
             bill_ids = list(
-                Bill.objects.queryset.filter(user_id=spec.user_id)
+                Bill.objects.filter(user_id=spec.user_id)
                 .values_list("id", flat=True)
                 .distinct()
             )
             spec.bill_ids.extend(bill_ids)
 
         if spec.bill_ids:
-            queryset = queryset.filter(bill_id=spec.bill_id)
+            queryset = queryset.filter(bill_id__in=spec.bill_ids)
 
         if spec.status:
             queryset = queryset.filter(status=spec.status)

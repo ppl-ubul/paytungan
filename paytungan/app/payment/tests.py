@@ -13,6 +13,7 @@ from paytungan.app.payment.specs import (
     GetPaymentListSpec,
     InvoiceDomain,
     PaymentDomain,
+    UpdateStatusSpec,
 )
 from paytungan.app.split_bill.tests import TestSplitBillService
 
@@ -138,3 +139,10 @@ class TestPaymentService(TestCase):
         self.bill_accessor.get.return_value = bill_dummy
         with self.assertRaises(ValidationErrorException):
             self.payment_service.create_payment(spec, user_dummy)
+
+    def test_payment_service_update_status(self):
+        spec = UpdateStatusSpec(
+            bill_id=1,
+        )
+        self.payment_service.update_status(spec)
+        assert True
