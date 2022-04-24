@@ -83,15 +83,6 @@ class TestPaymentService(TestCase):
 
         self.assertTrue(1)
 
-    def test_get_list_payment_by_bill_ids(self) -> None:
-        spec = GetPaymentListSpec(
-            bill_ids=[1],
-        )
-
-        self.payment_service.get_payment_list(spec)
-
-        self.assertTrue(1)
-
     def test_create_payment_success(self):
         seed = 3002
         user_dummy = TestAuthService._get_user_dummy(seed)

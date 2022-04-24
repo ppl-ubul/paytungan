@@ -9,7 +9,6 @@ from paytungan.app.common.decorators import api_exception
 from paytungan.app.base.headers import AUTH_HEADERS
 from paytungan.app.auth.utils import user_auth, firebase_auth
 from paytungan.app.auth.specs import UserDomain, FirebaseDecodedToken
-from paytungan.app.common.utils import ObjectMapperUtil
 
 from .specs import (
     CreatePaymentSpec,
@@ -20,14 +19,11 @@ from .serializers import (
     CreatePaymentResponse,
     GetPaymentResponse,
     GetPaymentRequest,
-    GetPaymentListRequest,
-    GetPaymentListResponse,
     UpdateStatusRequest,
     UpdateStatusResponse,
 )
 from .services import (
     PaymentService,
-    GetPaymentListSpec,
 )
 from paytungan.app.di import injector
 
@@ -79,30 +75,6 @@ class PaymentViewSet(viewsets.ViewSet):
         )
         user = payment_service.create_payment(spec, user)
         return Response(CreatePaymentResponse({"data": user}).data)
-
-    @action(
-        detail=False,
-        url_path="list/get",
-        methods=["get"],
-    )
-    @swagger_auto_schema(
-        manual_parameters=AUTH_HEADERS,
-        query_serializer=GetPaymentListRequest(),
-        responses={200: GetPaymentListResponse()},
-    )
-    @api_exception
-    @firebase_auth
-    def get_split_bill_list(
-        self, request: Request, cred: FirebaseDecodedToken
-    ) -> Response:
-        """
-        Get list payment object
-        """
-        serializer = GetPaymentListRequest(data=request.query_params)
-        serializer.is_valid(raise_exception=True)
-        spec = ObjectMapperUtil.map(serializer.data, GetPaymentListSpec)
-        payments = payment_service.get_payment_list(spec)
-        return Response(GetPaymentListResponse({"data": payments}).data)
 
     @action(
         detail=False,
