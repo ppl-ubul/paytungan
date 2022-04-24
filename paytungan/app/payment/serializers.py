@@ -63,3 +63,11 @@ class PaymentWithBillDomain(serializers.Serializer):
 
 class UpdateStatusResponse(serializers.Serializer):
     data = PaymentWithBillDomain()
+
+
+class GetPaymentByBillIdRequest(serializers.Serializer):
+    bill_id = serializers.IntegerField(min_value=1)
+
+
+class GetPaymentByBillIdResponse(serializers.Serializer):
+    data = PaymentSerializers()

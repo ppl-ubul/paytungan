@@ -29,6 +29,10 @@ class IPaymentAccessor(ABC):
     def update(self, spec: UpdatePaymentSpec) -> PaymentDomain:
         raise NotImplementedError
 
+    @abstractmethod
+    def get_by_bill_id(self, bill_id: int) -> Optional[PaymentDomain]:
+        raise NotImplementedError
+
 
 class IXenditProvider(ABC):
     @abstractmethod

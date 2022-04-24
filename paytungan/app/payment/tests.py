@@ -146,3 +146,7 @@ class TestPaymentService(TestCase):
         )
         self.payment_service.update_status(spec)
         assert True
+
+    def test_get_payment_by_bill_id(self) -> None:
+        self.payment_service.get_payment_by_bill_id(1)
+        assert True
