@@ -1,10 +1,12 @@
 from typing import List, Optional
+from injector import inject
 from xendit import Xendit, Invoice
 from xendit.xendit_error import XenditError
 
 from paytungan.app.common.exceptions import NotFoundException
 from paytungan.app.common.utils import ObjectMapperUtil
 from paytungan.app.base.constants import XENDIT_API_KEY
+from paytungan.app.logging.interface import ILoggingProvider
 from paytungan.app.split_bill.models import Bill
 from .specs import (
     CreateXenditInvoiceSpec,
@@ -80,7 +82,9 @@ class PaymentAccessor(IPaymentAccessor):
 
 
 class XenditProvider(IXenditProvider):
-    def __init__(self) -> None:
+    @inject
+    def __init__(self, logger: ILoggingProvider) -> None:
+        self.logger = logger
         self._client = None
 
     def _get_client(self):
@@ -90,7 +94,7 @@ class XenditProvider(IXenditProvider):
         self._client = Xendit(api_key=XENDIT_API_KEY)
         return self._client
 
-    def get_invoice(self, invoice_id: str) -> InvoiceDomain:
+    def get_invoice(self, invoice_id: str) -> Optional[InvoiceDomain]:
         client = self._get_client()
 
         try:
@@ -98,7 +102,8 @@ class XenditProvider(IXenditProvider):
                 invoice_id=invoice_id,
             )
         except XenditError:
-            raise NotFoundException(f"Invoice with id: {invoice_id} is not found.")
+            self.logger.warning(f"Invoice with id: {invoice_id} is not found.")
+            return None
 
         return self._convert_invoice_domain(invoice)
 

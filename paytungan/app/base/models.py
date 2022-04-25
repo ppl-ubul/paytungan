@@ -10,7 +10,7 @@ class BaseModel(SafeDeleteModel):
 
     _safedelete_policy = SOFT_DELETE_CASCADE
 
-    created_at = models.DateTimeField(default=datetime.now)
+    created_at = models.DateTimeField(default=datetime.utcnow)
     updated_at = models.DateTimeField(auto_now=True, blank=True)
 
     class Meta:

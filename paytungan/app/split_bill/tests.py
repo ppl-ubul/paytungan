@@ -36,7 +36,7 @@ class TestSplitBillService(TestCase):
     ) -> BillDomain:
         fake = Faker()
         Faker.seed(seed)
-        time_now = datetime.now()
+        time_now = datetime.utcnow()
         return BillDomain(
             id=fake.pyint(),
             user_id=user_id or fake.pyint(),
@@ -149,8 +149,8 @@ class TestSplitBillService(TestCase):
                 user_fund_id=1,
                 withdrawal_method="GOPAY",
                 withdrawal_number="asasa",
-                created_at=datetime.now(),
-                updated_at=datetime.now(),
+                created_at=datetime.utcnow(),
+                updated_at=datetime.utcnow(),
             )
         ]
         dummy_bills = [

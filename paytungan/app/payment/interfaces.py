@@ -36,5 +36,5 @@ class IXenditProvider(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    def get_invoice(self, invoice_id: str) -> InvoiceDomain:
+    def get_invoice(self, invoice_id: str) -> Optional[InvoiceDomain]:
         raise NotImplementedError

@@ -1,5 +1,7 @@
 from typing import List, Optional
 from injector import inject
+from datetime import datetime
+from django.utils import timezone
 
 from paytungan.app.auth.specs import UserDomain
 from paytungan.app.base.constants import BillStatus
@@ -8,6 +10,8 @@ from paytungan.app.common.utils import ObjectMapperUtil
 from paytungan.app.payment.interfaces import IPaymentAccessor, IXenditProvider
 from paytungan.app.payment.models import Payment
 from paytungan.app.payment.specs import (
+    CreateInvoicePaymentResult,
+    CreateInvoicePaymentSpec,
     CreatePaymentSpec,
     CreateXenditInvoiceSpec,
     GetPaymentListSpec,
@@ -20,7 +24,6 @@ from paytungan.app.split_bill.specs import (
     UpdateBillSpec,
 )
 from paytungan.app.split_bill.interfaces import IBillAccessor
-from datetime import datetime
 
 
 class PaymentService:
@@ -36,12 +39,30 @@ class PaymentService:
         self.bill_accessor = bill_accessor
 
     def get_payment(self, payment_id: int) -> Optional[PaymentDomain]:
+        time_now = timezone.now()
         payment = self.payment_accessor.get(payment_id)
 
         if not payment:
             return None
 
         invoice = self.xendit_provider.get_invoice(payment.reference_no)
+        if not invoice:
+            raise ValidationErrorException(
+                f"Payment with id: {payment.id} have no invoice."
+            )
+
+        if not payment.expiry_date or payment.expiry_date < time_now:
+            result = self.create_invoice_for_payment(
+                CreateInvoicePaymentSpec(
+                    payment_id=payment.id,
+                    payer_email=invoice.payer_email,
+                    success_redirect_url=invoice.success_redirect_url,
+                    failure_redirect_url=invoice.failure_redirect_url,
+                )
+            )
+            payment = result.payment
+            invoice = result.invoice
+
         payment.invoice = invoice
         payment.payment_url = invoice.invoice_url
 
@@ -73,26 +94,16 @@ class PaymentService:
             )
         )
 
-        invoice = self.xendit_provider.create_invoice(
-            CreateXenditInvoiceSpec(
-                external_id=str(payment.id),
-                amount=payment.amount,
+        result = self.create_invoice_for_payment(
+            CreateInvoicePaymentSpec(
+                payment_id=payment.id,
                 payer_email=user.email,
-                description=payment.number,
                 success_redirect_url=spec.success_redirect_url,
                 failure_redirect_url=spec.failure_redirect_url,
             )
         )
 
-        payment.reference_no = invoice.id
-        payment.expiry_date = invoice.expiry_date
-        payment.invoice = invoice
-        payment.payment_url = invoice.invoice_url
-        self.payment_accessor.update(
-            UpdatePaymentSpec(payment, updated_fields=["reference_no", "expiry_date"])
-        )
-
-        return payment
+        return result.payment
 
     def update_status(self, spec: UpdateStatusSpec) -> Optional[PaymentWithBillDomain]:
         payment_spec = GetPaymentListSpec(
@@ -102,7 +113,7 @@ class PaymentService:
 
         obj_payment = payment[0]
         obj_payment.status = "PAID"
-        obj_payment.updated_at = datetime.now()
+        obj_payment.updated_at = datetime.utcnow()
 
         update_payment_spec = UpdatePaymentSpec(
             obj=obj_payment, updated_fields=["status", "updated_at"]
@@ -111,7 +122,7 @@ class PaymentService:
 
         obj_bill = obj_payment.bill
         obj_bill.status = "PAID"
-        obj_bill.updated_at = datetime.now()
+        obj_bill.updated_at = datetime.utcnow()
 
         update_bill_spec = UpdateBillSpec(
             obj=obj_bill, updated_fields=["status", "updated_at"]
@@ -122,3 +133,37 @@ class PaymentService:
             payment=payment,
             bill=bill,
         )
+
+    def create_invoice_for_payment(
+        self, spec: CreateInvoicePaymentSpec
+    ) -> CreateInvoicePaymentResult:
+        payment = self.payment_accessor.get(spec.payment_id)
+
+        if not payment:
+            raise ValidationErrorException(
+                f"Cant create invoice for payment_id: {spec.payment_id}"
+            )
+
+        invoice = self.xendit_provider.create_invoice(
+            CreateXenditInvoiceSpec(
+                external_id=str(payment.id),
+                amount=payment.amount,
+                payer_email=spec.payer_email,
+                description=payment.number,
+                success_redirect_url=spec.success_redirect_url,
+                failure_redirect_url=spec.failure_redirect_url,
+            )
+        )
+
+        payment.reference_no = invoice.id
+        payment.expiry_date = invoice.expiry_date
+        payment.updated_at = timezone.now()
+        payment.invoice = invoice
+        payment.payment_url = invoice.invoice_url
+        self.payment_accessor.update(
+            UpdatePaymentSpec(
+                payment, updated_fields=["reference_no", "expiry_date", "updated_at"]
+            )
+        )
+
+        return CreateInvoicePaymentResult(payment=payment, invoice=invoice)
