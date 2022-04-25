@@ -77,3 +77,17 @@ class UpdateStatusSpec:
 class PaymentWithBillDomain:
     payment: PaymentDomain
     bill: Bill
+
+
+@dataclass
+class CreateInvoicePaymentSpec:
+    payment_id: int
+    payer_email: str
+    success_redirect_url: Optional[str] = None
+    failure_redirect_url: Optional[str] = None
+
+
+@dataclass
+class CreateInvoicePaymentResult:
+    payment: PaymentDomain
+    invoice: InvoiceDomain

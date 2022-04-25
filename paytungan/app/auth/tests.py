@@ -58,14 +58,14 @@ class TestAuthService(TestCase):
 
     def test_user_service_register(self):
         spec = CreateUserSpec(firebase_uid="aa", phone_number="aaa")
-        self.user_service.create(spec)
+        self.user_service.create_user(spec)
         assert True
 
     def test_user_service_update_user(self):
         spec = UpdateUserSpec(
             firebase_uid="aa", username="aaa", name="aaaa", profil_image="aaaaa"
         )
-        self.user_service.update(spec)
+        self.user_service.update_user(spec)
         assert True
 
     def test_auth_login_succeed(self):
