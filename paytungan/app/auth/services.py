@@ -29,11 +29,11 @@ class UserServices:
         return self.user_accessor.get_list(spec)
 
     def create_user(self, spec: CreateUserSpec) -> Optional[User]:
-        user = self.user_accessor.create_user(spec)
+        user = self.user_accessor.create(spec)
         return user
 
     def update_user(self, spec: UpdateUserSpec) -> Optional[User]:
-        user = self.user_accessor.update_user(spec)
+        user = self.user_accessor.update(spec)
         return user
 
 
@@ -62,7 +62,7 @@ class AuthService:
         if user:
             return user
 
-        return self.user_accessor.create_user(
+        return self.user_accessor.create(
             CreateUserSpec(
                 firebase_uid=decoded_token.user_id,
                 phone_number=decoded_token.phone_number,
