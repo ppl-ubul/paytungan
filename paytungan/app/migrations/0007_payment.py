@@ -25,7 +25,7 @@ class Migration(migrations.Migration):
                     ),
                 ),
                 ("deleted", models.DateTimeField(editable=False, null=True)),
-                ("created_at", models.DateTimeField(default=datetime.datetime.now)),
+                ("created_at", models.DateTimeField(default=datetime.datetime.utcnow)),
                 ("updated_at", models.DateTimeField(auto_now=True)),
                 ("status", models.CharField(default="PENDING", max_length=20)),
                 ("method", models.CharField(max_length=64)),

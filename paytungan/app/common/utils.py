@@ -86,7 +86,7 @@ class ObjectMapperUtil:
 
     @staticmethod
     def default_domain_creation_params():
-        time_now = datetime.now()
+        time_now = timezone.now()
         return {
             "id": 0,
             "created_at": time_now,
