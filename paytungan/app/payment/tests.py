@@ -210,3 +210,7 @@ class TestPaymentService(TestCase):
 
         with self.assertRaises(ValidationErrorException):
             self.payment_service.create_invoice_for_payment(spec)
+
+    def test_get_payment_by_bill_id(self) -> None:
+        self.payment_service.get_payment_by_bill_id(1)
+        assert True

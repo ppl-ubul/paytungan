@@ -1,5 +1,5 @@
-import uuid
 from django.db import models
+from django.db.models import Q
 
 from paytungan.app.base.constants import PaymentStatus
 from paytungan.app.base.models import BaseModel
@@ -9,8 +9,9 @@ from paytungan.app.split_bill.models import Bill
 class Payment(BaseModel):
     bill = models.ForeignKey(
         Bill,
-        related_name="payments",
-        on_delete=models.PROTECT,
+        related_name="payment",
+        on_delete=models.SET_NULL,
+        null=True,
     )
     status = models.CharField(max_length=20, default=PaymentStatus.PENDING.value)
     method = models.CharField(max_length=64, blank=True, null=True)
@@ -20,6 +21,13 @@ class Payment(BaseModel):
 
     class Meta:
         db_table = "payment"
+        constraints = [
+            models.UniqueConstraint(
+                fields=["bill_id"],
+                condition=Q(deleted__isnull=True, bill_id__isnull=False),
+                name="unique_bill_id_if_not_deleted",
+            ),
+        ]
 
     def __str__(self) -> str:
         return f"{str(self.id)} - {str(self.number)}"

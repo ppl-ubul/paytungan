@@ -28,6 +28,14 @@ class PaymentAccessor(IPaymentAccessor):
 
         return self._convert_to_domain(payment)
 
+    def get_by_bill_id(self, bill_id: int) -> Optional[PaymentDomain]:
+        try:
+            payment = Payment.objects.get(bill_id=bill_id)
+        except Payment.DoesNotExist:
+            return None
+
+        return self._convert_to_domain(payment)
+
     def get_list(self, spec: GetPaymentListSpec) -> List[Payment]:
         queryset = Payment.objects.all()
 
