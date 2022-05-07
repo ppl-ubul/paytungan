@@ -30,6 +30,10 @@ class SplitBill(BaseModel):
     def __str__(self) -> str:
         return f"{str(self.id)} - {str(self.name)}"
 
+    @property
+    def user_fund_email(self) -> str:
+        return self.user_fund.email
+
 
 class Bill(BaseModel):
     user = models.ForeignKey(
