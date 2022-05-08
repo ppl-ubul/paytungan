@@ -10,6 +10,7 @@ from .models import Bill, SplitBill, User
 class GroupSplitBillDomain(BaseDomain):
     name: str
     user_fund_id: int
+    user_fund_email: str
     withdrawal_method: str
     withdrawal_number: int
     amount: int

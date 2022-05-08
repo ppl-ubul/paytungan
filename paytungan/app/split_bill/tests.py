@@ -7,7 +7,7 @@ from unittest.mock import MagicMock
 from collections import OrderedDict
 from faker import Faker
 
-from paytungan.app.split_bill.models import Bill, SplitBill
+from paytungan.app.split_bill.models import Bill, SplitBill, User
 from paytungan.app.split_bill.services import BillService, SplitBillService
 from paytungan.app.split_bill.specs import (
     BillDomain,
@@ -17,6 +17,7 @@ from paytungan.app.split_bill.specs import (
     GetBillListSpec,
     GetSplitBillCurrentUserSpec,
     GetSplitBillListSpec,
+    GroupSplitBillDomain,
 )
 
 
@@ -110,13 +111,24 @@ class TestSplitBillService(TestCase):
                 ),
             ],
         )
+
+        dummy_user = User(
+            id=1,
+            username="username",
+            name="name",
+            email="user123",
+            profil_image="string",
+        )
+
         dummy_split_bill = SplitBill(
+            id=1,
             name="tets",
-            user_fund_id=1,
+            user_fund=dummy_user,
             withdrawal_method="GOPAY",
             withdrawal_number="asasa",
             amount=2460,
         )
+
         dummy_bills = [
             Bill(
                 user_id=1,
@@ -143,12 +155,14 @@ class TestSplitBillService(TestCase):
 
     def test_get_split_bill_list_current_user_success(self):
         dummy_split_bills = [
-            SplitBill(
+            GroupSplitBillDomain(
                 id=1,
                 name="tets",
                 user_fund_id=1,
+                user_fund_email="user123@gmail.com",
                 withdrawal_method="GOPAY",
                 withdrawal_number="asasa",
+                amount=123,
                 created_at=datetime.utcnow(),
                 updated_at=datetime.utcnow(),
             )

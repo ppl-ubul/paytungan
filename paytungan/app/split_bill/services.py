@@ -89,6 +89,7 @@ class SplitBillService:
             updated_at=split_bill.updated_at,
             name=split_bill.name,
             user_fund_id=split_bill.user_fund_id,
+            user_fund_email=split_bill.user_fund.email,
             withdrawal_method=split_bill.withdrawal_method,
             withdrawal_number=split_bill.withdrawal_number,
             amount=split_bill.amount,
