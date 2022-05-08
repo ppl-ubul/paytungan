@@ -15,6 +15,7 @@ class SplitBill(BaseModel):
     )
     withdrawal_method = models.CharField(max_length=128)
     withdrawal_number = models.CharField(max_length=128)
+    payout_reference_no = models.CharField(max_length=256, blank=True, null=True)
     amount = models.PositiveIntegerField()
     details = models.TextField(null=True, blank=True)
 

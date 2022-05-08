@@ -59,6 +59,18 @@ class InvoiceDomain:
 
 
 @dataclass
+class PayoutDomain:
+    id: str
+    external_id: str
+    amount: int
+    status: str
+    expiration_timestamp: str
+    created: str
+    email: str
+    payout_url: str
+
+
+@dataclass
 class CreateXenditInvoiceSpec:
     external_id: str
     amount: int
@@ -91,3 +103,20 @@ class CreateInvoicePaymentSpec:
 class CreateInvoicePaymentResult:
     payment: PaymentDomain
     invoice: InvoiceDomain
+
+
+@dataclass
+class CreateXenditPayoutSpec:
+    external_id: str
+    amount: int
+    email: str
+
+
+@dataclass
+class CreatePayoutSpec:
+    split_bill_id: str
+
+
+@dataclass
+class CreatePayoutResult:
+    payout: PayoutDomain

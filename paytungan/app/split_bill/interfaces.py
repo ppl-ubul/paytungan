@@ -7,6 +7,8 @@ from .specs import (
     DeleteSplitBillSpec,
     GetBillListSpec,
     GetSplitBillListSpec,
+    UpdateBillSpec,
+    UpdateSplitBillSpec,
 )
 from .models import SplitBill, Bill
 
@@ -32,6 +34,10 @@ class ISplitBillAccessor(ABC):
     def delete(self, spec: DeleteSplitBillSpec) -> None:
         raise NotImplementedError
 
+    @abstractmethod
+    def update(self, spec: UpdateSplitBillSpec) -> SplitBill:
+        raise NotImplementedError
+
 
 class IBillAccessor(ABC):
     @abstractmethod
@@ -48,4 +54,8 @@ class IBillAccessor(ABC):
 
     @abstractmethod
     def bulk_create(self, objs: List[BillDomain]) -> List[Bill]:
+        raise NotImplementedError
+
+    @abstractmethod
+    def update(self, spec: UpdateBillSpec) -> BillDomain:
         raise NotImplementedError

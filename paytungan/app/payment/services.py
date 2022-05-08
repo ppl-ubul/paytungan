@@ -13,7 +13,10 @@ from paytungan.app.payment.specs import (
     CreateInvoicePaymentResult,
     CreateInvoicePaymentSpec,
     CreatePaymentSpec,
+    CreatePayoutResult,
+    CreatePayoutSpec,
     CreateXenditInvoiceSpec,
+    CreateXenditPayoutSpec,
     GetPaymentListSpec,
     PaymentDomain,
     UpdatePaymentSpec,
@@ -21,9 +24,11 @@ from paytungan.app.payment.specs import (
     PaymentWithBillDomain,
 )
 from paytungan.app.split_bill.specs import (
+    GetBillListSpec,
     UpdateBillSpec,
+    UpdateSplitBillSpec,
 )
-from paytungan.app.split_bill.interfaces import IBillAccessor
+from paytungan.app.split_bill.interfaces import IBillAccessor, ISplitBillAccessor
 
 
 class PaymentService:
@@ -33,10 +38,12 @@ class PaymentService:
         payment_accessor: IPaymentAccessor,
         xendit_provider: IXenditProvider,
         bill_accessor: IBillAccessor,
+        split_bill_accessor: ISplitBillAccessor,
     ) -> None:
         self.payment_accessor = payment_accessor
         self.xendit_provider = xendit_provider
         self.bill_accessor = bill_accessor
+        self.split_bill_accessor = split_bill_accessor
 
     def get_payment(self, payment_id: int) -> Optional[PaymentDomain]:
         time_now = timezone.now()
@@ -170,3 +177,36 @@ class PaymentService:
         )
 
         return CreateInvoicePaymentResult(payment=payment, invoice=invoice)
+
+    def create_payout(self, spec: CreatePayoutSpec) -> CreatePayoutResult:
+        split_bill = self.split_bill_accessor.get(spec.split_bill_id)
+
+        if not split_bill:
+            raise ValidationErrorException(
+                f"Cant create payout for split_bill: {spec.split_bill}"
+            )
+
+        bills = self.bill_accessor.get_list(
+            GetBillListSpec(split_bill_ids=[split_bill.id])
+        )
+        amount_paid = sum(
+            [bill.amount for bill in bills if bill.status == BillStatus.PAID.value]
+        )
+
+        payout = self.xendit_provider.create_payout(
+            CreateXenditPayoutSpec(
+                external_id=str(split_bill.id),
+                amount=amount_paid,
+                email=split_bill.user_fund_email,
+            )
+        )
+
+        split_bill.payout_reference_no = payout.id
+        split_bill.updated_at = timezone.now()
+        self.split_bill_accessor.update(
+            UpdateSplitBillSpec(
+                obj=split_bill, updated_fields=["payout_reference_no", "updated_at"]
+            )
+        )
+
+        return CreatePayoutResult(payout=payout)

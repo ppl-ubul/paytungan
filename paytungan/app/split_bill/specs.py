@@ -111,3 +111,9 @@ class GetSplitBillCurrentUserSpec:
 class UpdateBillSpec:
     obj: BillDomain
     updated_fields: Optional[List[str]] = None
+
+
+@dataclass
+class UpdateSplitBillSpec:
+    obj: SplitBill
+    updated_fields: Optional[List[str]] = None
