@@ -8,7 +8,7 @@ class User(SafeDeleteModel):
     phone_number = models.CharField(max_length=50)
     username = models.CharField(max_length=50, null=True, blank=True)
     name = models.CharField(max_length=150, null=True, blank=True)
-    email = models.CharField(max_length=50, null=True, blank=True)
+    email = models.CharField(max_length=50, null=True, blank=True, default="a@a.com")
     profil_image = models.TextField(null=True, blank=True)
 
     class Meta:

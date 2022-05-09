@@ -64,8 +64,8 @@ class PayoutDomain:
     external_id: str
     amount: int
     status: str
-    expiration_timestamp: str
-    created: str
+    expiration_timestamp: datetime
+    created: datetime
     email: str
     payout_url: str
 

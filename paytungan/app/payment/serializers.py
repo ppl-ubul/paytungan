@@ -22,6 +22,17 @@ class XenditInvoiceSerializers(serializers.Serializer):
     failure_redirect_url = serializers.CharField(required=False)
 
 
+class XenditPayoutSerializers(serializers.Serializer):
+    id = serializers.CharField()
+    external_id = serializers.CharField()
+    amount = serializers.IntegerField()
+    status = serializers.CharField()
+    expiration_timestamp = serializers.DateTimeField()
+    created = serializers.DateTimeField()
+    email = serializers.CharField()
+    payout_url = serializers.CharField()
+
+
 class PaymentSerializers(serializers.Serializer):
     id = serializers.IntegerField(min_value=1)
     bill_id = serializers.IntegerField(min_value=1)
@@ -71,3 +82,19 @@ class GetPaymentByBillIdRequest(serializers.Serializer):
 
 class GetPaymentByBillIdResponse(serializers.Serializer):
     data = PaymentSerializers()
+
+
+class GetPayoutRequest(serializers.Serializer):
+    split_bill_id = serializers.IntegerField(min_value=1)
+
+
+class GetPayoutResponse(serializers.Serializer):
+    data = XenditPayoutSerializers()
+
+
+class CreatePayoutRequest(serializers.Serializer):
+    split_bill_id = serializers.IntegerField(min_value=1)
+
+
+class CreatePayoutResponse(serializers.Serializer):
+    data = XenditPayoutSerializers()

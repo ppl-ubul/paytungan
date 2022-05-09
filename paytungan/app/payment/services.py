@@ -1,12 +1,13 @@
 from typing import List, Optional
 from injector import inject
-from datetime import datetime
+from datetime import datetime, timedelta
 from django.utils import timezone
+import pytz
 
 from paytungan.app.auth.specs import UserDomain
 from paytungan.app.base.constants import BillStatus
 from paytungan.app.common.exceptions import NotFoundException, ValidationErrorException
-from paytungan.app.common.utils import ObjectMapperUtil
+from paytungan.app.common.utils import DateUtil, ObjectMapperUtil
 from paytungan.app.payment.interfaces import IPaymentAccessor, IXenditProvider
 from paytungan.app.payment.models import Payment
 from paytungan.app.payment.specs import (
@@ -19,6 +20,7 @@ from paytungan.app.payment.specs import (
     CreateXenditPayoutSpec,
     GetPaymentListSpec,
     PaymentDomain,
+    PayoutDomain,
     UpdatePaymentSpec,
     UpdateStatusSpec,
     PaymentWithBillDomain,
@@ -178,19 +180,48 @@ class PaymentService:
 
         return CreateInvoicePaymentResult(payment=payment, invoice=invoice)
 
+    def get_payout(self, split_bill_id: int) -> PayoutDomain:
+        split_bill = self.split_bill_accessor.get(split_bill_id)
+
+        if not split_bill:
+            raise ValidationErrorException(
+                f"Cant get payout for split_bill: {split_bill_id}"
+            )
+
+        if not split_bill.payout_reference_no:
+            raise ValidationErrorException(
+                f"Split_bill: {split_bill_id} dont have payout"
+            )
+
+        return self.xendit_provider.get_payout(split_bill.payout_reference_no)
+
     def create_payout(self, spec: CreatePayoutSpec) -> CreatePayoutResult:
+        time_now = timezone.now()
         split_bill = self.split_bill_accessor.get(spec.split_bill_id)
 
         if not split_bill:
             raise ValidationErrorException(
-                f"Cant create payout for split_bill: {spec.split_bill}"
+                f"Cant create payout for split_bill: {spec.split_bill_id}"
+            )
+
+        payout = self.xendit_provider.get_payout(split_bill.payout_reference_no)
+        if payout and DateUtil.transform_str_to_datetime(
+            payout.expiration_timestamp
+        ) > time_now - timedelta(hours=2):
+            raise ValidationErrorException(
+                f"Split_bill: {spec.split_bill_id} already have payout"
             )
 
         bills = self.bill_accessor.get_list(
             GetBillListSpec(split_bill_ids=[split_bill.id])
         )
         amount_paid = sum(
-            [bill.amount for bill in bills if bill.status == BillStatus.PAID.value]
+            [
+                bill.amount
+                for bill in bills
+                if bill.status == BillStatus.PAID.value
+                and bill.user_id != split_bill.user_fund_id
+            ]
         )
 
         payout = self.xendit_provider.create_payout(

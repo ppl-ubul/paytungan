@@ -59,6 +59,7 @@ class SplitBillSerializer(serializers.Serializer):
     name = serializers.CharField()
     user_fund_id = serializers.IntegerField(min_value=1)
     user_fund_email = serializers.CharField()
+    payout_reference_no = serializers.CharField(required=False)
     withdrawal_method = serializers.CharField(required=False)
     withdrawal_number = serializers.CharField(required=False)
     amount = serializers.IntegerField(min_value=0)

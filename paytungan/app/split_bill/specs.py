@@ -11,9 +11,10 @@ class GroupSplitBillDomain(BaseDomain):
     name: str
     user_fund_id: int
     user_fund_email: str
-    withdrawal_method: str
-    withdrawal_number: int
     amount: int
+    payout_reference_no: Optional[str] = None
+    withdrawal_method: Optional[str] = None
+    withdrawal_number: Optional[int] = None
     details: Optional[str] = None
     bills: Optional[Bill] = None
 
