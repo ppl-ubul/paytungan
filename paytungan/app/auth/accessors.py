@@ -88,6 +88,7 @@ class UserAccessor(IUserAccessor):
             user = User.objects.get(firebase_uid=spec.firebase_uid)
             user.username = spec.username
             user.name = spec.name
+            user.email = spec.email
             user.profil_image = spec.profil_image
             user.save()
         except User.DoesNotExist:

@@ -63,7 +63,11 @@ class TestAuthService(TestCase):
 
     def test_user_service_update_user(self):
         spec = UpdateUserSpec(
-            firebase_uid="aa", username="aaa", name="aaaa", profil_image="aaaaa"
+            firebase_uid="aa",
+            username="aaa",
+            name="aaaa",
+            email="email@gmail.com",
+            profil_image="aaaaa",
         )
         self.user_service.update_user(spec)
         assert True
