@@ -65,6 +65,7 @@ class LoginResponse(serializers.Serializer):
 class UpdateUserRequest(serializers.Serializer):
     username = serializers.CharField()
     name = serializers.CharField()
+    email = serializers.CharField()
     profil_image = serializers.CharField(
         required=False, default=None, allow_null=True, allow_blank=True
     )
