@@ -25,10 +25,12 @@ class TestPaymentService(TestCase):
         self.payment_accessor = MagicMock()
         self.xendit_provider = MagicMock()
         self.bill_accessor = MagicMock()
+        self.split_bill_accessor = MagicMock()
         self.payment_service = PaymentService(
             payment_accessor=self.payment_accessor,
             xendit_provider=self.xendit_provider,
             bill_accessor=self.bill_accessor,
+            split_bill_accessor=self.split_bill_accessor,
         )
 
     @staticmethod

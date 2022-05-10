@@ -14,6 +14,7 @@ from .specs import (
     GetBillListSpec,
     GetSplitBillListSpec,
     UpdateBillSpec,
+    UpdateSplitBillSpec,
 )
 from paytungan.app.base.constants import DEFAULT_LOGGER
 
@@ -156,3 +157,9 @@ class SplitBillAccessor(ISplitBillAccessor):
             queryset = queryset.filter(user_fund__id=spec.user_fund_id)
 
         queryset.delete()
+
+    def update(self, spec: UpdateSplitBillSpec) -> SplitBill:
+        split_bill = spec.obj
+        split_bill.save(update_fields=spec.updated_fields)
+
+        return split_bill

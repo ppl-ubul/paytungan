@@ -13,8 +13,9 @@ class SplitBill(BaseModel):
         related_name="hosted_split_bills",
         on_delete=models.PROTECT,
     )
-    withdrawal_method = models.CharField(max_length=128)
-    withdrawal_number = models.CharField(max_length=128)
+    withdrawal_method = models.CharField(max_length=128, blank=True, null=True)
+    withdrawal_number = models.CharField(max_length=128, blank=True, null=True)
+    payout_reference_no = models.CharField(max_length=256, blank=True, null=True)
     amount = models.PositiveIntegerField()
     details = models.TextField(null=True, blank=True)
 

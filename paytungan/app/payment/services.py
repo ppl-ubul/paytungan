@@ -1,29 +1,36 @@
 from typing import List, Optional
 from injector import inject
-from datetime import datetime
+from datetime import datetime, timedelta
 from django.utils import timezone
+import pytz
 
 from paytungan.app.auth.specs import UserDomain
 from paytungan.app.base.constants import BillStatus
 from paytungan.app.common.exceptions import NotFoundException, ValidationErrorException
-from paytungan.app.common.utils import ObjectMapperUtil
+from paytungan.app.common.utils import DateUtil, ObjectMapperUtil
 from paytungan.app.payment.interfaces import IPaymentAccessor, IXenditProvider
 from paytungan.app.payment.models import Payment
 from paytungan.app.payment.specs import (
     CreateInvoicePaymentResult,
     CreateInvoicePaymentSpec,
     CreatePaymentSpec,
+    CreatePayoutResult,
+    CreatePayoutSpec,
     CreateXenditInvoiceSpec,
+    CreateXenditPayoutSpec,
     GetPaymentListSpec,
     PaymentDomain,
+    PayoutDomain,
     UpdatePaymentSpec,
     UpdateStatusSpec,
     PaymentWithBillDomain,
 )
 from paytungan.app.split_bill.specs import (
+    GetBillListSpec,
     UpdateBillSpec,
+    UpdateSplitBillSpec,
 )
-from paytungan.app.split_bill.interfaces import IBillAccessor
+from paytungan.app.split_bill.interfaces import IBillAccessor, ISplitBillAccessor
 
 
 class PaymentService:
@@ -33,10 +40,12 @@ class PaymentService:
         payment_accessor: IPaymentAccessor,
         xendit_provider: IXenditProvider,
         bill_accessor: IBillAccessor,
+        split_bill_accessor: ISplitBillAccessor,
     ) -> None:
         self.payment_accessor = payment_accessor
         self.xendit_provider = xendit_provider
         self.bill_accessor = bill_accessor
+        self.split_bill_accessor = split_bill_accessor
 
     def get_payment(self, payment_id: int) -> Optional[PaymentDomain]:
         time_now = timezone.now()
@@ -170,3 +179,65 @@ class PaymentService:
         )
 
         return CreateInvoicePaymentResult(payment=payment, invoice=invoice)
+
+    def get_payout(self, split_bill_id: int) -> PayoutDomain:
+        split_bill = self.split_bill_accessor.get(split_bill_id)
+
+        if not split_bill:
+            raise ValidationErrorException(
+                f"Cant get payout for split_bill: {split_bill_id}"
+            )
+
+        if not split_bill.payout_reference_no:
+            raise ValidationErrorException(
+                f"Split_bill: {split_bill_id} dont have payout"
+            )
+
+        return self.xendit_provider.get_payout(split_bill.payout_reference_no)
+
+    def create_payout(self, spec: CreatePayoutSpec) -> CreatePayoutResult:
+        time_now = timezone.now()
+        split_bill = self.split_bill_accessor.get(spec.split_bill_id)
+
+        if not split_bill:
+            raise ValidationErrorException(
+                f"Cant create payout for split_bill: {spec.split_bill_id}"
+            )
+
+        payout = self.xendit_provider.get_payout(split_bill.payout_reference_no)
+        if payout and DateUtil.transform_str_to_datetime(
+            payout.expiration_timestamp
+        ) > time_now - timedelta(hours=2):
+            raise ValidationErrorException(
+                f"Split_bill: {spec.split_bill_id} already have payout"
+            )
+
+        bills = self.bill_accessor.get_list(
+            GetBillListSpec(split_bill_ids=[split_bill.id])
+        )
+        amount_paid = sum(
+            [
+                bill.amount
+                for bill in bills
+                if bill.status == BillStatus.PAID.value
+                and bill.user_id != split_bill.user_fund_id
+            ]
+        )
+
+        payout = self.xendit_provider.create_payout(
+            CreateXenditPayoutSpec(
+                external_id=str(split_bill.id),
+                amount=amount_paid,
+                email=split_bill.user_fund_email,
+            )
+        )
+
+        split_bill.payout_reference_no = payout.id
+        split_bill.updated_at = timezone.now()
+        self.split_bill_accessor.update(
+            UpdateSplitBillSpec(
+                obj=split_bill, updated_fields=["payout_reference_no", "updated_at"]
+            )
+        )
+
+        return CreatePayoutResult(payout=payout)

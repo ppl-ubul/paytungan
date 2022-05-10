@@ -9,16 +9,22 @@ from paytungan.app.common.decorators import api_exception
 from paytungan.app.base.headers import AUTH_HEADERS
 from paytungan.app.auth.utils import user_auth, firebase_auth
 from paytungan.app.auth.specs import UserDomain, FirebaseDecodedToken
+from paytungan.app.common.utils import ObjectMapperUtil
 
 from .specs import (
     CreatePaymentSpec,
+    CreatePayoutSpec,
     UpdateStatusSpec,
 )
 from .serializers import (
     CreatePaymentRequest,
     CreatePaymentResponse,
+    CreatePayoutRequest,
+    CreatePayoutResponse,
     GetPaymentResponse,
     GetPaymentRequest,
+    GetPayoutRequest,
+    GetPayoutResponse,
     UpdateStatusRequest,
     UpdateStatusResponse,
     GetPaymentByBillIdRequest,
@@ -127,3 +133,48 @@ class PaymentViewSet(viewsets.ViewSet):
         data = serializer.data
         payment = payment_service.get_payment_by_bill_id(data["bill_id"])
         return Response(GetPaymentByBillIdResponse({"data": payment}).data)
+
+    @action(
+        detail=False,
+        url_path="payout/get",
+        methods=["get"],
+    )
+    @swagger_auto_schema(
+        manual_parameters=AUTH_HEADERS,
+        query_serializer=GetPayoutRequest(),
+        responses={200: GetPayoutResponse()},
+    )
+    @api_exception
+    @firebase_auth
+    def get_payout(self, request: Request, cred: FirebaseDecodedToken) -> Response:
+        """
+        Get payout by split bill id
+        """
+        serializer = GetPayoutRequest(data=request.query_params)
+        serializer.is_valid(raise_exception=True)
+        data = serializer.data
+        payment = payment_service.get_payout(data["split_bill_id"])
+        return Response(GetPayoutResponse({"data": payment}).data)
+
+    @action(
+        detail=False,
+        url_path="payout/create",
+        methods=["post"],
+    )
+    @swagger_auto_schema(
+        manual_parameters=AUTH_HEADERS,
+        request_body=CreatePayoutRequest(),
+        responses={200: CreatePayoutResponse()},
+    )
+    @api_exception
+    @firebase_auth
+    def create_payout(self, request: Request, cred: FirebaseDecodedToken) -> Response:
+        """
+        Create payout of given split_bill
+        """
+        serializer = CreatePayoutRequest(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        data = serializer.data
+        spec = ObjectMapperUtil.map(data, CreatePayoutSpec)
+        result = payment_service.create_payout(spec)
+        return Response(GetPayoutResponse({"data": result.payout}).data)

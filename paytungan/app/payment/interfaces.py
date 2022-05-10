@@ -5,9 +5,11 @@ from xendit.models.invoice import Invoice
 from .models import Payment
 from .specs import (
     CreateXenditInvoiceSpec,
+    CreateXenditPayoutSpec,
     GetPaymentListSpec,
     InvoiceDomain,
     PaymentDomain,
+    PayoutDomain,
     UpdatePaymentSpec,
 )
 
@@ -41,4 +43,12 @@ class IXenditProvider(ABC):
 
     @abstractmethod
     def get_invoice(self, invoice_id: str) -> Optional[InvoiceDomain]:
+        raise NotImplementedError
+
+    @abstractmethod
+    def create_payout(self, spec: CreateXenditPayoutSpec) -> PayoutDomain:
+        raise NotImplementedError
+
+    @abstractmethod
+    def get_payout(self, payout_id: str) -> Optional[PayoutDomain]:
         raise NotImplementedError

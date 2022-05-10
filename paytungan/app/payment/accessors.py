@@ -1,6 +1,6 @@
 from typing import List, Optional
 from injector import inject
-from xendit import Xendit, Invoice
+from xendit import Xendit, Invoice, Payout
 from xendit.xendit_error import XenditError
 
 from paytungan.app.common.exceptions import NotFoundException
@@ -10,9 +10,11 @@ from paytungan.app.logging.interface import ILoggingProvider
 from paytungan.app.split_bill.models import Bill
 from .specs import (
     CreateXenditInvoiceSpec,
+    CreateXenditPayoutSpec,
     GetPaymentListSpec,
     InvoiceDomain,
     PaymentDomain,
+    PayoutDomain,
     UpdatePaymentSpec,
 )
 from .interfaces import IPaymentAccessor, IXenditProvider
@@ -129,6 +131,33 @@ class XenditProvider(IXenditProvider):
 
         return self._convert_invoice_domain(invoice)
 
+    def get_payout(self, payout_id: str) -> Optional[InvoiceDomain]:
+        client = self._get_client()
+
+        try:
+            payout = client.Payout.get(
+                id=payout_id,
+            )
+        except XenditError:
+            self.logger.warning(f"Payout with id: {payout_id} is not found.")
+            return None
+
+        return self._convert_payout_domain(payout)
+
+    def create_payout(self, spec: CreateXenditPayoutSpec) -> InvoiceDomain:
+        client = self._get_client()
+        payout = client.Payout.create(
+            external_id=spec.external_id,
+            amount=spec.amount,
+            email=spec.email,
+        )
+
+        return self._convert_payout_domain(payout)
+
     @staticmethod
     def _convert_invoice_domain(obj: Invoice) -> InvoiceDomain:
         return ObjectMapperUtil.map(vars(obj), InvoiceDomain)
+
+    @staticmethod
+    def _convert_payout_domain(obj: Payout) -> PayoutDomain:
+        return ObjectMapperUtil.map(vars(obj), PayoutDomain)

@@ -8,6 +8,8 @@ from decimal import Decimal
 from enum import Enum
 from typing import Optional, Tuple, TypeVar, Type, List, Dict, Any, _GenericAlias
 
+import pytz
+
 T = TypeVar("T")
 
 
@@ -204,3 +206,11 @@ class EnumUtil:
     @staticmethod
     def value_or_none(enum_object: Optional[Enum]) -> Optional[str]:
         return enum_object.value if enum_object else None
+
+
+class DateUtil:
+    @staticmethod
+    def transform_str_to_datetime(str_datetime: str) -> datetime:
+        return datetime.strptime(str_datetime, "%Y-%m-%dT%H:%M:%S.%fZ").replace(
+            tzinfo=pytz.UTC
+        )
