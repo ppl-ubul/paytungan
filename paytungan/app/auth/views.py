@@ -128,6 +128,7 @@ class UserViewSet(viewsets.ViewSet):
             firebase_uid=cred.user_id,
             username=data["username"],
             name=data["name"],
+            email=data["email"],
             profil_image=data["profil_image"],
         )
         user = user_service.update_user(spec)
