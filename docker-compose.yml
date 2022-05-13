@@ -12,5 +12,3 @@ services:
       - DJANGO_SETTINGS_MODULE=${DJANGO_SETTINGS_MODULE}
     ports:
       - "8080:8080"
-    volumes:
-      - .:/app

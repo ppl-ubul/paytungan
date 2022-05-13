@@ -176,5 +176,30 @@ class PaymentViewSet(viewsets.ViewSet):
         serializer.is_valid(raise_exception=True)
         data = serializer.data
         spec = ObjectMapperUtil.map(data, CreatePayoutSpec)
-        result = payment_service.create_payout(spec)
-        return Response(GetPayoutResponse({"data": result.payout}).data)
+        payout = payment_service.create_payout(spec)
+        return Response(GetPayoutResponse({"data": payout}).data)
+
+    @action(
+        detail=False,
+        url_path="payout/get-or-create",
+        methods=["post"],
+    )
+    @swagger_auto_schema(
+        manual_parameters=AUTH_HEADERS,
+        request_body=GetPayoutRequest(),
+        responses={200: GetPayoutResponse()},
+    )
+    @api_exception
+    @firebase_auth
+    def get_or_create_payout(
+        self, request: Request, cred: FirebaseDecodedToken
+    ) -> Response:
+        """
+        Create payout of given split_bill
+        """
+        serializer = GetPayoutRequest(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        data = serializer.data
+        spec = ObjectMapperUtil.map(data, CreatePayoutSpec)
+        payout = payment_service.get_or_create_payout(spec)
+        return Response(GetPayoutResponse({"data": payout}).data)

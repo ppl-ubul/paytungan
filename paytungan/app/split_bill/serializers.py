@@ -76,7 +76,7 @@ class GetSplitBillResponse(serializers.Serializer):
 
 class UserIdWithAmountBillSerializer(serializers.Serializer):
     user_id = serializers.IntegerField(min_value=1)
-    amount = serializers.IntegerField(min_value=0)
+    amount = serializers.IntegerField(min_value=10000)
     details = serializers.CharField(required=False, allow_null=True, default=None)
 
 
@@ -88,7 +88,7 @@ class CreateSplitBillRequest(serializers.Serializer):
     )
     withdrawal_number = serializers.CharField()
     details = serializers.CharField(required=False, allow_null=True)
-    amount = serializers.IntegerField(min_value=0)
+    amount = serializers.IntegerField(min_value=10000)
     bills = UserIdWithAmountBillSerializer(many=True)
 
 
