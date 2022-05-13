@@ -131,7 +131,7 @@ class XenditProvider(IXenditProvider):
 
         return self._convert_invoice_domain(invoice)
 
-    def get_payout(self, payout_id: str) -> Optional[InvoiceDomain]:
+    def get_payout(self, payout_id: str) -> Optional[PayoutDomain]:
         client = self._get_client()
 
         try:
@@ -144,7 +144,7 @@ class XenditProvider(IXenditProvider):
 
         return self._convert_payout_domain(payout)
 
-    def create_payout(self, spec: CreateXenditPayoutSpec) -> InvoiceDomain:
+    def create_payout(self, spec: CreateXenditPayoutSpec) -> PayoutDomain:
         client = self._get_client()
         payout = client.Payout.create(
             external_id=spec.external_id,

@@ -180,7 +180,14 @@ class PaymentService:
 
         return CreateInvoicePaymentResult(payment=payment, invoice=invoice)
 
-    def get_payout(self, split_bill_id: int) -> PayoutDomain:
+    def get_or_create_payout(self, spec: CreatePayoutSpec) -> PayoutDomain:
+        payout = self.get_payout(spec.split_bill_id)
+        if payout:
+            return payout
+
+        return self.create_payout(spec)
+
+    def get_payout(self, split_bill_id: int) -> Optional[PayoutDomain]:
         split_bill = self.split_bill_accessor.get(split_bill_id)
 
         if not split_bill:
@@ -189,13 +196,11 @@ class PaymentService:
             )
 
         if not split_bill.payout_reference_no:
-            raise ValidationErrorException(
-                f"Split_bill: {split_bill_id} dont have payout"
-            )
+            return None
 
         return self.xendit_provider.get_payout(split_bill.payout_reference_no)
 
-    def create_payout(self, spec: CreatePayoutSpec) -> CreatePayoutResult:
+    def create_payout(self, spec: CreatePayoutSpec) -> PayoutDomain:
         time_now = timezone.now()
         split_bill = self.split_bill_accessor.get(spec.split_bill_id)
 
@@ -240,4 +245,4 @@ class PaymentService:
             )
         )
 
-        return CreatePayoutResult(payout=payout)
+        return payout
