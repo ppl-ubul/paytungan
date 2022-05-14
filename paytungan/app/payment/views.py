@@ -15,6 +15,7 @@ from .specs import (
     CreatePaymentSpec,
     CreatePayoutSpec,
     UpdateStatusSpec,
+    GetPaymentListSpec,
 )
 from .serializers import (
     CreatePaymentRequest,
@@ -29,6 +30,8 @@ from .serializers import (
     UpdateStatusResponse,
     GetPaymentByBillIdRequest,
     GetPaymentByBillIdResponse,
+    GetPaymentListRequest,
+    GetPaymentListResponse,
 )
 from .services import (
     PaymentService,
@@ -203,3 +206,28 @@ class PaymentViewSet(viewsets.ViewSet):
         spec = ObjectMapperUtil.map(data, CreatePayoutSpec)
         payout = payment_service.get_or_create_payout(spec)
         return Response(GetPayoutResponse({"data": payout}).data)
+
+    @action(
+        detail=False,
+        url_path="list/get",
+        methods=["get"],
+    )
+    @swagger_auto_schema(
+        manual_parameters=AUTH_HEADERS,
+        query_serializer=GetPaymentListRequest(),
+        responses={200: GetPaymentListResponse()},
+    )
+    @api_exception
+    @firebase_auth
+    def get_payment_list(
+        self, request: Request, cred: FirebaseDecodedToken
+    ) -> Response:
+        """
+        Get list payment object
+        """
+        serializer = GetPaymentListRequest(data=request.query_params)
+        serializer.is_valid(raise_exception=True)
+        data = serializer.data
+        spec = ObjectMapperUtil.map(data, GetPaymentListSpec)
+        payments = payment_service.get_payment_list(spec)
+        return Response(GetPaymentListResponse({"data": payments}).data)
