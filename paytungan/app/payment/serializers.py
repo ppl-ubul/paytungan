@@ -49,6 +49,20 @@ class PaymentSerializers(serializers.Serializer):
     invoice = XenditInvoiceSerializers()
 
 
+class FilteredPaymentSerializers(serializers.Serializer):
+    id = serializers.IntegerField(min_value=1)
+    bill_id = serializers.IntegerField(min_value=1)
+    status = serializers.CharField()
+    method = serializers.CharField()
+    reference_no = serializers.CharField()
+    expiry_date = serializers.DateTimeField()
+    paid_at = serializers.DateTimeField()
+    number = serializers.CharField()
+    amount = serializers.IntegerField()
+    created_at = serializers.DateTimeField()
+    updated_at = serializers.DateTimeField()
+
+
 class GetPaymentResponse(serializers.Serializer):
     data = PaymentSerializers()
 
@@ -98,3 +112,15 @@ class CreatePayoutRequest(serializers.Serializer):
 
 class CreatePayoutResponse(serializers.Serializer):
     data = XenditPayoutSerializers()
+
+
+class GetPaymentListRequest(serializers.Serializer):
+    bill_ids = serializers.ListField(
+        child=serializers.IntegerField(min_value=1), required=False, default=[]
+    )
+    user_id = serializers.IntegerField(min_value=1, required=False)
+    status = serializers.CharField(required=False)
+
+
+class GetPaymentListResponse(serializers.Serializer):
+    data = FilteredPaymentSerializers(many=True)
