@@ -9,7 +9,7 @@ COPY ./requirements.txt .
 # Install requirements
 RUN pip install -U -r requirements.txt
 
-COPY ./paytungan /app
+COPY . /app
 WORKDIR /app
 
 RUN python manage.py collectstatic --noinput
