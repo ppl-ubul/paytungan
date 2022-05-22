@@ -84,9 +84,14 @@ class CreateSplitBillRequest(serializers.Serializer):
     name = serializers.CharField()
     user_fund_id = serializers.IntegerField(min_value=1)
     withdrawal_method = serializers.ChoiceField(
-        choices=EnumUtil.extract_enum_values(WithdrawalMethod)
+        choices=EnumUtil.extract_enum_values(WithdrawalMethod),
+        required=False,
+        allow_null=True,
+        allow_blank=True,
     )
-    withdrawal_number = serializers.CharField()
+    withdrawal_number = serializers.CharField(
+        required=False, allow_null=True, allow_blank=True,
+    )
     details = serializers.CharField(required=False, allow_null=True)
     amount = serializers.IntegerField(min_value=10000)
     bills = UserIdWithAmountBillSerializer(many=True)
