@@ -90,7 +90,9 @@ class CreateSplitBillRequest(serializers.Serializer):
         allow_blank=True,
     )
     withdrawal_number = serializers.CharField(
-        required=False, allow_null=True, allow_blank=True,
+        required=False,
+        allow_null=True,
+        allow_blank=True,
     )
     details = serializers.CharField(required=False, allow_null=True)
     amount = serializers.IntegerField(min_value=10000)
