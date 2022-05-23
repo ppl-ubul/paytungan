@@ -41,14 +41,6 @@ class PaymentAccessor(IPaymentAccessor):
     def get_list(self, spec: GetPaymentListSpec) -> List[Payment]:
         queryset = Payment.objects.all()
 
-        if spec.user_id:
-            bill_ids = list(
-                Bill.objects.filter(user_id=spec.user_id)
-                .values_list("id", flat=True)
-                .distinct()
-            )
-            spec.bill_ids.extend(bill_ids)
-
         if spec.bill_ids:
             queryset = queryset.filter(bill_id__in=spec.bill_ids)
 

@@ -77,10 +77,21 @@ class PaymentService:
 
         return payment
 
-    def get_payment_by_bill_id(self, payment_bill_id: int) -> Optional[PaymentDomain]:
+    def get_payment_by_bill_id(self, payment_bill_id: int) -> List[PaymentDomain]:
         return self.payment_accessor.get_by_bill_id(payment_bill_id)
 
     def get_payment_list(self, spec: GetPaymentListSpec) -> List[Payment]:
+        bills = self.bill_accessor.get_list(
+            GetBillListSpec(
+                user_ids=[spec.user_id],
+            )
+        )
+        if not bills:
+            return []
+
+        bill_ids = [bill.id for bill in bills]
+        spec.bill_ids.extend(bill_ids)
+
         return self.payment_accessor.get_list(spec)
 
     def create_payment(
